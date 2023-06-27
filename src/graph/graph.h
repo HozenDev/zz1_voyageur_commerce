@@ -2,7 +2,9 @@
 #define _graph_h_
 
 struct graph_s {
-    /* todo */
+    char ** g;
+    unsigned short w;
+    unsigned short h;
 };
 
 typedef struct graph_s graph_t;
