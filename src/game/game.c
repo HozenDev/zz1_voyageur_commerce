@@ -73,7 +73,7 @@ int game_initialisation(game_t ** game)
     (*game)->sw = 800;
     (*game)->sh = 800;
 
-    (*(*game)).related_prob = 0.4;
+    (*game)->related_prob = 0.4;
     (*game)->ratio = 0.8;
  
     /* initialize (*game) state */
