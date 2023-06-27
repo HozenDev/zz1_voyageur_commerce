@@ -3,8 +3,7 @@
 
 struct graph_s {
     char ** matrix;
-    unsigned short w;
-    unsigned short h;
+    unsigned short n;
 };
 
 typedef struct graph_s graph_t;
