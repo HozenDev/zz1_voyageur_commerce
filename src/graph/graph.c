@@ -246,7 +246,8 @@ graph_t *  graph_initialize_graph(unsigned short n)
 	}
 	
     }
-    
+
+    // remplie la matrix a 0 (aucune arrete de base)
     for (i = 0; i < n; ++i)
     {
 	for (j = 0; j < n; ++j)
@@ -334,8 +335,46 @@ void graph_initialize_dist(graph_sdl_t * graph)
  * \return void : ne retourne rien
  * 
  */
-graph_t *  graph_initialize_graph_sdl(unsigned short n)
+graph_sdl_t *  graph_initialize_graph_sdl(unsigned short n)
 {
+    graph_sdl_t * graph = NULL;
+    graph = malloc(sizeof(graph_sdl_t));
+
+    if (NULL == graph)
+    {
+	
+    }
+    graph->g = (*graph_initialize_graph(n));  // pas sur pour moi il faudrait changer la struct graph_s * g
+    
+    graph->dist = malloc(sizeof(float *)* n);
+    if (NULL != graph->dist )
+    {
+	for(int i = 0; i < n; ++i) // initialize matrix
+	{
+	    graph->dist[i] = malloc(sizeof(float) * n);
+	    
+	    if (graph->dist[i] == NULL)
+	    {
+		zlog(stderr, ERROR, "error in allocation of graph in graph_initialize_graph\n", NULL);
+		for(int j=0; j<i; ++j)
+		{
+		    free(graph->dist[j]);
+		}
+		free(graph);
+		return NULL; 
+	    }
+	}
+	
+    }
+
+    // initialise la distance à l'infinie
+    for (int i = 0; i < n; ++i)
+    {
+	for (int j = 0; j < n; ++j)
+	{
+	    graph->dist[i][j] = INFINITY; // macro def dans math.h norme C99
+	}
+    }
     
     return NULL;
 }
