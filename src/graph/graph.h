@@ -18,7 +18,7 @@ struct graph_s {
 typedef struct graph_s graph_t;
 
 struct graph_sdl_s {
-    struct graph_s g;
+    struct graph_s * g;
     SDL_Point * p;
     float ** dist;
 };
@@ -39,6 +39,11 @@ graph_t * graph_generate_graph(graph_t * graph,float p);
 
 void graph_print_file(FILE * flux, graph_t * graph);
 
+//constructeur
 void graph_initialize_dist(graph_sdl_t * graph);
+
+//destructeur
+void graph_free_graph(graph_t * graph);
+void graph_free_graph_sdl(graph_sdl_t * graph);
 
 #endif

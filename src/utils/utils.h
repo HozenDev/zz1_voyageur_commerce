@@ -9,5 +9,7 @@
 
 
 float distance(SDL_Point pt1, SDL_Point pt2);
+void free_matrix_char(char ** matrix, unsigned int n);
+void free_matrix_float(float ** matrix, unsigned int n);
 
 #endif
