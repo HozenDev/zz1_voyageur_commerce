@@ -1,14 +1,13 @@
 #ifndef _graph_h_
 #define _graph_h_
 
+#include <stdlib.h>
 #include "../sdl/sdl.h"
+#include "../seed/seed.h"
+#include "../log/log.h"
 
 struct graph_s {
-<<<<<<< HEAD
-    char ** g;
-=======
     char ** matrix;
->>>>>>> refs/remotes/origin/master
     unsigned short n;
 };
 
@@ -35,9 +34,9 @@ int graph_main(void);
  * \return void : pas de retour, effet de bord sur le graphe
  * 
  */
-void graph_generate_related(graph_t graph, unsigned short down, unsigned short up);
+void graph_generate_related(graph_t * graph, unsigned short down, unsigned short up);
 
-void graph_initialize_graph();
+graph_t *  graph_initialize_graph(unsigned short n);
 
     
 #endif
