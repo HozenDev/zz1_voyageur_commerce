@@ -43,6 +43,57 @@ graph_sdl_t * graph_generate_sdl(graph_sdl_t * g, int width, int height, int rat
 
 int game_loop(void)
 {
+    SDL_Window * window = NULL;
+    SDL_Renderer * renderer = NULL;
+    SDL_Event event;
+
+    int width = 800;
+    int height = 800;
+
+        /* Boucle de jeu */
+    while (running) {
+
+	/* Boucle d'évènements */
+	while (SDL_PollEvent(&event))
+	{
+	    switch(event.type)
+	    {
+	    case SDL_WINDOWEVENT:
+		switch (event.window.event)
+		{
+		case SDL_WINDOWEVENT_CLOSE:
+		    zlog(stdout, INFO, "sdl event window close", NULL);
+		    break;
+		default:
+		    break;
+		}
+		break;
+	    case SDL_KEYDOWN:
+		if (event.key.keysym.sym == SDLK_SPACE)
+		{
+                    zlog(stdout, INFO, "SPACE tapped", NULL);
+                }
+		break;
+	    case SDL_MOUSEBUTTONDOWN:
+		zlog(stdout, INFO, "appui: x:%d y:%d", event.button.x, event.button.y);
+		break;
+            case SDL_MOUSEMOTION:
+                px = event.motion.xrel;
+                py = event.motion.yrel;
+                break;
+	    case SDL_QUIT:
+		zlog(stdout, INFO, "event.type: SDL_QUIT", NULL);
+		running = 0;
+                break;
+	    }
+	}
+        
+        SDL_RenderPresent(renderer);
+        
+	/* delai minimal = 1 */
+	SDL_Delay(30);
+    }
+    
     return 0;
 }
 
@@ -62,7 +113,7 @@ void graph_print_sdl(SDL_Renderer * renderer, graph_sdl_t * g)
         {
             if (g->g.matrix[i][j] == 1)
             {
-                sdl_draw_segment(g->p[i].x, g->p[i].y, g->p[j].x, g->p[j].y);
+                sdl_draw_segment(renderer, g->p[i].x, g->p[i].y, g->p[j].x, g->p[j].y);
             }
         }
     }
