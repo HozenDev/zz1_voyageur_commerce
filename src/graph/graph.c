@@ -21,7 +21,7 @@ SDL_Point graph_generate_point(int width, int height, int offset_x, int offset_y
 }
 
 /**
- * @brief Generate coordiantes points for a graph
+ * @brief Generate coordinates points for a graph
  *
  * @param graph_sdl_t ** g, graph to generate point
  * @param width, screen width point
@@ -37,8 +37,13 @@ graph_sdl_t * graph_generate_sdl(graph_sdl_t * g, int width, int height, int rat
 
     for (i = 0; i < g->g.n; ++i)
     {
-        //g.
+        g->p[i] = graph_generate_point(width, height, offset_x, offset_y);
     }
+}
+
+int game_loop(void)
+{
+    return 0;
 }
 
 /**
@@ -47,7 +52,20 @@ graph_sdl_t * graph_generate_sdl(graph_sdl_t * g, int width, int height, int rat
  */
 void graph_print_sdl(SDL_Renderer * renderer, graph_sdl_t * g)
 {
-    
+    int i, j;
+    int radius;
+
+    for (i = 0; i < g->g.n; ++i)
+    {
+        sdl_draw_circle(g->p[i].x, g->p[i].y, radius);
+        for (j = i+1; j < N; ++j)
+        {
+            if (g->g.matrix[i][j] == 1)
+            {
+                sdl_draw_segment(g->p[i].x, g->p[i].y, g->p[j].x, g->p[j].y);
+            }
+        }
+    }
 }
 
 graph_t * graph_generategraph(graph_t * graph,float p)
@@ -100,8 +118,5 @@ void graph_generate_related(graph_t graph, unsigned short down, unsigned short u
 	graph_generate_related(graph, k+1, up);
     }
 }
-
-
-
 
 void graph_initialize_graph();
