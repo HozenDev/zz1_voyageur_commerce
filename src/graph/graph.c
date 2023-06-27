@@ -103,7 +103,7 @@ int graph_game_loop(void)
     graph_generate_sdl(&gs, width, height, 0.5);
 
     graph_print_file(stdout, g);
-
+    
     sdl_set_renderer_color(renderer, (SDL_Color) {.r = 255, .g = 0, .b = 0, .a = 255});
     
     /* Boucle de jeu */
@@ -158,9 +158,11 @@ int graph_game_loop(void)
 graph_t * graph_generate_graph(graph_t * graph,float p)
 {
     generate_seed(0);
-    for(int i=0; i<graph->n; i++){
-        for(int j=i+1; j<graph->n; j++){
-            if((float)rand()/RAND_MAX < p)
+    for(int i=0; i<graph->n; i++)
+    {
+        for(int j=i+1; j<graph->n; j++)
+	{
+            if((float) (rand()/RAND_MAX) < p)
             {
                 (graph->matrix)[i][j]=1;
             }
@@ -255,78 +257,6 @@ graph_t *  graph_initialize_graph(unsigned short n)
     return graph;
 }
 
-/**
- * \fn void graph_print_file_pretty(FILE * flux, graph_t * graph)
- * \brief Permet d'afficher le graphe de manière jolie
- * 
- *  
- * \param[in] FILE * fmux
- * \param[in] graph_t * graph
- * 
- * \return void : ne retourne rien
- * 
- */
-void graph_print_file_pretty(FILE * flux, graph_t * graph)
-{
-    if(NULL == flux)
-    {
-	zlog(stderr, ERROR, "error in flux at NULL in graph_print\n", NULL);
-	return ;
-    }
-    if (NULL == graph)
-    {
-	printf("graph == NULL in  graph_print_terminal\n");
-    }
-    
-    for (int i = 0; i < graph->n; i++) {
-        // Affichage de la ligne supérieure
-        for (int j = 0; j < graph->n; j++) {
-            if (i == 0) {
-                if (j == 0) {
-                    printf("+-"); // Coin supérieur gauche
-                } else {
-                    printf("-"); // Ligne horizontale
-                    if (j == graph->n - 1) {
-                        printf("+"); // Coin supérieur droit
-                    }
-                }
-            } else {
-                if (j == 0) {
-                    printf("| "); // Début de colonne
-                }
-            }
-        }
-        printf("\n");
-        
-        // Affichage des valeurs
-        for (int j = 0; j < graph->n; j++) {
-            if (j == 0) {
-                printf("| %c", graph->matrix[i][j]); // Affiche la valeur avec une largeur de champ de 4 caractères
-            } else {
-                printf(" %c", graph->matrix[i][j]);
-            }
-            if (j == graph->n - 1) {
-                printf(" |"); // Fin de colonne
-            }
-        }
-        printf("\n");
-        
-        // Affichage de la ligne inférieure
-        if (i == graph->n - 1) {
-            for (int j = 0; j < graph->n; j++) {
-                if (j == 0) {
-                    printf("+-"); // Coin inférieur gauche
-                } else {
-                    printf("-"); // Ligne horizontale
-                    if (j == graph->n - 1) {
-                        printf("+"); // Coin inférieur droit
-                    }
-                }
-            }
-            printf("\n");
-        }
-    }
-}
 
 
 /**
@@ -357,7 +287,7 @@ void graph_print_file(FILE * flux, graph_t * graph)
         // Affichage de la ligne supérieure
         for (int j = 0; j < graph->n; j++)
 	{
-            printf("%c ", graph->matrix[i][j]);
+            printf("%c ", graph->matrix[i][j] + '0');
 	}
 	printf("\n");
     }

@@ -30,8 +30,6 @@ int graph_game_loop(void);
 
 graph_t * graph_generate_graph(graph_t * graph,float p);
 
-void graph_print_file_pretty(FILE * flux, graph_t * graph);
-
 void graph_print_file(FILE * flux, graph_t * graph);
 
 #endif
