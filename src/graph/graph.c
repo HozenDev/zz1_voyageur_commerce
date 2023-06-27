@@ -37,7 +37,7 @@ graph_sdl_t * graph_generate_sdl(graph_sdl_t * g, int width, int height, int rat
 
     for (i = 0; i < g->g.n; ++i)
     {
-        g.
+        //g.
     }
 }
 
@@ -50,36 +50,23 @@ void graph_print_sdl(SDL_Renderer * renderer, graph_sdl_t * g)
     
 }
 
-graph_t * graph_generategraph(char ** g,unsigned short N,float p)
+graph_t * graph_generategraph(graph_t * graph,float p)
 {
-    graph_t * graph= (graph_t *) malloc (sizeof(graph_t));
-    if(NULL != graph)
-        generate_seed(0);
-        for(int i=0; i<N; i++){
-            for(int j=i+1; j<N; j++){
-                if((float)rand()/RAND_MAX < p)
-                {
-                    g[i][j]=1;
-                }
+    generate_seed(0);
+    for(int i=0; i<graph->n; i++){
+        for(int j=i+1; j<graph->n; j++){
+            if((float)rand()/RAND_MAX < p)
+            {
+                (graph->matrix)[i][j]=1;
             }
         }
-        graph->matrix=g;
-        graph->n=N;
+    }
     return(graph);
-    
-
 }
 
 int graph_main(void)
 {
-    char g[4][4]={{0,1,1,0},{1,0,0,1},{1,0,0,0},{0,1,0,0}};
-    graph_t * graph=generegraph(g,4,4,0.1);
-    char ** g2=graph_t->g;
-    for (int i=0;i<4;i++){
-        for(int j=0;j<4;j++){
-            printf("%c",g2[i][j]);
-        }
-    }
+    
     return 0;
 }
 

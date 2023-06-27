@@ -4,11 +4,7 @@
 #include "../sdl/sdl.h"
 
 struct graph_s {
-<<<<<<< HEAD
-    char ** g;
-=======
     char ** matrix;
->>>>>>> refs/remotes/origin/master
     unsigned short n;
 };
 
