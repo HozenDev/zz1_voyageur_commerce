@@ -78,4 +78,3 @@ void free_matrix_float(float ** matrix, unsigned int n)
     }
 }
 
-

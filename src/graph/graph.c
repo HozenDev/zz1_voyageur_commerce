@@ -326,16 +326,19 @@ void graph_initialize_dist(graph_sdl_t * graph)
 
 
 /**
- * \fn graph_t *  graph_initialize_graph_sdl(unsigned short n)
+ * \fn graph_sdl_t *  graph_initialize_graph_sdl(unsigned short n, int width, int height, int ratio)
  * \brief Permet de construire une structure graphe_sql_t
  * 
  *  
  * \param[in] unsigned short n : nombre de sommets du graphe
+ * @param width, screen width point
+ * @param height, screen height point
+ * @param ratio, ratio for compute offsets
  * 
  * \return void : ne retourne rien
  * 
  */
-graph_sdl_t *  graph_initialize_graph_sdl(unsigned short n)
+graph_sdl_t *  graph_initialize_graph_sdl(unsigned short n, int width, int height, int ratio)
 {
     graph_sdl_t * graph = NULL;
     SDL_Point * p = NULL;
@@ -388,6 +391,7 @@ graph_sdl_t *  graph_initialize_graph_sdl(unsigned short n)
         free_matrix_char(graph->g->matrix, n);
 	return NULL;
     }
+    graph_generate_sdl(&graph, width, height, ratio);
     return graph;
 }
 
