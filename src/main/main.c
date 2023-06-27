@@ -1,9 +1,11 @@
 #include "../log/log.h"
+#include "../graph/graph.h"
 
 int main(int argc, char *argv[])
 {
     enable_log(argc, argv);
     
-    zlog(stdout, INFO, "Faire le voyageur commerce", NULL);
+    graph_game_loop();
+    
     return 0;
 }
