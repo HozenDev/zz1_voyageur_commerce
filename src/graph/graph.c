@@ -34,9 +34,9 @@ void graph_generate_related(graph_t graph, unsigned short down, unsigned short u
 	{
 	    graph.matrix[down][k+1] = 1;
 	    graph.matrix[k+1][down] = 1;
-	    graph_generate_related(graph, down+1, k);
-	    graph_generate_related(graph, k+1, up);
 	}
+	graph_generate_related(graph, down+1, k);
+	graph_generate_related(graph, k+1, up);
     }
 }
 
