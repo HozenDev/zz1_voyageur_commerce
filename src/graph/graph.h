@@ -1,10 +1,16 @@
 #ifndef _graph_h_
 #define _graph_h_
 
-#include <stdlib.h>
 #include "../sdl/sdl.h"
 #include "../seed/seed.h"
 #include "../log/log.h"
+
+#include <stdlib.h>
+#include <SDL2/SDL2_gfxPrimitives.h>
+
+#define POINTS_RADIUS 10
+#define USER_POINTS_RADIUS 15
+#define USER_LINE_WIDTH 3
 
 struct graph_s {
     char ** matrix;
@@ -14,7 +20,7 @@ struct graph_s {
 typedef struct graph_s graph_t;
 
 struct graph_sdl_s {
-    struct graph_s g;
+    struct graph_s * g;
     SDL_Point * p;
 };
 
@@ -29,8 +35,6 @@ graph_t *  graph_initialize_graph(unsigned short n);
 int graph_game_loop(void);
 
 graph_t * graph_generate_graph(graph_t * graph,float p);
-
-void graph_print_file_pretty(FILE * flux, graph_t * graph);
 
 void graph_print_file(FILE * flux, graph_t * graph);
 

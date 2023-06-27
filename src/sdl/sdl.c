@@ -65,8 +65,6 @@ void sdl_draw_rect(SDL_Renderer * renderer, SDL_Rect rect)
 void sdl_set_renderer_color(SDL_Renderer * renderer, SDL_Color renderer_color)
 {
     /* set renderer color */
-    zlog(stdout, INFO, "sdl::modify_color: 'Renderer color set to R:%d,G:%d,B:%d'",
-         renderer_color.r, renderer_color.g, renderer_color.b);
     SDL_SetRenderDrawColor(renderer,
 			   renderer_color.r,
 			   renderer_color.g,
