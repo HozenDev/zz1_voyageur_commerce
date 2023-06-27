@@ -36,7 +36,7 @@ CC = gcc
 CFLAGS = -Wall -Wextra -Wdeclaration-after-statement -Werror=vla -g
 
 # For SDL FLAGS
-LDFLAGS = -lSDL2 -lSDL2_image -lSDL2_ttf
+LDFLAGS = -lSDL2 -lSDL2_image -lSDL2_ttf -lm
 
 # Cmds
 RM = rm -rf 

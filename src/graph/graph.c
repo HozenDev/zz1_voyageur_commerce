@@ -1,5 +1,15 @@
 #include "graph.h"
 
+void graph_draw_points(SDL_Renderer * renderer, SDL_Point * p, int n, SDL_Color c, float radius)
+{
+    int i;
+
+    sdl_set_renderer_color(renderer, c);
+    for (i = 0; i < n; ++i) {
+        sdl_draw_circle(renderer, p[i].x, p[i].y, radius);
+    }
+}
+
 /**
  *
  *
@@ -8,18 +18,20 @@ void graph_print_sdl(SDL_Renderer * renderer, graph_sdl_t * g)
 {
     int i, j;
     int radius = 10;
-
+    
     for (i = 0; i < g->g.n; ++i)
     {
-        sdl_draw_circle(renderer, g->p[i].x, g->p[i].y, radius);
         for (j = i+1; j < g->g.n; ++j)
         {
             if (g->g.matrix[i][j] == 1)
             {
+                sdl_set_renderer_color(renderer, (SDL_Color) {.r = 0, .g = 0, .b = 0, .a = 255});
                 sdl_draw_segment(renderer, g->p[i].x, g->p[i].y, g->p[j].x, g->p[j].y);
             }
         }
     }
+
+    graph_draw_points(renderer, g->p, g->g.n, (SDL_Color) {.r = 255, .g = 0, .b = 0, .a = 255}, radius);
 }
 
 /**
@@ -34,8 +46,8 @@ SDL_Point graph_generate_point(int width, int height, int offset_x, int offset_y
 {
     SDL_Point p;
 
-    p.x = (rand()%(width-offset_x)) + offset_x;
-    p.y = (rand()%(height-offset_y)) + offset_y;
+    p.x = (rand()%(width-offset_x)) + offset_x/2;
+    p.y = (rand()%(height-offset_y)) + offset_y/2;
     
     return p;
 }
@@ -103,11 +115,12 @@ int graph_game_loop(void)
     graph_generate_sdl(&gs, width, height, 0.5);
 
     graph_print_file(stdout, g);
-
-    sdl_set_renderer_color(renderer, (SDL_Color) {.r = 255, .g = 0, .b = 0, .a = 255});
     
     /* Boucle de jeu */
     while (running) {
+
+        sdl_set_renderer_color(renderer, (SDL_Color) {.r = 255, .g = 255, .b = 255, .a = 255});
+        SDL_RenderClear(renderer);
 
         /* Boucle d'évènements */
         while (SDL_PollEvent(&event))
