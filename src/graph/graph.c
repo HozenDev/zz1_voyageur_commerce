@@ -48,7 +48,7 @@ SDL_Point graph_generate_point(int width, int height, int offset_x, int offset_y
  * @param height, screen height point
  * @param ratio, ratio for compute offsets
  */
-void graph_generate_sdl(graph_sdl_t ** g, int width, int height, int ratio)
+void graph_generate_sdl(graph_sdl_t ** g, int width, int height, float ratio)
 {
     int offset_x = width*ratio;
     int offset_y = height*ratio;
@@ -102,6 +102,8 @@ int graph_game_loop(void)
     gs->p = (SDL_Point *) malloc(sizeof(SDL_Point)*6);
     graph_generate_sdl(&gs, width, height, 0.5);
 
+    graph_print_file(stdout, g);
+
     sdl_set_renderer_color(renderer, (SDL_Color) {.r = 255, .g = 0, .b = 0, .a = 255});
     
     /* Boucle de jeu */
@@ -148,33 +150,12 @@ int graph_game_loop(void)
 }
 
 /**
- *
- *
- */
-void graph_print_sdl(SDL_Renderer * renderer, graph_sdl_t * g)
-{
-    int i, j;
-    int radius;
-
-    for (i = 0; i < g->g.n; ++i)
-    {
-        sdl_draw_circle(g->p[i].x, g->p[i].y, radius);
-        for (j = i+1; j < N; ++j)
-        {
-            if (g->g.matrix[i][j] == 1)
-            {
-                sdl_draw_segment(g->p[i].x, g->p[i].y, g->p[j].x, g->p[j].y);
-            }
-        }
-    }
-}
-/**
  * @brief Complete covering tree with random branches
  * 
  * @param graph_t * graph, entering covering tree 
  * @param float p,probability for each random branch to appear
  */
-graph_t * graph_generategraph(graph_t * graph,float p)
+graph_t * graph_generate_graph(graph_t * graph,float p)
 {
     generate_seed(0);
     for(int i=0; i<graph->n; i++){

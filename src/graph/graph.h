@@ -26,18 +26,12 @@ void graph_generate_related(graph_t * graph, unsigned short down, unsigned short
 
 graph_t *  graph_initialize_graph(unsigned short n);
 
-<<<<<<< HEAD
-graph_t * graph_generategraph(graph_t * graph,float p);
-
-    
-=======
 int graph_game_loop(void);
 
 graph_t * graph_generate_graph(graph_t * graph,float p);
 
-void print_graph_file_pretty(FILE * flux, graph_t * graph);
+void graph_print_file_pretty(FILE * flux, graph_t * graph);
 
-void print_graph_file(FILE * flux, graph_t * graph);
+void graph_print_file(FILE * flux, graph_t * graph);
 
->>>>>>> dc03f27beb57c5ed9353a470b2bc294b60213978
 #endif
