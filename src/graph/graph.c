@@ -95,7 +95,7 @@ int graph_game_loop(void)
 
     g = graph_initialize_graph(6);
     graph_generate_related(g, 0, 5);
-    graph_generategraph(g, 0.5);
+    graph_generate_graph(g, 0.5);
     
     gs = (graph_sdl_t *) malloc(sizeof(graph_sdl_t));
     gs->g = (*g);
@@ -147,7 +147,29 @@ int graph_game_loop(void)
     return 0;
 }
 
-graph_t * graph_generategraph(graph_t * graph, float p)
+/**
+ *
+ *
+ */
+void graph_print_sdl(SDL_Renderer * renderer, graph_sdl_t * g)
+{
+    int i, j;
+    int radius;
+
+    for (i = 0; i < g->g.n; ++i)
+    {
+        sdl_draw_circle(g->p[i].x, g->p[i].y, radius);
+        for (j = i+1; j < N; ++j)
+        {
+            if (g->g.matrix[i][j] == 1)
+            {
+                sdl_draw_segment(g->p[i].x, g->p[i].y, g->p[j].x, g->p[j].y);
+            }
+        }
+    }
+}
+ 
+graph_t * graph_generate_graph(graph_t * graph, float p)
 {
     generate_seed(0);
     for(int i=0; i<graph->n; i++){
@@ -162,7 +184,7 @@ graph_t * graph_generategraph(graph_t * graph, float p)
 }
 
 /**
- * \fn void genere(graphe_t ** matrice, int bas, int haut)
+ * \fn void graph_generate_related(graph_t * graph, unsigned short down, unsigned short up)
  * \brief Fonction qui génère un graphe connexe aléatoire
  * 
  *  
@@ -191,6 +213,17 @@ void graph_generate_related(graph_t * graph, unsigned short down, unsigned short
     }
 }
 
+
+/**
+ * \fn graph_t *  graph_initialize_graph(unsigned short n)
+ * \brief Permet d'initialiser un graphe sans arrete
+ * 
+ *  
+ * \param[in] unsigned short n
+ * 
+ * \return graph_t * : retourne un pointeur sur le graphe créé
+ * 
+ */
 graph_t *  graph_initialize_graph(unsigned short n)
 {
     int i=0, j=0;           // var parcours
@@ -200,7 +233,7 @@ graph_t *  graph_initialize_graph(unsigned short n)
     
     if (NULL == graph)
     {
-	zlog(stdout, ERROR, "error in allocation of graph in graph_initialize_graph\n", NULL);
+	zlog(stderr, ERROR, "error in allocation of graph in graph_initialize_graph\n", NULL);
 	return NULL;
     }
 
@@ -212,7 +245,7 @@ graph_t *  graph_initialize_graph(unsigned short n)
 	    graph->matrix[i] = malloc(sizeof(char) * n);
 	    if (graph->matrix[i] == NULL)
 	    {
-		zlog(stdout, ERROR, "error in allocation of graph in graph_initialize_graph\n", NULL);
+		zlog(stderr, ERROR, "error in allocation of graph in graph_initialize_graph\n", NULL);
 		for(j=0; j<i; ++j)
 		{
 		    free(graph->matrix[j]);
@@ -235,3 +268,112 @@ graph_t *  graph_initialize_graph(unsigned short n)
     
     return graph;
 }
+
+/**
+ * \fn void graph_print_file_pretty(FILE * flux, graph_t * graph)
+ * \brief Permet d'afficher le graphe de manière jolie
+ * 
+ *  
+ * \param[in] FILE * fmux
+ * \param[in] graph_t * graph
+ * 
+ * \return void : ne retourne rien
+ * 
+ */
+void graph_print_file_pretty(FILE * flux, graph_t * graph)
+{
+    if(NULL == flux)
+    {
+	zlog(stderr, ERROR, "error in flux at NULL in graph_print\n", NULL);
+	return ;
+    }
+    if (NULL == graph)
+    {
+	printf("graph == NULL in  graph_print_terminal\n");
+    }
+    
+    for (int i = 0; i < graph->n; i++) {
+        // Affichage de la ligne supérieure
+        for (int j = 0; j < graph->n; j++) {
+            if (i == 0) {
+                if (j == 0) {
+                    printf("+-"); // Coin supérieur gauche
+                } else {
+                    printf("-"); // Ligne horizontale
+                    if (j == graph->n - 1) {
+                        printf("+"); // Coin supérieur droit
+                    }
+                }
+            } else {
+                if (j == 0) {
+                    printf("| "); // Début de colonne
+                }
+            }
+        }
+        printf("\n");
+        
+        // Affichage des valeurs
+        for (int j = 0; j < graph->n; j++) {
+            if (j == 0) {
+                printf("| %c", graph->matrix[i][j]); // Affiche la valeur avec une largeur de champ de 4 caractères
+            } else {
+                printf(" %c", graph->matrix[i][j]);
+            }
+            if (j == graph->n - 1) {
+                printf(" |"); // Fin de colonne
+            }
+        }
+        printf("\n");
+        
+        // Affichage de la ligne inférieure
+        if (i == graph->n - 1) {
+            for (int j = 0; j < graph->n; j++) {
+                if (j == 0) {
+                    printf("+-"); // Coin inférieur gauche
+                } else {
+                    printf("-"); // Ligne horizontale
+                    if (j == graph->n - 1) {
+                        printf("+"); // Coin inférieur droit
+                    }
+                }
+            }
+            printf("\n");
+        }
+    }
+}
+
+
+/**
+ * \fn void graph_print_file(FILE * flux, graph_t * graph)
+ * \brief Permet d'afficher le graphe de manière jolie
+ * 
+ *  
+ * \param[in] FILE * fmux
+ * \param[in] graph_t * graph
+ * 
+ * \return void : ne retourne rien
+ * 
+ */
+void graph_print_file(FILE * flux, graph_t * graph)
+{
+    if(NULL == flux)
+    {
+	zlog(stderr, ERROR, "error in flux at NULL in graph_print\n", NULL);
+	return ;
+    }
+    if (NULL == graph)
+    {
+	printf("graph == NULL in  graph_print_terminal\n");
+    }
+    
+    for (int i = 0; i < graph->n; i++)
+    {
+        // Affichage de la ligne supérieure
+        for (int j = 0; j < graph->n; j++)
+	{
+            printf("%c ", graph->matrix[i][j]);
+	}
+	printf("\n");
+    }
+}
+
