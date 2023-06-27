@@ -1,5 +1,60 @@
 #include "graph.h"
 
+const struct colors_s colors_available = 
+{
+    .BLACK    = (SDL_Color) {30, 30, 30, 255},
+    .WHITE    = (SDL_Color) {220, 220, 220, 255},
+    .RED = (SDL_Color) {255, 100, 100, 255},
+    .GREEN  = (SDL_Color) {100, 255, 100, 255},
+    .BLUE = (SDL_Color) {100, 100, 255, 255},
+    .YELLOW = (SDL_Color) {255, 255, 100, 255}
+};
+
+int max(int a, int b)
+{
+    return (a > b) ? a : b;
+}
+
+int min(int a, int b)
+{
+    return (a > b) ? b : a;
+}
+
+int graph_compare_points(SDL_Point p1, SDL_Point p2)
+{
+    return (p1.x == p2.x && p1.y == p2.y);
+}
+
+int graph_is_neighbor(graph_sdl_t * gs, SDL_Point p1, SDL_Point p2)
+{
+    int i;
+    int i_p1, i_p2 = 0;
+    
+    for (i = 0; i < gs->g->n; ++i)
+    {
+        if (graph_compare_points(p1, gs->p[i]) == 1) i_p1 = i;
+        if (graph_compare_points(p2, gs->p[i]) == 1) i_p2 = i;
+    }
+
+    zlog(stdout, DEBUG, "%d %d", i_p1, i_p2);
+    zlog(stdout, DEBUG, "(%d,%d) (%d,%d)", gs->p[i_p1].x, gs->p[i_p1].y, gs->p[i_p2].x, gs->p[i_p2].y);
+    
+    return (int) gs->g->matrix[min(i_p1, i_p2)][max(i_p2, i_p1)];
+}
+
+int graph_is_selected(SDL_Point p1, SDL_Point * p_array, int n)
+{
+    int i;
+    int is_selected = 0;
+
+    for (i = 0; i < n && !is_selected; ++i)
+    {
+        if (graph_compare_points(p1, p_array[i]) == 1) is_selected = 1;
+    }
+
+    return is_selected;
+}
+
 /** 
  * @brief Create and initialize an sdl graph
  *
@@ -83,6 +138,17 @@ void graph_draw_points(SDL_Renderer * renderer, SDL_Point * p, int n, SDL_Color 
     }
 }
 
+void graph_print_line(SDL_Renderer * renderer, SDL_Point * p, int n, SDL_Color c)
+{
+    int i;
+    
+    for (i = 0; i < n-1; ++i)
+    {
+        thickLineRGBA(renderer, p[i].x, p[i].y, p[i+1].x, p[i+1].y, 3, c.r, c.g, c.b, c.a);
+        /* sdl_draw_segment(renderer, g->p[i].x, g->p[i].y, g->p[j].x, g->p[j].y); */
+    }
+}
+
 /** @brief Print an sdl graph (draw points and line)
  *
  * @param renderer, renderer where graphe will be printed
@@ -93,7 +159,7 @@ void graph_print_sdl(SDL_Renderer * renderer, graph_sdl_t * g)
     int i, j;
     int radius = POINTS_RADIUS;
 
-    sdl_set_renderer_color(renderer, (SDL_Color) {.r = 0, .g = 0, .b = 0, .a = 255});
+    sdl_set_renderer_color(renderer, colors_available.BLACK);
     
     for (i = 0; i < g->g->n; ++i)
     {
@@ -107,7 +173,7 @@ void graph_print_sdl(SDL_Renderer * renderer, graph_sdl_t * g)
         }
     }
 
-    graph_draw_points(renderer, g->p, g->g->n, (SDL_Color) {.r = 255, .g = 0, .b = 0, .a = 255}, radius);
+    graph_draw_points(renderer, g->p, g->g->n, colors_available.RED, radius);
 }
 
 /**
@@ -149,135 +215,7 @@ void graph_generate_sdl(graph_sdl_t ** g, int width, int height, float ratio)
     }
 }
 
-/**
- * @brief game loop, manage user events
- *
- *
- */
-int graph_game_loop(void)
-{
-    SDL_Window * window = NULL;
-    SDL_Renderer * renderer = NULL;
-    SDL_Event event;
 
-    int width = 800;
-    int height = 800;
-
-    int running = 1;
-
-    graph_t * g = NULL;
-    graph_sdl_t * gs = NULL;
-
-    int number_of_points = 6;
-    float p = 0.4;
-    float ratio = 0.8;
-
-    SDL_Point user_point;
-    int mx, my;
-
-    SDL_Point * selected_nodes;
-
-    /* SDL initialisation */
-    if (SDL_Init(SDL_INIT_VIDEO) < 0)
-    {
-	zlog(stderr, ERROR, "Erreur d'initialisation de la SDL : %s", SDL_GetError());
-	return EXIT_FAILURE;
-    }
-    zlog(stdout, INFO, "OK '%s'", "SDL is initialized.");
-
-    /* création de la fenetre principale */
-    window = sdl_create_window("test", width, height);
-    if (!window) exit(-1);
-    zlog(stdout, INFO, "OK '%s'", "game_loop: Window is initialized.");
-
-    /* création du renderer */
-    renderer = sdl_create_renderer(window);
-    if (!renderer) exit(-1);
-    zlog(stdout, INFO, "OK '%s'", "game_loop: Renderer is initialized.");
-
-    /* création du graphe */
-    g = graph_initialize_graph(number_of_points);
-    graph_generate_related(g, 0, number_of_points-1);
-    graph_generate_graph(g, p);
-
-    /* création du graphe sdl correspondant au graphe */
-    gs = graph_create_sdl(g);
-    graph_generate_sdl(&gs, width, height, 1-ratio);
-
-    /* création des états du jeu */
-    /* liste des noeuds sélectionné par l'utilisateur */
-    
-    SDL_GetMouseState(&mx, &my);
-    
-    /* Boucle de jeu */
-    while (running) {
-
-        sdl_set_renderer_color(renderer, (SDL_Color) {.r = 255, .g = 255, .b = 255, .a = 255});
-        SDL_RenderClear(renderer);
-
-        graph_print_sdl(renderer, gs);
-
-        /* Boucle d'évènements */
-        while (SDL_PollEvent(&event))
-        {
-            switch(event.type)
-            {
-            case SDL_WINDOWEVENT:
-        	switch (event.window.event)
-        	{
-        	case SDL_WINDOWEVENT_CLOSE:
-        	    zlog(stdout, INFO, "sdl event window close", NULL);
-        	    break;
-        	}
-        	break;
-            case SDL_KEYDOWN:
-        	if (event.key.keysym.sym == SDLK_RETURN)
-        	{
-                    /* todo: vérifier la solution, l'afficher et rejouer */
-                    zlog(stdout, INFO, "enter tapped", NULL);
-                }
-        	break;
-            case SDL_MOUSEMOTION:
-                /* update mouse position */
-                SDL_GetMouseState(&mx, &my);
-                break;
-            case SDL_MOUSEBUTTONDOWN:
-                /*
-                  todo: interargir click souris:
-                  clique gauche:
-                  * si sur noeud non sélectionner -> ajouter à la liste des noeuds utilisateur si:
-                      - soit file vide, soit existe un chemin entre dernier noeud sélectionner et ce noeud
-                  * si sur noeud sélectionner -> si noeud tete de file, l'enlever
-
-                  numéroter les noeuds pour l'ui
-                 */
-                if (graph_check_point_collide(mx, my, gs->p, gs->g->n, &user_point) == 1)
-                {
-                    /* todo */
-                }
-        	zlog(stdout, INFO, "appui: x:%d y:%d", event.button.x, event.button.y);
-        	break;
-            case SDL_QUIT:
-        	zlog(stdout, INFO, "event.type: SDL_QUIT", NULL);
-        	running = 0;
-                break;
-            }
-        }
-
-        if (graph_check_point_collide(mx, my, gs->p, gs->g->n, &user_point) == 1)
-        {
-            graph_draw_point(renderer, user_point,
-                             (SDL_Color) {.r = 0, .b = 255, .g = 0, .a = 255}, USER_POINTS_RADIUS);
-        }
-        
-        SDL_RenderPresent(renderer);
-        
-        /* delai minimal = 1 */
-        SDL_Delay(30);
-    }
-    
-    return 0;
-}
 
 /**
  * @brief Complete covering tree with random branches
