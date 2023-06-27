@@ -1,25 +1,5 @@
 #include "graph.h"
 
-const struct colors_s colors_available = 
-{
-    .BLACK    = (SDL_Color) {30, 30, 30, 255},
-    .WHITE    = (SDL_Color) {220, 220, 220, 255},
-    .RED = (SDL_Color) {255, 100, 100, 255},
-    .GREEN  = (SDL_Color) {100, 255, 100, 255},
-    .BLUE = (SDL_Color) {100, 100, 255, 255},
-    .YELLOW = (SDL_Color) {255, 255, 100, 255}
-};
-
-int max(int a, int b)
-{
-    return (a > b) ? a : b;
-}
-
-int min(int a, int b)
-{
-    return (a > b) ? b : a;
-}
-
 int graph_compare_points(SDL_Point p1, SDL_Point p2)
 {
     return (p1.x == p2.x && p1.y == p2.y);
@@ -53,38 +33,6 @@ int graph_is_selected(SDL_Point p1, SDL_Point * p_array, int n)
     }
 
     return is_selected;
-}
-
-/** 
- * @brief Create and initialize an sdl graph
- *
- * @param g, graph corresponding to the sdl_graph
- *
- * @return graph_sdl_t *, the graph created
- */
-graph_sdl_t * graph_create_sdl(graph_t * g)
-{
-    graph_sdl_t * g_sdl = NULL;
-
-    g_sdl = (graph_sdl_t *) malloc(sizeof(graph_sdl_t));
-
-    if (!g_sdl)
-    {
-        zlog(stderr, ERROR, "Bad memory allocation of graph_sdl_t: '%s'", __FUNCTION__);
-        exit(-1);
-    }
-    
-    g_sdl->p = (SDL_Point *) malloc(sizeof(SDL_Point)*g->n);
-
-    if (!g_sdl->p)
-    {
-        zlog(stderr, ERROR, "Bad memory allocation of SDL_Point array: '%s'", __FUNCTION__);
-        exit(-1);
-    }
-
-    g_sdl->g = g;
-
-    return g_sdl;
 }
 
 int graph_check_point_collide(int x, int y, SDL_Point * p, int n, SDL_Point * pt_intersect)
@@ -194,6 +142,8 @@ SDL_Point graph_generate_point(int width, int height, int offset_x, int offset_y
     return p;
 }
 
+
+
 /**
  * @brief Generate coordinates points for a graph
  *
@@ -215,8 +165,6 @@ void graph_generate_sdl(graph_sdl_t ** g, int width, int height, float ratio)
     }
 }
 
-
-
 /**
  * @brief Complete covering tree with random branches
  * 
@@ -225,7 +173,6 @@ void graph_generate_sdl(graph_sdl_t ** g, int width, int height, float ratio)
  */
 graph_t * graph_generate_graph(graph_t * graph,float p)
 {
-    generate_seed(0);
     for(int i=0; i<graph->n; i++)
     {
         for(int j=i+1; j<graph->n; j++)
@@ -312,7 +259,8 @@ graph_t *  graph_initialize_graph(unsigned short n)
 	}
 	
     }
-    
+
+    // remplie la matrix a 0 (aucune arrete de base)
     for (i = 0; i < n; ++i)
     {
 	for (j = 0; j < n; ++j)
@@ -361,3 +309,149 @@ void graph_print_file(FILE * flux, graph_t * graph)
     }
 }
 
+
+
+/**
+ * \fn void graph_initialize_dist(graph_sdl_t * graph)
+ * \brief construit le tableau de distance dans le graphe (attribut float ** dist)
+ * 
+ *  
+ * \param[in] graph_sdl_t * graph
+ * 
+ * \return void : ne retourne rien
+ * 
+ */
+void graph_initialize_dist(graph_sdl_t * graph)
+{
+    
+    for(int i=0; i < (int) (graph->g->n/ 2); ++i) // ligne
+    {
+	for(int j=i+1; j < graph->g->n; ++j)      // colonne
+	{
+	    if(graph->g->matrix[i][j] == 1)       // il y a une arrete entre les sommets i et j
+	    { 
+		graph->dist[i][j] = distance(graph->p[i], graph->p[i]); // calcule la distance
+	    }
+	}
+    }
+}
+
+
+
+/**
+ * \fn graph_sdl_t *  graph_initialize_graph_sdl(unsigned short n, int width, int height, int ratio)
+ * \brief Permet de construire une structure graphe_sql_t
+ * 
+ *  
+ * \param[in] unsigned short n : nombre de sommets du graphe
+ * @param width, screen width point
+ * @param height, screen height point
+ * @param ratio, ratio for compute offsets
+ * 
+ * \return void : ne retourne rien
+ * 
+ */
+graph_sdl_t *  graph_initialize_graph_sdl(unsigned short n, int width, int height, float ratio, float prob)
+{
+    graph_sdl_t * graph = NULL;
+    SDL_Point * p = NULL;
+    graph = malloc(sizeof(graph_sdl_t));
+
+    if (NULL == graph)
+    {
+	zlog(stderr, ERROR, "error in allocation of graph in graph_initialize_graph_sdl \n", NULL);
+	return NULL;
+    }
+    
+    graph->g = graph_initialize_graph(n);  // pas sur pour moi il faudrait changer la struct graph_s * g
+    graph_generate_related(graph->g, 0, n-1);
+    graph_generate_graph(graph->g, prob);
+    
+    graph->dist = malloc(sizeof(float *)* n);
+    if (NULL != graph->dist)
+    {
+        for(int i = 0; i < n; ++i) // initialize matrix
+        {
+            graph->dist[i] = malloc(sizeof(float) * n);
+	    
+            if (graph->dist[i] == NULL)
+            {
+        	zlog(stderr, ERROR, "error in allocation of graph in graph_initialize_graph_sdl \n", NULL);
+        	for(int j=0; j<i; ++j)
+        	{
+        	    free(graph->dist[j]);
+        	}
+        	free(graph);
+        	return NULL;
+            }
+        }
+	
+    }
+
+    // initialise la distance à l'infinie
+    for (int i = 0; i < n; ++i)
+    {
+        for (int j = 0; j < n; ++j)
+        {
+            graph->dist[i][j] = INFINITY; // macro def dans math.h norme C99
+        }
+    }
+
+    // construit le tableau de SDL point
+    p  = (SDL_Point *) malloc(sizeof(SDL_Point)*n) ;
+
+    if (NULL == p)
+    {
+        zlog(stderr, ERROR, "error in allocation of graph in graph_initialize_graph_sdl \n", NULL);
+        free_matrix_char(graph->g->matrix, n);
+        return NULL;
+    }
+
+    graph->p = p;
+    graph_generate_sdl(&graph, width, height, ratio);
+
+    return graph;
+}
+
+
+/**
+ * \fn void graph_free_graph(graph_t * graph)
+ * \brief Permet de libérer une structure graph_t
+ * 
+ *  
+ * \param[in] unsigned short n : nombre de sommets du graphe
+ * 
+ * \return void : ne retourne rien
+ * 
+ */
+void graph_free_graph(graph_t * graph)
+{
+    if (NULL != graph)
+    {
+	free_matrix_char(graph->matrix, graph->n);
+	free(graph);
+    }
+}
+
+
+/**
+ * \fn void graph_free_graph(graph_t * graph)
+ * \brief Permet de libérer une structure graph_sdl_t
+ * 
+ *  
+ * \param[in] unsigned short n : nombre de sommets du graphe
+ * 
+ * \return void : ne retourne rien
+ * 
+ */
+void graph_free_graph_sdl(graph_sdl_t * graph)
+{
+    if (NULL != graph)
+    {
+        graph_free_graph(graph->g);                      // libere graphe
+	free_matrix_float(graph->dist, graph->g->n);     // libere tableau des distances
+	
+	free(graph->p);                                  // libere tableau SDL point
+	graph->p = NULL;
+    }
+}

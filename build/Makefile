@@ -10,7 +10,7 @@ TARGET = app
 VERBOSE = FALSE
 
 # Create the list of directories
-DIRS = log seed color main graph sdl game
+DIRS = log seed color main graph sdl game utils
 SOURCEDIRS = $(foreach dir, $(DIRS), $(addprefix $(SOURCEDIR)/, $(dir)))
 TARGETDIRS = $(foreach dir, $(DIRS), $(addprefix $(BUILDDIR)/, $(dir)))
 
@@ -33,7 +33,7 @@ DEPS = $(OBJS:.o=.d)
 CC = gcc
 
 # Flags
-CFLAGS = -Wall -Wextra -Wdeclaration-after-statement -Werror=vla -g
+CFLAGS = -Wall -Wextra -Wdeclaration-after-statement -Werror=vla -g -lm
 
 # For SDL FLAGS
 LDFLAGS = -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_gfx -lm

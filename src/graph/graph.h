@@ -1,27 +1,33 @@
 #ifndef _graph_h_
 #define _graph_h_
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <math.h>
+#include <SDL2/SDL2_gfxPrimitives.h>
+
 #include "../sdl/sdl.h"
 #include "../seed/seed.h"
 #include "../log/log.h"
+#include "../utils/utils.h"
 
-#include <stdlib.h>
-#include <SDL2/SDL2_gfxPrimitives.h>
+/**
+ * \def N_MIN
+ *
+ * \brief nombre de sommets minimum
+ *
+ */
+#define N_MIN 5
+
+/**
+ * \def N_MIN
+ *
+ * \brief nombre de sommets maximum
+ *
+ */
+#define N_MAX 20
 
 #define POINTS_RADIUS 10
-#define USER_POINTS_RADIUS 15
-#define USER_LINE_WIDTH 3
-
-struct colors_s {
-    SDL_Color BLACK;
-    SDL_Color WHITE;
-    SDL_Color RED;
-    SDL_Color GREEN;
-    SDL_Color BLUE;
-    SDL_Color YELLOW;
-};
-
-extern const struct colors_s colors_available;
 
 struct graph_s {
     char ** matrix;
@@ -33,6 +39,7 @@ typedef struct graph_s graph_t;
 struct graph_sdl_s {
     struct graph_s * g;
     SDL_Point * p;
+    float ** dist;
 };
 
 typedef struct graph_sdl_s graph_sdl_t;
@@ -43,17 +50,22 @@ void graph_generate_related(graph_t * graph, unsigned short down, unsigned short
 graph_t * graph_generate_graph(graph_t * graph,float p);
 
 graph_t *  graph_initialize_graph(unsigned short n);
+void graph_initialize_dist(graph_sdl_t * graph);
 
 void graph_print_file(FILE * flux, graph_t * graph);
 
+void graph_free_graph(graph_t * graph);
+
 /* graph_sdl_t functions */
 
-graph_sdl_t * graph_create_sdl(graph_t * g);
+graph_sdl_t * graph_initialize_graph_sdl(unsigned short n, int width, int height, float ratio, float p);
 SDL_Point graph_generate_point(int width, int height, int offset_x, int offset_y);
 void graph_generate_sdl(graph_sdl_t ** g, int width, int height, float ratio);
 void graph_print_sdl(SDL_Renderer * renderer, graph_sdl_t * g);
 
 int graph_is_neighbor(graph_sdl_t * gs, SDL_Point p1, SDL_Point p2);
+
+void graph_free_graph_sdl(graph_sdl_t * graph);
 
 /* points functions */
 
