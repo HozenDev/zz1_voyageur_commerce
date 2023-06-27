@@ -38,5 +38,7 @@ void graph_generate_related(graph_t * graph, unsigned short down, unsigned short
 
 graph_t *  graph_initialize_graph(unsigned short n);
 
+graph_t * graph_generategraph(graph_t * graph,float p);
+
     
 #endif

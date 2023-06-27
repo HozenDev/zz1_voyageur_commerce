@@ -67,7 +67,12 @@ void graph_print_sdl(SDL_Renderer * renderer, graph_sdl_t * g)
         }
     }
 }
-
+/**
+ * @brief Complete covering tree with random branches
+ * 
+ * @param graph_t * graph, entering covering tree 
+ * @param float p,probability for each random branch to appear
+ */
 graph_t * graph_generategraph(graph_t * graph,float p)
 {
     generate_seed(0);
