@@ -40,6 +40,8 @@ SDL_Point graph_generate_point(int width, int height, int offset_x, int offset_y
     return p;
 }
 
+
+
 /**
  * @brief Generate coordinates points for a graph
  *
@@ -293,3 +295,47 @@ void graph_print_file(FILE * flux, graph_t * graph)
     }
 }
 
+
+
+/**
+ * \fn void graph_initialize_dist(graph_sdl_t * graph)
+ * \brief construit le tableau de distance dans le graphe (attribut float ** dist)
+ * 
+ *  
+ * \param[in] graph_sdl_t * graph
+ * 
+ * \return void : ne retourne rien
+ * 
+ */
+void graph_initialize_dist(graph_sdl_t * graph)
+{
+    
+    for(int i=0; i < (int) (graph->g.n/ 2); ++i) // ligne
+    {
+	for(int j=i+1; j < graph->g.n; ++j)      // colonne
+	{
+	    if(graph->g.matrix[i][j] == 1)       // il y a une arrete entre les sommets i et j
+	    { 
+		graph->dist[i][j] = distance(graph->p[i], graph->p[i]); // calcule la distance
+	    }
+	}
+    }
+}
+
+
+
+/**
+ * \fn graph_t *  graph_initialize_graph_sdl(unsigned short n)
+ * \brief Permet de construire une structure graphe_sql_t
+ * 
+ *  
+ * \param[in] unsigned short n : nombre de sommets du graphe
+ * 
+ * \return void : ne retourne rien
+ * 
+ */
+graph_t *  graph_initialize_graph_sdl(unsigned short n)
+{
+    
+    return NULL;
+}
