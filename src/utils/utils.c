@@ -87,16 +87,49 @@ void free_matrix_float(float ** matrix, unsigned int n)
     }
 }
 
+/**
+ * \fn int max(int a, int b)
+ * \brief Permet de connaître le max entre 2 entiers
+ * 
+ * 
+ * \param[in] int a 
+ * \param[in] int b
+ * 
+ * \return int : retourne le plus grand entier
+ * 
+ */
 int max(int a, int b)
 {
     return (a > b) ? a : b;
 }
 
+/**
+ * \fn int min(int a, int b)
+ * \brief Permet de connaître le max entre 2 entiers
+ * 
+ * 
+ * \param[in] int a 
+ * \param[in] int b
+ * 
+ * \return int : retourne le plus petit entier
+ * 
+ */
 int min(int a, int b)
 {
     return (a > b) ? b : a;
 }
 
+/**
+ * \fn int generate_random_number(int min, int max)
+ * \brief Permet de générer un nombre entre min et max
+ * 
+ * 
+ * \param[in] int min
+ * \param[in] int max
+ * 
+ * \return int : retourne le nombre généré
+ * 
+ */
 int generate_random_number(int min, int max)
 {
     return rand()%(max-min) + min;
