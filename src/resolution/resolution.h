@@ -10,4 +10,9 @@ void reoslution_initialisation_predececeurs_matrix(int **predececeurs,float **di
 int * resolution_construire_chemin(float ** dist,int ** predececeurs,int depart,int arrive,int taille);
 
 int resolution_construire_cycle_min(int * cyclemin,int ** predececeurs,float ** matrixmin,int taille);
+
+float floydWarshall(graph_sdl_t * graph);
+float glouton_exhaustive(float ** dist, int numVertices);
+
+
 #endif
