@@ -210,28 +210,10 @@ void resolution_genere_solution_initial(graph_sdl_t* graph,int depart,int *solut
 }
 /*
 float resolution_gloutonne_aleatoire(graph_sdl_t * graph,int * cyclemin){
-    int taille=graph->g->n;
-    int *cycle=(int *)malloc(sizeof(int)*taille);
-    int nbparcouru;
-    float distmin=INFINITY;
-    int * utiliser=(int *)malloc(sizeof(int)*taille)
-    float probaforcing=0,05;
-    generate_seed(0);
-    for(int depart;depart<graph->g->n;depart++){
-        current=depart;
-        do{
-            cycle[nbparcouru++]=current;
-            for(int i=0;i<taille;i++){
-                if(i!=current && dist[current][i]!=INFINITY){
-                    if((rand()/RAND_MAX)<p)
-                    {
-                        current=i;
-                    }
-                }
-            }
-
-        }while(current!=depart );
-            
+    int * solution[200];
+    for(int depart=0;depart<graph->g->n;depart++){
+        resolution_genere_solution_initial(graph,depart,solution);
+        
     }
 }
 */
