@@ -2,7 +2,6 @@
 #define _game_h_
 
 #include "../graph/graph.h"
-
 #define USER_POINTS_RADIUS 15
 #define USER_LINE_WIDTH 3
 

@@ -72,7 +72,7 @@ void graph_free_graph_sdl(graph_sdl_t * graph);
 int graph_is_edge_selected(SDL_Point p1, SDL_Point p2, SDL_Point * p_array, int n);
 int graph_check_point_collide(int x, int y, SDL_Point * p, int n, SDL_Point * pt_intersect);
 int graph_compare_points(SDL_Point p1, SDL_Point p2);
-int graph_is_selected(SDL_Point p1, SDL_Point * p_array, int n);
+int graph_point_is_selected(SDL_Point p1, SDL_Point * p_array, int n);
 void graph_draw_point(SDL_Renderer * renderer, SDL_Point p, SDL_Color c, float radius);
 void graph_draw_points(SDL_Renderer * renderer, SDL_Point * p, int n, SDL_Color c, float radius);
 void graph_print_line(SDL_Renderer * renderer, SDL_Point * p, int n, SDL_Color c);
