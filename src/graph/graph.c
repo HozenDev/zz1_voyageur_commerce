@@ -1,25 +1,127 @@
 #include "graph.h"
 
-/**
+int graph_compare_points(SDL_Point p1, SDL_Point p2)
+{
+    return (p1.x == p2.x && p1.y == p2.y);
+}
+
+int graph_is_neighbor(graph_sdl_t * gs, SDL_Point p1, SDL_Point p2)
+{
+    int i;
+    int i_p1, i_p2 = 0;
+    
+    for (i = 0; i < gs->g->n; ++i)
+    {
+        if (graph_compare_points(p1, gs->p[i]) == 1) i_p1 = i;
+        if (graph_compare_points(p2, gs->p[i]) == 1) i_p2 = i;
+    }
+
+    zlog(stdout, DEBUG, "%d %d", i_p1, i_p2);
+    zlog(stdout, DEBUG, "(%d,%d) (%d,%d)", gs->p[i_p1].x, gs->p[i_p1].y, gs->p[i_p2].x, gs->p[i_p2].y);
+    
+    return (int) gs->g->matrix[min(i_p1, i_p2)][max(i_p2, i_p1)];
+}
+
+int graph_is_selected(SDL_Point p1, SDL_Point * p_array, int n)
+{
+    int i;
+    int is_selected = 0;
+
+    for (i = 0; i < n && !is_selected; ++i)
+    {
+        if (graph_compare_points(p1, p_array[i]) == 1) is_selected = 1;
+    }
+
+    return is_selected;
+}
+
+int graph_check_point_collide(int x, int y, SDL_Point * p, int n, SDL_Point * pt_intersect)
+{
+    int i;
+    int collide = 0;
+
+    int offset = POINTS_RADIUS;
+
+    for (i = 0; i < n && !collide; ++i)
+    {
+        if (x > p[i].x-offset && x < p[i].x+offset
+            && y > p[i].y-offset && y < p[i].y+offset) {
+            collide = 1;
+            *pt_intersect = p[i];
+        }
+    }
+
+    return collide;
+}
+
+/** @brief Draw a point
  *
+ * @param renderer, renderer where points are printed
+ * @param p, array of points
+ * @param c, color of points
+ * @param radius, radius of printed points
+ */
+void graph_draw_point(SDL_Renderer * renderer, SDL_Point p, SDL_Color c, float radius)
+{
+    sdl_set_renderer_color(renderer, c);
+    sdl_draw_circle(renderer, p.x, p.y, radius);
+}
+
+/** @brief Draw many points
  *
+ * @param renderer, renderer where points are printed
+ * @param p, array of points
+ * @param n, number of points
+ * @param c, color of points
+ * @param radius, radius of printed points
+ */
+void graph_draw_points(SDL_Renderer * renderer, SDL_Point * p, int n, SDL_Color c, float radius)
+{
+    int i;
+
+    for (i = 0; i < n; ++i)
+    {
+        graph_draw_point(renderer, p[i], c, radius);
+        /* sdl_draw_circle(renderer, p[i].x, p[i].y, radius); */
+    }
+}
+
+void graph_print_line(SDL_Renderer * renderer, SDL_Point * p, int n, SDL_Color c)
+{
+    int i;
+    
+    for (i = 0; i < n-1; ++i)
+    {
+        thickLineRGBA(renderer, p[i].x, p[i].y, p[i+1].x, p[i+1].y, 3, c.r, c.g, c.b, c.a);
+        /* sdl_draw_segment(renderer, g->p[i].x, g->p[i].y, g->p[j].x, g->p[j].y); */
+    }
+}
+
+/** @brief Print an sdl graph (draw points and line)
+ *
+ * @param renderer, renderer where graphe will be printed
+ * @param g, sdl graph to be printed
  */
 void graph_print_sdl(SDL_Renderer * renderer, graph_sdl_t * g)
 {
     int i, j;
-    int radius = 10;
+    int radius = POINTS_RADIUS;
 
-    for (i = 0; i < g->g.n; ++i)
+    sdl_set_renderer_color(renderer, colors_available.BLACK);
+    
+    for (i = 0; i < g->g->n; ++i)
     {
-        sdl_draw_circle(renderer, g->p[i].x, g->p[i].y, radius);
-        for (j = i+1; j < g->g.n; ++j)
+        for (j = i+1; j < g->g->n; ++j)
         {
-            if (g->g.matrix[i][j] == 1)
+            if (g->g->matrix[i][j] == 1)
             {
+                /* thickLineRGBA(renderer, g->p[i].x, g->p[i].y, g->p[j].x, g->p[j].y, 2, 0, 0, 0, 255); */
                 sdl_draw_segment(renderer, g->p[i].x, g->p[i].y, g->p[j].x, g->p[j].y);
             }
         }
     }
+
+    graph_draw_points(renderer, g->p, g->g->n, colors_available.RED, radius);
 }
 
 /**
@@ -34,11 +136,13 @@ SDL_Point graph_generate_point(int width, int height, int offset_x, int offset_y
 {
     SDL_Point p;
 
-    p.x = (rand()%(width-offset_x)) + offset_x;
-    p.y = (rand()%(height-offset_y)) + offset_y;
+    p.x = (rand()%(width-offset_x)) + offset_x/2;
+    p.y = (rand()%(height-offset_y)) + offset_y/2;
     
     return p;
 }
+
+
 
 /**
  * @brief Generate coordinates points for a graph
@@ -48,103 +152,17 @@ SDL_Point graph_generate_point(int width, int height, int offset_x, int offset_y
  * @param height, screen height point
  * @param ratio, ratio for compute offsets
  */
-void graph_generate_sdl(graph_sdl_t ** g, int width, int height, int ratio)
+void graph_generate_sdl(graph_sdl_t ** g, int width, int height, float ratio)
 {
     int offset_x = width*ratio;
     int offset_y = height*ratio;
 
     int i;
 
-    for (i = 0; i < (*g)->g.n; ++i)
+    for (i = 0; i < (*g)->g->n; ++i)
     {
         (*g)->p[i] = graph_generate_point(width, height, offset_x, offset_y);
     }
-}
-
-int graph_game_loop(void)
-{
-    SDL_Window * window = NULL;
-    SDL_Renderer * renderer = NULL;
-    SDL_Event event;
-
-    int width = 800;
-    int height = 800;
-
-    int running = 1;
-
-    graph_t * g = NULL;
-    graph_sdl_t * gs = NULL;
-
-    /* SDL initialisation */
-    if (SDL_Init(SDL_INIT_VIDEO) < 0)
-    {
-	zlog(stderr, ERROR, "Erreur d'initialisation de la SDL : %s", SDL_GetError());
-	return EXIT_FAILURE;
-    }
-    zlog(stdout, INFO, "OK '%s'", "SDL is initialized.");
-
-    /* création de la fenetre principale */
-    window = sdl_create_window("test", width, height);
-    if (!window) exit(-1);
-    zlog(stdout, INFO, "OK '%s'", "game_loop: Window is initialized.");
-
-    /* création du renderer */
-    renderer = sdl_create_renderer(window);
-    if (!renderer) exit(-1);
-    zlog(stdout, INFO, "OK '%s'", "game_loop: Renderer is initialized.");
-
-    g = graph_initialize_graph(6);
-    graph_generate_related(g, 0, 5);
-    graph_generate_graph(g, 0.5);
-    
-    gs = (graph_sdl_t *) malloc(sizeof(graph_sdl_t));
-    gs->g = (*g);
-    gs->p = (SDL_Point *) malloc(sizeof(SDL_Point)*6);
-    graph_generate_sdl(&gs, width, height, 0.5);
-
-    sdl_set_renderer_color(renderer, (SDL_Color) {.r = 255, .g = 0, .b = 0, .a = 255});
-    
-    /* Boucle de jeu */
-    while (running) {
-
-        /* Boucle d'évènements */
-        while (SDL_PollEvent(&event))
-        {
-            switch(event.type)
-            {
-            case SDL_WINDOWEVENT:
-        	switch (event.window.event)
-        	{
-        	case SDL_WINDOWEVENT_CLOSE:
-        	    zlog(stdout, INFO, "sdl event window close", NULL);
-        	    break;
-        	}
-        	break;
-            case SDL_KEYDOWN:
-        	if (event.key.keysym.sym == SDLK_SPACE)
-        	{
-                    zlog(stdout, INFO, "SPACE tapped", NULL);
-                }
-        	break;
-            case SDL_MOUSEBUTTONDOWN:
-        	zlog(stdout, INFO, "appui: x:%d y:%d", event.button.x, event.button.y);
-        	break;
-            case SDL_QUIT:
-        	zlog(stdout, INFO, "event.type: SDL_QUIT", NULL);
-        	running = 0;
-                break;
-            }
-        }
-
-        graph_print_sdl(renderer, gs);
-        
-        SDL_RenderPresent(renderer);
-        
-        /* delai minimal = 1 */
-        SDL_Delay(30);
-    }
-    
-    return 0;
 }
 
 /**
@@ -155,10 +173,11 @@ int graph_game_loop(void)
  */
 graph_t * graph_generate_graph(graph_t * graph,float p)
 {
-    generate_seed(0);
-    for(int i=0; i<graph->n; i++){
-        for(int j=i+1; j<graph->n; j++){
-            if((float)rand()/RAND_MAX < p)
+    for(int i=0; i<graph->n; i++)
+    {
+        for(int j=i+1; j<graph->n; j++)
+	{
+            if((float) ((float) rand()/ (float) RAND_MAX) < p)
             {
                 (graph->matrix)[i][j]=1;
             }
@@ -240,7 +259,8 @@ graph_t *  graph_initialize_graph(unsigned short n)
 	}
 	
     }
-    
+
+    // remplie la matrix a 0 (aucune arrete de base)
     for (i = 0; i < n; ++i)
     {
 	for (j = 0; j < n; ++j)
@@ -253,78 +273,6 @@ graph_t *  graph_initialize_graph(unsigned short n)
     return graph;
 }
 
-/**
- * \fn void graph_print_file_pretty(FILE * flux, graph_t * graph)
- * \brief Permet d'afficher le graphe de manière jolie
- * 
- *  
- * \param[in] FILE * fmux
- * \param[in] graph_t * graph
- * 
- * \return void : ne retourne rien
- * 
- */
-void graph_print_file_pretty(FILE * flux, graph_t * graph)
-{
-    if(NULL == flux)
-    {
-	zlog(stderr, ERROR, "error in flux at NULL in graph_print\n", NULL);
-	return ;
-    }
-    if (NULL == graph)
-    {
-	printf("graph == NULL in  graph_print_terminal\n");
-    }
-    
-    for (int i = 0; i < graph->n; i++) {
-        // Affichage de la ligne supérieure
-        for (int j = 0; j < graph->n; j++) {
-            if (i == 0) {
-                if (j == 0) {
-                    printf("+-"); // Coin supérieur gauche
-                } else {
-                    printf("-"); // Ligne horizontale
-                    if (j == graph->n - 1) {
-                        printf("+"); // Coin supérieur droit
-                    }
-                }
-            } else {
-                if (j == 0) {
-                    printf("| "); // Début de colonne
-                }
-            }
-        }
-        printf("\n");
-        
-        // Affichage des valeurs
-        for (int j = 0; j < graph->n; j++) {
-            if (j == 0) {
-                printf("| %c", graph->matrix[i][j]); // Affiche la valeur avec une largeur de champ de 4 caractères
-            } else {
-                printf(" %c", graph->matrix[i][j]);
-            }
-            if (j == graph->n - 1) {
-                printf(" |"); // Fin de colonne
-            }
-        }
-        printf("\n");
-        
-        // Affichage de la ligne inférieure
-        if (i == graph->n - 1) {
-            for (int j = 0; j < graph->n; j++) {
-                if (j == 0) {
-                    printf("+-"); // Coin inférieur gauche
-                } else {
-                    printf("-"); // Ligne horizontale
-                    if (j == graph->n - 1) {
-                        printf("+"); // Coin inférieur droit
-                    }
-                }
-            }
-            printf("\n");
-        }
-    }
-}
 
 
 /**
@@ -355,9 +303,155 @@ void graph_print_file(FILE * flux, graph_t * graph)
         // Affichage de la ligne supérieure
         for (int j = 0; j < graph->n; j++)
 	{
-            printf("%c ", graph->matrix[i][j]);
+            printf("%c ", graph->matrix[i][j] + '0');
 	}
 	printf("\n");
     }
 }
 
+
+
+/**
+ * \fn void graph_initialize_dist(graph_sdl_t * graph)
+ * \brief construit le tableau de distance dans le graphe (attribut float ** dist)
+ * 
+ *  
+ * \param[in] graph_sdl_t * graph
+ * 
+ * \return void : ne retourne rien
+ * 
+ */
+void graph_initialize_dist(graph_sdl_t * graph)
+{
+    
+    for(int i=0; i < (int) (graph->g->n/ 2); ++i) // ligne
+    {
+	for(int j=i+1; j < graph->g->n; ++j)      // colonne
+	{
+	    if(graph->g->matrix[i][j] == 1)       // il y a une arrete entre les sommets i et j
+	    { 
+		graph->dist[i][j] = distance(graph->p[i], graph->p[i]); // calcule la distance
+	    }
+	}
+    }
+}
+
+
+
+/**
+ * \fn graph_sdl_t *  graph_initialize_graph_sdl(unsigned short n, int width, int height, int ratio)
+ * \brief Permet de construire une structure graphe_sql_t
+ * 
+ *  
+ * \param[in] unsigned short n : nombre de sommets du graphe
+ * @param width, screen width point
+ * @param height, screen height point
+ * @param ratio, ratio for compute offsets
+ * 
+ * \return void : ne retourne rien
+ * 
+ */
+graph_sdl_t *  graph_initialize_graph_sdl(unsigned short n, int width, int height, float ratio, float prob)
+{
+    graph_sdl_t * graph = NULL;
+    SDL_Point * p = NULL;
+    graph = malloc(sizeof(graph_sdl_t));
+
+    if (NULL == graph)
+    {
+	zlog(stderr, ERROR, "error in allocation of graph in graph_initialize_graph_sdl \n", NULL);
+	return NULL;
+    }
+    
+    graph->g = graph_initialize_graph(n);  // pas sur pour moi il faudrait changer la struct graph_s * g
+    graph_generate_related(graph->g, 0, n-1);
+    graph_generate_graph(graph->g, prob);
+    
+    graph->dist = malloc(sizeof(float *)* n);
+    if (NULL != graph->dist)
+    {
+        for(int i = 0; i < n; ++i) // initialize matrix
+        {
+            graph->dist[i] = malloc(sizeof(float) * n);
+	    
+            if (graph->dist[i] == NULL)
+            {
+        	zlog(stderr, ERROR, "error in allocation of graph in graph_initialize_graph_sdl \n", NULL);
+        	for(int j=0; j<i; ++j)
+        	{
+        	    free(graph->dist[j]);
+        	}
+        	free(graph);
+        	return NULL;
+            }
+        }
+	
+    }
+
+    // initialise la distance à l'infinie
+    for (int i = 0; i < n; ++i)
+    {
+        for (int j = 0; j < n; ++j)
+        {
+            graph->dist[i][j] = INFINITY; // macro def dans math.h norme C99
+        }
+    }
+
+    // construit le tableau de SDL point
+    p  = (SDL_Point *) malloc(sizeof(SDL_Point)*n) ;
+
+    if (NULL == p)
+    {
+        zlog(stderr, ERROR, "error in allocation of graph in graph_initialize_graph_sdl \n", NULL);
+        free_matrix_char(graph->g->matrix, n);
+        return NULL;
+    }
+
+    graph->p = p;
+    graph_generate_sdl(&graph, width, height, ratio);
+
+    return graph;
+}
+
+
+/**
+ * \fn void graph_free_graph(graph_t * graph)
+ * \brief Permet de libérer une structure graph_t
+ * 
+ *  
+ * \param[in] unsigned short n : nombre de sommets du graphe
+ * 
+ * \return void : ne retourne rien
+ * 
+ */
+void graph_free_graph(graph_t * graph)
+{
+    if (NULL != graph)
+    {
+	free_matrix_char(graph->matrix, graph->n);
+	free(graph);
+    }
+}
+
+
+/**
+ * \fn void graph_free_graph(graph_t * graph)
+ * \brief Permet de libérer une structure graph_sdl_t
+ * 
+ *  
+ * \param[in] unsigned short n : nombre de sommets du graphe
+ * 
+ * \return void : ne retourne rien
+ * 
+ */
+void graph_free_graph_sdl(graph_sdl_t * graph)
+{
+    if (NULL != graph)
+    {
+        graph_free_graph(graph->g);                      // libere graphe
+	free_matrix_float(graph->dist, graph->g->n);     // libere tableau des distances
+	
+	free(graph->p);                                  // libere tableau SDL point
+	graph->p = NULL;
+    }
+}

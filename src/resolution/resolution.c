@@ -41,7 +41,7 @@ void reoslution_initialisation_predececeurs_matrix(int **predececeurs,float **di
   */
 float ** resolution_matrice_minimale(graph_sdl_t * graph_sdl)
 {   
-    int taille=graph_sdl->g.n;
+    int taille=graph_sdl->g->n;
     float ** matrixmin;
     int ** predececeurs;
     matrixmin = (float **)malloc(sizeof(float *)* taille);

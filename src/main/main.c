@@ -1,11 +1,11 @@
 #include "../log/log.h"
-#include "../graph/graph.h"
+#include "../game/game.h"
 
 int main(int argc, char *argv[])
 {
     enable_log(argc, argv);
     
-    graph_game_loop();
+    game_loop();
     
     return 0;
 }
