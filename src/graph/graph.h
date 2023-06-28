@@ -27,7 +27,7 @@
  */
 #define N_MAX 20
 
-#define POINTS_RADIUS 10
+#define POINTS_RADIUS 20
 
 struct graph_s {
     char ** matrix;
@@ -76,5 +76,6 @@ int graph_point_is_selected(SDL_Point p1, SDL_Point * p_array, int n);
 void graph_draw_point(SDL_Renderer * renderer, SDL_Point p, SDL_Color c, float radius);
 void graph_draw_points(SDL_Renderer * renderer, SDL_Point * p, int n, SDL_Color c, float radius);
 void graph_print_line(SDL_Renderer * renderer, SDL_Point * p, int n, SDL_Color c);
+float graph_get_distance_selected(SDL_Point * p, int n);
 
 #endif

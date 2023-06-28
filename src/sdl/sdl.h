@@ -21,7 +21,7 @@ SDL_Texture * sdl_load_image(SDL_Renderer *, char * name);
 void sdl_scale_rect_image(SDL_Rect * rect, SDL_Texture * img, float window_height);
 
 void sdl_print_text(SDL_Window * window, SDL_Renderer * renderer,
-                    TTF_Font * font, char * text, SDL_Point p);
+                    TTF_Font * font, char * text, SDL_Point p, SDL_Color color);
 void sdl_init_text(void);
 void sdl_quit_text(void);
 
