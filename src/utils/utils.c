@@ -101,3 +101,20 @@ int generate_random_number(int min, int max)
 {
     return rand()%(max-min) + min;
 }
+
+/**
+ * @brief Creates a copy of a matrix
+ *
+ * @param float ** srxmatrix ,source matrix
+ * @param float ** destmatrix ,destination matrix
+ * @param int n ,matrixes size
+ */
+void utils_matrix_copy(float ** srxmatrix,float ** destmatrix,int n)
+{
+    for (int i=0;i<n;i++){
+        for(int j=i + 1; j<n;j++){
+            destmatrix[i][j]=srxmatrix[i][j];
+        }
+    }
+}
+

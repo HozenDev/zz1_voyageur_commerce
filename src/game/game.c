@@ -1,4 +1,5 @@
 #include "game.h"
+#include "../resolution/resolution.h"
 
 void game_graphic_update(game_t game)
 {
@@ -126,10 +127,25 @@ int game_loop(void)
     
     SDL_Event event;
 
+
+    int cycle[20];
+    int dist=-1;
+    SDL_Point solution[20];
+
     zlog(stdout, INFO, "salut", NULL);
     
     game_initialisation(&game);
+    //test
     
+    dist=resolution_main(game->state.gs,cycle);
+    printf("ma\n");
+
+    for(int i=0;i<game->state.gs->g->n;i++)
+    {
+        solution[i]=game->state.gs->p[cycle[i]];
+    }
+    printf("ma\n");
+    printf("\n%d\n",dist);
     /* Boucle de jeu */
     while (game->state.running == 1) {
 
@@ -137,7 +153,7 @@ int game_loop(void)
         SDL_RenderClear(game->renderer);
 
         graph_print_sdl(game->renderer, game->state.gs);
-
+        
         /* Boucle d'évènements */
         while (SDL_PollEvent(&event))
         {
@@ -173,6 +189,7 @@ int game_loop(void)
         }
 
         game_graphic_update(*game);
+        graph_print_line(game->renderer,solution,game->state.gs->g->n,(SDL_Color) {50, 200, 50, 255});
 
         SDL_RenderPresent(game->renderer);    
         
