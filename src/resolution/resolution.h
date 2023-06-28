@@ -11,7 +11,7 @@ int * resolution_construire_chemin(float ** dist,int ** predececeurs,int depart,
 
 int resolution_construire_cycle_min(int * cyclemin,int ** predececeurs,float ** matrixmin,int taille);
 
-float floydWarshall(graph_sdl_t * graph);
+void floydWarshall(graph_sdl_t * graph, float *** matrixFloyd);
 float glouton_exhaustive(float ** dist, int numVertices);
 
 #endif

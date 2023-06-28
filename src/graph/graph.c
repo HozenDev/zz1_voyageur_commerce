@@ -245,6 +245,8 @@ void graph_generate_sdl(graph_sdl_t ** g, int width, int height, float ratio)
     int nb_cases_restantes = nb_cases;
     
     int ** t = (int **) malloc(sizeof(int*)*nb_row);
+
+    (void) ratio;
     
     for (i = 0; i < nb_row; ++i)
     {
