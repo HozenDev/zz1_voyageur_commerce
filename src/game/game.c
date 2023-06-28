@@ -149,11 +149,17 @@ int game_loop(void)
     game_t * game = NULL;
     
     SDL_Event event;
+
+    float ** min_dist = NULL;
     
     game_initialisation(&game);
 
     /* Boucle de jeu */
-    printf("floyd warshall %f \n", floydWarshall(game->state.gs));
+
+    floydWarshall(game->state.gs, &min_dist);
+    printf("floyd warshall %f \n", glouton_exhaustive(min_dist, game->number_of_points));
+    printf("recuis simulé %f \n", resolution_recuis_simule(min_dist, game->number_of_points));
+
     
     while (game->state.running == 1) {
 
@@ -180,7 +186,6 @@ int game_loop(void)
         	{
                     /* todo: vérifier la solution, l'afficher et rejouer */
                     graph_get_distance_selected(game->state.selected_nodes, game->state.selected_nodes_i+1);
-                    zlog(stdout, INFO, "enter tapped", NULL);
                 }
         	break;
             case SDL_MOUSEMOTION:
