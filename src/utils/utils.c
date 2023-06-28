@@ -150,4 +150,3 @@ void utils_matrix_copy(float ** srxmatrix,float ** destmatrix,int n)
         }
     }
 }
-
