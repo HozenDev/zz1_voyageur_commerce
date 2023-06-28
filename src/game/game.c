@@ -136,10 +136,12 @@ int game_loop(void)
     game_t * game = NULL;
     
     SDL_Event event;
-
-    game_initialisation(&game);
     
+    game_initialisation(&game);
+
     /* Boucle de jeu */
+    printf("floyd warshall %f \n", floydWarshall(game->state.gs));
+    
     while (game->state.running == 1) {
 
         sdl_set_renderer_color(game->renderer, colors_available.WHITE);
@@ -165,6 +167,7 @@ int game_loop(void)
         	{
                     /* todo: vérifier la solution, l'afficher et rejouer */
                     zlog(stdout, INFO, "enter tapped", NULL);
+                    
                 }
         	break;
             case SDL_MOUSEMOTION:

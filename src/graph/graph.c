@@ -472,16 +472,15 @@ void graph_print_file(FILE * flux, graph_t * graph)
  */
 void graph_initialize_dist(graph_sdl_t * graph)
 {
-    
-    for(int i=0; i < graph->g->n; ++i) // ligne
+    for(int i=0; i < graph->g->n ; ++i) // ligne
     {
 	for(int j=0; j < graph->g->n; ++j)      // colonne
 	{
 	    if(graph->g->matrix[i][j] == 1 && i != j)       // il y a une arrete entre les sommets i et j
 	    { 
 		graph->dist[i][j] = distance(graph->p[i], graph->p[j]); // calcule la distance
+		graph->dist[j][i] = graph->dist[i][j];
 	    }
-            else graph->dist[i][j] = INFINITY;
 	}
     }
 }
@@ -560,6 +559,8 @@ graph_sdl_t *  graph_initialize_graph_sdl(unsigned short n, int width, int heigh
     graph->p = p;
     graph_generate_sdl(&graph, width, height, ratio);
 
+    graph_initialize_dist(graph);
+    
     return graph;
 }
 

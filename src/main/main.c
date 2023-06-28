@@ -6,7 +6,7 @@ int main(int argc, char *argv[])
 {
     enable_log(argc, argv);
     
-    res_main();
+    game_loop();
     
     return 0;
 }
