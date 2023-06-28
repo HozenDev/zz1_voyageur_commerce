@@ -1,6 +1,19 @@
 #include "game.h"
 #include "../resolution/resolution.h"
 
+void graph_get_distance_selected(SDL_Point * p, int n)
+{
+    int i;
+    int d_sum = 0;
+
+    for (i = 0; i < n-1; ++i)
+    {
+        d_sum += distance(p[i], p[i+1]);
+    }
+
+    zlog(stdout, INFO, "score: %d", d_sum);
+}
+
 /**
  * @brief Update game graphic
  * 
@@ -136,13 +149,15 @@ int game_loop(void)
     game_t * game = NULL;
     
     SDL_Event event;
+
+    float ** min_dist = NULL;
     
     game_initialisation(&game);
 
     /* Boucle de jeu */
-    printf("floyd warshall %f \n", floydWarshall(game->state.gs));
-    printf("floyd warshall %f \n", resolution_recuis_simule(game->state.gs->dist,game->state.gs->g->n));
 
+    floydWarshall(game->state.gs, &min_dist);
+    printf("floyd warshall %f \n", glouton_exhaustive(min_dist, game->number_of_points));
     
     while (game->state.running == 1) {
 
@@ -168,8 +183,7 @@ int game_loop(void)
         	if (event.key.keysym.sym == SDLK_RETURN)
         	{
                     /* todo: vérifier la solution, l'afficher et rejouer */
-                    zlog(stdout, INFO, "enter tapped", NULL);
-                    
+                    graph_get_distance_selected(game->state.selected_nodes, game->state.selected_nodes_i+1);
                 }
         	break;
             case SDL_MOUSEMOTION:
