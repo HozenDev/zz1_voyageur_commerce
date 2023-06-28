@@ -169,6 +169,7 @@ void utils_distance_liste(int * indice,float ** distance,float * dist,int taille
 	{
 		*dist+=distance[indice[i]][indice[i+1]];
 	}
+	*dist+=distance[indice[taille-1]][indice[0]];
 }
 void utils_copy_list(int *listsrc,int* listdst,int taille){
 	for(int i=0;i<taille;i++)

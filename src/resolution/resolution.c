@@ -10,7 +10,7 @@ float resolution_recuis_simule(float ** dist,int taille)
     float distance;
     int *solution=(int*)malloc(sizeof(int)*taille);
     int *new=(int*)malloc(sizeof(int)*taille);
-    float temperature=1000,espsilon=0.01,tauxderefroidissement=0.99;
+    float temperature=1000,espsilon=0.001,tauxderefroidissement=0.999;
     generate_seed(0);
     for(int i=0;i<taille;i++)
     {

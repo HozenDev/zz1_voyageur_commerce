@@ -14,5 +14,6 @@ void resolution_genere_solution_initial(graph_sdl_t* graph,int depart,int *solut
 
 void floydWarshall(graph_sdl_t * graph, float *** matrixFloyd);
 float glouton_exhaustive(float ** dist, int numVertices);
+float resolution_recuis_simule(float ** dist,int taille);
 
 #endif
