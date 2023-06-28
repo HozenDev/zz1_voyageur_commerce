@@ -325,9 +325,10 @@ graph_t * graph_generate_graph(graph_t * graph,float p)
     {
         for(int j=i+1; j<graph->n; j++)
 	{
-            if((float) ((float) rand()/ (float) RAND_MAX) < p)
+            if((float) ((float) rand()/ (float) RAND_MAX) < p && i != j)
             {
-                (graph->matrix)[i][j]=1;
+                graph->matrix[i][j]=1;
+                graph->matrix[j][i]=1;
             }
         }
     }
@@ -472,14 +473,15 @@ void graph_print_file(FILE * flux, graph_t * graph)
 void graph_initialize_dist(graph_sdl_t * graph)
 {
     
-    for(int i=0; i < (int) (graph->g->n/ 2); ++i) // ligne
+    for(int i=0; i < graph->g->n; ++i) // ligne
     {
-	for(int j=i+1; j < graph->g->n; ++j)      // colonne
+	for(int j=0; j < graph->g->n; ++j)      // colonne
 	{
-	    if(graph->g->matrix[i][j] == 1)       // il y a une arrete entre les sommets i et j
+	    if(graph->g->matrix[i][j] == 1 && i != j)       // il y a une arrete entre les sommets i et j
 	    { 
-		graph->dist[i][j] = distance(graph->p[i], graph->p[i]); // calcule la distance
+		graph->dist[i][j] = distance(graph->p[i], graph->p[j]); // calcule la distance
 	    }
+            else graph->dist[i][j] = INFINITY;
 	}
     }
 }
@@ -515,12 +517,12 @@ graph_sdl_t *  graph_initialize_graph_sdl(unsigned short n, int width, int heigh
     graph_generate_related(graph->g, 0, n-1);
     graph_generate_graph(graph->g, prob);
     
-    graph->dist = malloc(sizeof(float *)* n);
+    graph->dist = (float **) malloc(sizeof(float *)* n);
     if (NULL != graph->dist)
     {
         for(int i = 0; i < n; ++i) // initialize matrix
         {
-            graph->dist[i] = malloc(sizeof(float) * n);
+            graph->dist[i] = (float *) malloc(sizeof(float) * n);
 	    
             if (graph->dist[i] == NULL)
             {

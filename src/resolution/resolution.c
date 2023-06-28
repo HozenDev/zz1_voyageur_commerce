@@ -9,19 +9,20 @@
  *@param float ** dist,matrix of the distances within the graph
  *@param taille, number of rows and collumns
  */
-void reoslution_initialisation_predececeurs_matrix(int **predececeurs,float **dist,int taille)
+void reoslution_initialisation_predececeurs_matrix(int *** predececeurs, float ** dist, int taille)
 {
+    int i, j;
     
-    for(int i=0;i<taille;i++){
-        for(int j=0;j<taille;j++){
-            if(dist[i][j]!=INFINITY)
-                predececeurs[i][j]=i;
-            else
-                predececeurs[i][j]=-1;
+    for(i=0;i<taille;i++)
+    {
+        for(j=0;j<taille;j++)
+        {
+            if (dist[i][j] != INFINITY && i != j)
+            {
+                (*predececeurs)[i][j]=i;
+            }
         }
     }
-    
-
 }
 
 /**
@@ -42,17 +43,13 @@ float ** resolution_matrice_minimale(graph_sdl_t * graph_sdl,int ** predececeurs
 
     if(matrixmin!=NULL)
     {
-        
-            
         /*initialising predeceurs matrix*/
-        reoslution_initialisation_predececeurs_matrix(predececeurs,matrixmin,taille);
+        reoslution_initialisation_predececeurs_matrix(&predececeurs,matrixmin,taille);
         printf("ma\n");
-
 
         /*initialising matrixmin*/
         utils_matrix_copy(graph_sdl->dist,matrixmin,taille);
         printf("ma\n");
-
 
         /* for each k we allow the path to cross the k-1 first vertexes of the graph*/
         for(int k=0;k<taille;k++){
@@ -94,10 +91,8 @@ int * resolution_construire_chemin(float ** dist,int ** predececeurs,int depart,
 
     }
     return(chemin);
-    
-
-    
 }
+
 /**
  *@brief using floyd Warshal methods calculate the best cycle possible starting from a any point
  *
@@ -106,20 +101,23 @@ int * resolution_construire_chemin(float ** dist,int ** predececeurs,int depart,
  *@param float ** distance, matrix containing minimal distances to go from i to j
  *@param int taille, size of matrixes = number of points
  */
-int resolution_construire_cycle_min(int * cyclemin,int ** predececeurs,float ** matrixmin,int taille){
-    int depart=0,current=0,nbpointparc=0,*cycle,cycledist;
+float resolution_construire_cycle_min(int * cyclemin,int ** predececeurs,float ** matrixmin,int taille)
+{
+    int depart=0,current=0,nbpointparc=0,*cycle;
     float distmin=INFINITY;
+    float cycledist;
     cycle=(int *)malloc(sizeof(int)*taille);
 
     //On parcours tout les points de départs
-    for(depart=0;depart<taille;depart++){
+    for(depart=0;depart<taille;depart++)
+    {
         nbpointparc=0;
         current=depart;
 
         /*on cherche un cycle*/
         do{
             cycle[nbpointparc++]=current;
-            current=predececeurs[current][depart];
+            current=predececeurs[min(current, depart)][max(depart, current)];
         }while(current!=depart && current!=-1);
 
         /* on verifie que ce cycle passe par tout les points*/
@@ -141,7 +139,6 @@ int resolution_construire_cycle_min(int * cyclemin,int ** predececeurs,float ** 
                 }
             }
         }
-
     }
     return(distmin);
 }
