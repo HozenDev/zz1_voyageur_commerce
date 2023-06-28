@@ -163,7 +163,6 @@ int game_initialisation(game_t ** game)
 
     /* ------ génération objets du jeu --------- */
 
-    generate_seed(0);
     (*game)->number_of_points = generate_random_number(N_MIN_GAME, N_MAX_GAME);
     
     /* création du graphe sdl correspondant au graphe */
@@ -186,19 +185,23 @@ int game_initialisation(game_t ** game)
  *
  * @return exit code: 0 success, != 0 failure
  */
-int game_loop(void)
+int game_loop()
 {
     game_t * game = NULL;
     
     SDL_Event event;
 
     float ** min_dist = NULL;
+    int * meilleur_parcours = NULL;
     
     game_initialisation(&game);
 
     floydWarshall(game->state.gs, &min_dist);
-    zlog(stdout, INFO, "FLOYD WARSHALL: %f", glouton_exhaustive(min_dist, game->number_of_points));
 
+    zlog(stdout, INFO, "GLOUTON EXHAUSTIVE: %f", glouton_exhaustive(min_dist, game->number_of_points));
+    zlog(stdout, INFO, "RECUIS SIMULÉ: %f", resolution_recuis_simule(min_dist, game->number_of_points));
+    zlog(stdout, INFO, "COLONIE DE FOURMI: %f", resolution_ant_colony(min_dist, game->number_of_points, &meilleur_parcours));
+    
     /* Boucle de jeu */
     while (game->state.running == 1) {
 
@@ -206,7 +209,7 @@ int game_loop(void)
         SDL_RenderClear(game->renderer);
         
         sdl_print_text(game->window, game->renderer, game->font, "JEU DU VOYAGEUR",
-                       (SDL_Point) {.x = -1, .y = 70}, colors_available.BLACK);
+                       (SDL_Point) {.x = -1, .y = 50}, colors_available.BLACK);
 
         graph_print_sdl(game->renderer, game->state.gs);
         

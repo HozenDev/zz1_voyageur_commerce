@@ -508,7 +508,7 @@ void graph_initialize_dist(graph_sdl_t * graph)
  * \param[in] unsigned short n : nombre de sommets du graphe
  * @param width, screen width point
  * @param height, screen height point
- * @param ratio, ratio for compute offsets
+ * @param ratio, ratio for compute offset
  * 
  * \return void : ne retourne rien
  * 
