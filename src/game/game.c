@@ -1,5 +1,10 @@
 #include "game.h"
 
+/**
+ * @brief Update game graphic
+ * 
+ * @param game_t to update graphic
+ */
 void game_graphic_update(game_t game)
 {
     int i;
@@ -25,46 +30,47 @@ void game_graphic_update(game_t game)
                          colors_available.GREEN, POINTS_RADIUS);
 }
 
+/**
+ * @brief Update a game state
+ *
+ * @param g_state, the game's state to be updated
+ */
 void game_state_update(game_state_t * g_state)
 {
     /*
       todo: interargir click souris:
       clique gauche:
-      * si sur noeud non sélectionner -> ajouter à la liste des noeuds utilisateur si:
-      - soit pile vide, soit il existe un chemin entre dernier noeud sélectionner et ce noeud
-      * si sur noeud sélectionner -> si noeud tete de pile, l'enlever
+      * si noeud = dernier sélectionner -> enleve le point
+      * si (pile vide ou noeud voisin) -> ajouter
       */
     if (graph_check_point_collide(g_state->mx, g_state->my,
                                   g_state->gs->p, g_state->gs->g->n, &g_state->user_point) == 1)
     {
-        if (graph_is_selected(g_state->user_point, g_state->selected_nodes, g_state->selected_nodes_i+1) == 1)
+        if (graph_compare_points(g_state->user_point,
+                                 g_state->selected_nodes[g_state->selected_nodes_i]) == 1)
         {
-            if (graph_compare_points(g_state->user_point,
-                                     g_state->selected_nodes[g_state->selected_nodes_i]) == 1)
-            {
-                g_state->selected_nodes_i -= 1;
-                zlog(stdout, INFO, "point (%d,%d) dropped", g_state->user_point.x, g_state->user_point.y);
-            }
+            g_state->selected_nodes_i -= 1;
+            zlog(stdout, INFO, "point (%d,%d) dropped", g_state->user_point.x, g_state->user_point.y);
         }
-        else
+        else if ((g_state->selected_nodes_i == -1
+                 || graph_is_neighbor(g_state->gs, g_state->user_point,
+                                      g_state->selected_nodes[g_state->selected_nodes_i])) == 1
+                 && g_state->selected_nodes_i < g_state->number_of_selected_points)
         {
-            if (g_state->selected_nodes_i == -1
-                || graph_is_neighbor(g_state->gs, g_state->user_point,
-                                     g_state->selected_nodes[g_state->selected_nodes_i]) == 1)
-            {
-                g_state->selected_nodes_i += 1;
-                g_state->selected_nodes[g_state->selected_nodes_i] = g_state->user_point;
-                zlog(stdout, INFO, "point (%d,%d) added", g_state->user_point.x, g_state->user_point.y);
-            }
+            g_state->selected_nodes_i += 1;
+            g_state->selected_nodes[g_state->selected_nodes_i] = g_state->user_point;
+            zlog(stdout, INFO, "point (%d,%d) added", g_state->user_point.x, g_state->user_point.y);
         }
     }
     zlog(stdout, DEBUG, "selected_node_i: %d", g_state->selected_nodes_i);
 }
 
 /**
+ * @brief initialise a game_t structure
  *
+ * @param game, game_t to be initialized
  *
- *
+ * @return exit code, 0 success, 1 failure
  */
 int game_initialisation(game_t ** game)
 {
@@ -92,7 +98,7 @@ int game_initialisation(game_t ** game)
     zlog(stdout, INFO, "OK '%s'", "SDL is initialized.");
 
     /* création de la fenetre principale */
-    (*game)->window = sdl_create_window("test", (*game)->sw, (*game)->sh);
+    (*game)->window = sdl_create_window("JEU DU VOYAGEUR", (*game)->sw, (*game)->sh);
     if (!(*game)->window) exit(-1);
     zlog(stdout, INFO, "OK '%s'", "(*game)_loop: Window is initialized.");
 
@@ -110,7 +116,9 @@ int game_initialisation(game_t ** game)
 
     /* création des états du jeu */
     /* liste des noeuds sélectionné par l'utilisateur */
-    (*game)->state.selected_nodes = (SDL_Point *) malloc(sizeof(SDL_Point)*((*game)->number_of_points));
+    (*game)->state.number_of_selected_points = (int) ((*game)->number_of_points)*((*game)->number_of_points)*0.5;
+    (*game)->state.selected_nodes =
+        (SDL_Point *) malloc(sizeof(SDL_Point)*(*game)->state.number_of_selected_points);
     if (!(*game)->state.selected_nodes) exit(-1);
     zlog(stdout, INFO, "OK '%s'", "(*game)_loop: selected_nodes is initialized.");
 
@@ -119,6 +127,8 @@ int game_initialisation(game_t ** game)
 
 /**
  * @brief game loop, initialise, manage events, update graphics, free
+ *
+ * @return exit code: 0 success, != 0 failure
  */
 int game_loop(void)
 {
@@ -126,8 +136,6 @@ int game_loop(void)
     
     SDL_Event event;
 
-    zlog(stdout, INFO, "salut", NULL);
-    
     game_initialisation(&game);
     
     /* Boucle de jeu */
