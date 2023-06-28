@@ -148,33 +148,12 @@ int graph_game_loop(void)
 }
 
 /**
- *
- *
- */
-void graph_print_sdl(SDL_Renderer * renderer, graph_sdl_t * g)
-{
-    int i, j;
-    int radius;
-
-    for (i = 0; i < g->g.n; ++i)
-    {
-        sdl_draw_circle(g->p[i].x, g->p[i].y, radius);
-        for (j = i+1; j < N; ++j)
-        {
-            if (g->g.matrix[i][j] == 1)
-            {
-                sdl_draw_segment(g->p[i].x, g->p[i].y, g->p[j].x, g->p[j].y);
-            }
-        }
-    }
-}
-/**
  * @brief Complete covering tree with random branches
  * 
  * @param graph_t * graph, entering covering tree 
  * @param float p,probability for each random branch to appear
  */
-graph_t * graph_generategraph(graph_t * graph,float p)
+graph_t * graph_generate_graph(graph_t * graph,float p)
 {
     generate_seed(0);
     for(int i=0; i<graph->n; i++){
