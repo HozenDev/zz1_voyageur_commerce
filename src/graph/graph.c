@@ -1,10 +1,33 @@
 #include "graph.h"
 
+/**
+ * \fn int graph_compare_points(SDL_Point p1, SDL_Point p2)
+ * \brief Permet de comparer si 2 points sont les mêmes
+ * 
+ *  
+ * \param[in] SDL_Point p1 
+ * \param[in] SDL_Point p2
+ * 
+ * \return int : retourne 1 si ce sont les mêmes, 0 sinon
+ * 
+ */
 int graph_compare_points(SDL_Point p1, SDL_Point p2)
 {
     return (p1.x == p2.x && p1.y == p2.y);
 }
 
+/**
+ * \fn int graph_is_neighbor(graph_sdl_t * gs, SDL_Point p1, SDL_Point p2)
+ * \brief Permet de savoir si 2 points sont voisin
+ * 
+ *  
+ * \param[in] graph_sdl_t * gs
+ * \param[in] SDL_Point p1
+ * \param[in] SDL_Point p2
+ * 
+ *  \return int : retourne 1 si ce sont les mêmes, 0 sinon
+ * 
+ */
 int graph_is_neighbor(graph_sdl_t * gs, SDL_Point p1, SDL_Point p2)
 {
     int i;
@@ -22,7 +45,19 @@ int graph_is_neighbor(graph_sdl_t * gs, SDL_Point p1, SDL_Point p2)
     return (int) gs->g->matrix[min(i_p1, i_p2)][max(i_p2, i_p1)];
 }
 
-int graph_is_selected(SDL_Point p1, SDL_Point * p_array, int n)
+/**
+ * \fn int graph_point_is_selected(SDL_Point p1, SDL_Point * p_array, int n)
+ * \brief Permet de savoir si le point est déjà sectionné 
+ * 
+ *  
+ * \param[in] SDL_Point p1: position du clique de la souris
+ * \param[in] SDL_Point * p_array : tableau de point
+ * \param[in] int n : nombre de sommets 
+ * 
+ *  \return int : retourne 1 si le clique souris a été effectué sur un sommet , 0 sinon
+ * 
+ */
+int graph_point_is_selected(SDL_Point p1, SDL_Point * p_array, int n)
 {
     int i;
     int is_selected = 0;
@@ -35,6 +70,20 @@ int graph_is_selected(SDL_Point p1, SDL_Point * p_array, int n)
     return is_selected;
 }
 
+/**
+ * \fn int graph_check_point_collide(int x, int y, SDL_Point * p, int n, SDL_Point * pt_intersect)
+ * \brief Permet de savoir si il y a une collision entre (x,y) et un point du tableau p en enregistrant dans pt_intersect 
+ * 
+ *  
+ * \param[in] int x : point x souris
+ * \param[in] int y : point y souris
+ * \param[in] int n : nombre de point du graphe
+ * \param[in] SDL_Point * p : tableau de point
+ * \param[in] SDL_Point * pt_intersect
+ * 
+ * \return int : retourne 1 si il y a collision, 0 sinon
+ * 
+ */
 int graph_check_point_collide(int x, int y, SDL_Point * p, int n, SDL_Point * pt_intersect)
 {
     int i;
@@ -86,6 +135,20 @@ void graph_draw_points(SDL_Renderer * renderer, SDL_Point * p, int n, SDL_Color 
     }
 }
 
+/**
+ * \fn void graph_print_line(SDL_Renderer * renderer, SDL_Point * p, int n, SDL_Color c)
+ * \brief Permet de tracer une droite entre les points du tableau p
+ * 
+ *  
+ * \param[in] SDL_Renderer * renderer
+ * \param[in]  SDL_Point * p : tableau de point
+ * \param[in] int n : nombre de point du graphe
+ * \param[in] SDL_Color c : couleur du trait
+ * \param[in] SDL_Point * pt_intersect
+ * 
+ * \return void : ne retourne rien
+ * 
+ */
 void graph_print_line(SDL_Renderer * renderer, SDL_Point * p, int n, SDL_Color c)
 {
     int i;
