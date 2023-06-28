@@ -2,6 +2,7 @@
 #include <math.h>
 #include "../utils/utils.h"
 
+
 /**
  *@brief initialise the predececeurs matrix i.e. each i,j cells contains the previous vertex of j in the path from i to j
  *
@@ -13,7 +14,7 @@ void reoslution_initialisation_predececeurs_matrix(int **predececeurs,float **di
 {
     
     for(int i=0;i<taille;i++){
-        for(int j=0;j<taille;j++){
+        for(int j=i+1;j<taille;j++){
             if(dist[i][j]!=INFINITY)
                 predececeurs[i][j]=i;
             else
@@ -57,7 +58,7 @@ float ** resolution_matrice_minimale(graph_sdl_t * graph_sdl,int ** predececeurs
         /* for each k we allow the path to cross the k-1 first vertexes of the graph*/
         for(int k=0;k<taille;k++){
             for(int i=0;i<taille;i++){
-                for(int j=i+1;j<taille;j++){
+                for(int j=0;j<taille;j++){
                     if(matrixmin[i][j]>matrixmin[i][k]+matrixmin[k][j])
                     {
                         matrixmin[i][j]=matrixmin[i][k]+matrixmin[k][j];
@@ -106,20 +107,21 @@ int * resolution_construire_chemin(float ** dist,int ** predececeurs,int depart,
  *@param float ** distance, matrix containing minimal distances to go from i to j
  *@param int taille, size of matrixes = number of points
  */
-int resolution_construire_cycle_min(int * cyclemin,int ** predececeurs,float ** matrixmin,int taille){
-    int depart=0,current=0,nbpointparc=0,*cycle,cycledist;
+float resolution_construire_cycle_min(int * cyclemin,int ** predececeurs,float ** matrixmin,int taille){
+    int depart=0,current=0,nbpointparc=0,*cycle,cycledist=0;
     float distmin=INFINITY;
     cycle=(int *)malloc(sizeof(int)*taille);
 
     //On parcours tout les points de départs
-    for(depart=0;depart<taille;depart++){
+    for(depart=0;depart<taille-1;depart++){
         nbpointparc=0;
-        current=depart;
+        current=depart+1;
 
         /*on cherche un cycle*/
         do{
             cycle[nbpointparc++]=current;
             current=predececeurs[current][depart];
+            printf("%d,%d,%d\n",current,depart,nbpointparc);
         }while(current!=depart && current!=-1);
 
         /* on verifie que ce cycle passe par tout les points*/
@@ -146,7 +148,7 @@ int resolution_construire_cycle_min(int * cyclemin,int ** predececeurs,float ** 
     return(distmin);
 }
 
-int resolution_main(graph_sdl_t * graph,int * cyclemin)
+float resolution_main(graph_sdl_t * graph,int * cyclemin)
 {
     float ** matrixmin;
 
@@ -167,3 +169,69 @@ int resolution_main(graph_sdl_t * graph,int * cyclemin)
     else
         return(-1);
 }
+int resolution_est_complet_cycle(int* taken,int taille){
+    int res=1;
+    for(int i=0;i<taille;i++)
+    {
+        if(taken[i]!=1)
+        {
+            res=0;
+        }
+    }
+    return(res);
+}
+void resolution_genere_solution_initial(graph_sdl_t* graph,int depart,int *solution){
+    
+    int current=depart;
+    int iteration=0;
+    int temporary;
+    int *taken=(int*)malloc(sizeof(int)*graph->g->n);
+    utils_initlist0(taken,graph->g->n);
+    while(resolution_est_complet_cycle(taken,graph->g->n)!=1){
+        utils_initlist0(taken,graph->g->n);
+        iteration=0;
+
+        solution[iteration++]=depart;
+        do{
+            temporary=rand()%graph->g->n;
+            if(temporary!=current && graph->g->matrix[min(temporary,current)][(max(temporary,current))]!=0){
+                current=temporary;
+                taken[current]=1;
+                solution[iteration++]=current;
+
+
+            }
+            
+        }while(current!=depart && iteration<150);
+    }
+    
+    solution[iteration]=-1;
+    
+}
+/*
+float resolution_gloutonne_aleatoire(graph_sdl_t * graph,int * cyclemin){
+    int taille=graph->g->n;
+    int *cycle=(int *)malloc(sizeof(int)*taille);
+    int nbparcouru;
+    float distmin=INFINITY;
+    int * utiliser=(int *)malloc(sizeof(int)*taille)
+    float probaforcing=0,05;
+    generate_seed(0);
+    for(int depart;depart<graph->g->n;depart++){
+        current=depart;
+        do{
+            cycle[nbparcouru++]=current;
+            for(int i=0;i<taille;i++){
+                if(i!=current && dist[current][i]!=INFINITY){
+                    if((rand()/RAND_MAX)<p)
+                    {
+                        current=i;
+                    }
+                }
+            }
+
+        }while(current!=depart );
+            
+    }
+}
+*/

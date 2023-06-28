@@ -150,4 +150,21 @@ void utils_matrix_copy(float ** srxmatrix,float ** destmatrix,int n)
         }
     }
 }
+void utils_swap(int*a,int*b){
+	int tmp;
+	tmp=*a;
+	*a=*b;
+	*b=tmp;
 
+}
+void utils_shuffle(int* liste,int taille){
+	for(int i=0;i<taille;i++){
+		utils_swap(&liste[rand()%taille],&liste[i]);
+	}
+}
+
+void utils_initlist0(int * list,int taille){
+	for(int i=0;i<taille;i++){
+		list[i]=0;
+	}
+}

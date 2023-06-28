@@ -387,13 +387,13 @@ void graph_print_file(FILE * flux, graph_t * graph)
 void graph_initialize_dist(graph_sdl_t * graph)
 {
     
-    for(int i=0; i < (int) (graph->g->n/ 2); ++i) // ligne
+    for(int i=0; i < (graph->g->n); ++i) // ligne
     {
 	for(int j=i+1; j < graph->g->n; ++j)      // colonne
 	{
 	    if(graph->g->matrix[i][j] == 1)       // il y a une arrete entre les sommets i et j
 	    { 
-		graph->dist[i][j] = distance(graph->p[i], graph->p[i]); // calcule la distance
+		graph->dist[i][j] = distance(graph->p[i], graph->p[j]); // calcule la distance
 	    }
 	}
     }
@@ -409,7 +409,7 @@ void graph_initialize_dist(graph_sdl_t * graph)
  * \param[in] unsigned short n : nombre de sommets du graphe
  * @param width, screen width point
  * @param height, screen height point
- * @param ratio, ratio for compute offsets
+ * @param ratio, ratio for compute offset
  * 
  * \return void : ne retourne rien
  * 
