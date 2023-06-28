@@ -5,13 +5,15 @@
 #define USER_POINTS_RADIUS 15
 #define USER_LINE_WIDTH 3
 
-#define N_MIN_GAME 4
+#define N_MIN_GAME 5
 #define N_MAX_GAME 8
 
 struct game_state_s {
     int mx;
     int my;
     SDL_Point user_point;
+
+    int number_of_selected_points;
     SDL_Point * selected_nodes;
     int selected_nodes_i;
 

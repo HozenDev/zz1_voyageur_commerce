@@ -1,5 +1,22 @@
 #include "graph.h"
 
+int graph_is_edge_selected(SDL_Point p1, SDL_Point p2, SDL_Point * p_array, int n)
+{
+    /* vérifier si l'arete p1-p2 existe dans le tableau de p_array */
+    int i;
+    int is_selected = 0;
+
+    for (i = 0; i < n-1 && !is_selected; ++i)
+    {
+        if ((graph_compare_points(p1, p_array[i])
+            && graph_compare_points(p2, p_array[i+1]))
+            || (graph_compare_points(p2, p_array[i])
+            && graph_compare_points(p1, p_array[i+1]))) is_selected = 1;
+    }
+
+    return is_selected;
+}
+
 /**
  * \fn int graph_compare_points(SDL_Point p1, SDL_Point p2)
  * \brief Permet de comparer si 2 points sont les mêmes
@@ -195,12 +212,12 @@ void graph_print_sdl(SDL_Renderer * renderer, graph_sdl_t * g)
  * @param offset_x, offset_x of the point
  * @param offset_y, offset_y of the point
  */
-SDL_Point graph_generate_point(int width, int height, int offset_x, int offset_y)
+SDL_Point graph_generate_point(SDL_Rect rect)
 {
     SDL_Point p;
 
-    p.x = (rand()%(width-offset_x)) + offset_x/2;
-    p.y = (rand()%(height-offset_y)) + offset_y/2;
+    p.x = (rand()%rect.w) + rect.x;
+    p.y = (rand()%rect.h) + rect.y;
     
     return p;
 }
@@ -217,14 +234,82 @@ SDL_Point graph_generate_point(int width, int height, int offset_x, int offset_y
  */
 void graph_generate_sdl(graph_sdl_t ** g, int width, int height, float ratio)
 {
-    int offset_x = width*ratio;
-    int offset_y = height*ratio;
+    int r, i, j, k, l;
 
-    int i;
-
-    for (i = 0; i < (*g)->g->n; ++i)
+    int nb_cases = (*g)->g->n * 9;
+    int nb_row = (int) sqrt(nb_cases) + 1;
+    int nb_col = (int) sqrt(nb_cases) + 1;
+    
+    SDL_Rect rect = (SDL_Rect) {.x = 0, .y = 0, .w = width/nb_col, .h = height/nb_row};
+    
+    int nb_cases_restantes = nb_cases;
+    
+    int ** t = (int **) malloc(sizeof(int*)*nb_row);
+    
+    for (i = 0; i < nb_row; ++i)
     {
-        (*g)->p[i] = graph_generate_point(width, height, offset_x, offset_y);
+        t[i] = (int *) malloc(sizeof(int)*nb_col);
+    }
+
+    for (l = 0; l < (*g)->g->n; l++)
+    {
+        r = rand()%nb_cases_restantes;
+        
+        k = 0;
+        for (i = 0; i < nb_row-1 && k < r; ++i)
+        {
+            for (j = 0; j < nb_col-1 && k < r; ++j)
+            {
+                if (t[i][j] != 1) k++;
+            }
+        }
+
+        t[i][j] = 1;
+        nb_cases_restantes--;
+        if (i+1 < nb_row)
+        {
+            t[i+1][j] = 1;
+            nb_cases_restantes--;
+        }
+        if (j+1 < nb_col)
+        {
+            t[i][j+1] = 1;
+            nb_cases_restantes--;
+        }
+        if (i-1 > 0) 
+        {
+            t[i-1][j] = 1;
+            nb_cases_restantes--;
+        }
+        if (j-1 > 0)
+        {
+            t[i][j-1] = 1;
+            nb_cases_restantes--;
+        }
+        if (j-1 > 0 && i-1 > 0)
+        {
+            t[i-1][j-1] = 1;
+            nb_cases_restantes--;
+        }
+        if (j-1 > 0 && i+1 < nb_row)
+        {
+            t[i+1][j-1] = 1;
+            nb_cases_restantes--;
+        }
+        if (j+1 < nb_col && i+1 < nb_row)
+        {
+            t[i+1][j+1] = 1;
+            nb_cases_restantes--;
+        }
+        if (j+1 < nb_col && i-1 > 0)
+        {
+            t[i-1][j+1] = 1;
+            nb_cases_restantes--;
+        }
+
+        rect.x = i*rect.w;
+        rect.y = j*rect.h;
+        (*g)->p[l] = graph_generate_point(rect);
     }
 }
 
@@ -240,9 +325,10 @@ graph_t * graph_generate_graph(graph_t * graph,float p)
     {
         for(int j=i+1; j<graph->n; j++)
 	{
-            if((float) ((float) rand()/ (float) RAND_MAX) < p)
+            if((float) ((float) rand()/ (float) RAND_MAX) < p && i != j)
             {
-                (graph->matrix)[i][j]=1;
+                graph->matrix[i][j]=1;
+                graph->matrix[j][i]=1;
             }
         }
     }
@@ -386,14 +472,14 @@ void graph_print_file(FILE * flux, graph_t * graph)
  */
 void graph_initialize_dist(graph_sdl_t * graph)
 {
-    
-    for(int i=0; i < (graph->g->n); ++i) // ligne
+    for(int i=0; i < graph->g->n ; ++i) // ligne
     {
-	for(int j=i+1; j < graph->g->n; ++j)      // colonne
+	for(int j=0; j < graph->g->n; ++j)      // colonne
 	{
-	    if(graph->g->matrix[i][j] == 1)       // il y a une arrete entre les sommets i et j
+	    if(graph->g->matrix[i][j] == 1 && i != j)       // il y a une arrete entre les sommets i et j
 	    { 
 		graph->dist[i][j] = distance(graph->p[i], graph->p[j]); // calcule la distance
+		graph->dist[j][i] = graph->dist[i][j];
 	    }
 	}
     }
@@ -430,12 +516,12 @@ graph_sdl_t *  graph_initialize_graph_sdl(unsigned short n, int width, int heigh
     graph_generate_related(graph->g, 0, n-1);
     graph_generate_graph(graph->g, prob);
     
-    graph->dist = malloc(sizeof(float *)* n);
+    graph->dist = (float **) malloc(sizeof(float *)* n);
     if (NULL != graph->dist)
     {
         for(int i = 0; i < n; ++i) // initialize matrix
         {
-            graph->dist[i] = malloc(sizeof(float) * n);
+            graph->dist[i] = (float *) malloc(sizeof(float) * n);
 	    
             if (graph->dist[i] == NULL)
             {
@@ -473,6 +559,8 @@ graph_sdl_t *  graph_initialize_graph_sdl(unsigned short n, int width, int heigh
     graph->p = p;
     graph_generate_sdl(&graph, width, height, ratio);
 
+    graph_initialize_dist(graph);
+    
     return graph;
 }
 
