@@ -33,10 +33,9 @@ float resolution_recuis_simule(float ** dist,int taille)
     return(distmin);
 }   
 
-/* prendre le meilleur parmi tous les voisins (méthode gloutonne exhaustive)  en partant de tous les sommets du graphe*/
-=======
+
 /* prendre le meilleur parmi tous les voisins (méthode gloutonne exhaustive)  en partant de tous les sommets du graphe */
->>>>>>> db452ef7fd5cd64ef1717768f170e2a262c7fafe
+
 float glouton_exhaustive(float ** dist, int numVertices)
 {
     float distMinimale = INFINITY;

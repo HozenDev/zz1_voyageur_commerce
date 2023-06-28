@@ -158,6 +158,8 @@ int game_loop(void)
 
     floydWarshall(game->state.gs, &min_dist);
     printf("floyd warshall %f \n", glouton_exhaustive(min_dist, game->number_of_points));
+    printf("floyd warshall %f \n", resolution_recuis_simule(min_dist, game->number_of_points));
+
     
     while (game->state.running == 1) {
 
