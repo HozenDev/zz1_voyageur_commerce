@@ -141,6 +141,8 @@ int game_loop(void)
 
     /* Boucle de jeu */
     printf("floyd warshall %f \n", floydWarshall(game->state.gs));
+    printf("floyd warshall %f \n", resolution_recuis_simule(game->state.gs->dist,game->state.gs->g->n));
+
     
     while (game->state.running == 1) {
 

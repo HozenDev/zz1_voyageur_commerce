@@ -1,7 +1,7 @@
 #include "resolution.h"
 #include <math.h>
 #include "../utils/utils.h"
-
+#include "../seed/seed.h"
 
 /**
  *@brief initialise the predececeurs matrix i.e. each i,j cells contains the previous vertex of j in the path from i to j
@@ -219,15 +219,34 @@ void resolution_genere_solution_initial(graph_sdl_t* graph,int depart,int *solut
     solution[iteration]=-1;
     
 }
-/*
-float resolution_gloutonne_aleatoire(graph_sdl_t * graph,int * cyclemin){
-    int * solution[200];
-    for(int depart=0;depart<graph->g->n;depart++){
-        resolution_genere_solution_initial(graph,depart,solution);
-        
+float resolution_recuis_simule(float ** dist,int taille)
+{
+    float distmin;
+    float distance;
+    int *solution=(int*)malloc(sizeof(int)*taille);
+    int *new=(int*)malloc(sizeof(int)*taille);
+    float temperature=1000,espsilon=0.01,tauxderefroidissement=0.99;
+    generate_seed(0);
+    for(int i=0;i<taille;i++)
+    {
+        solution[i]=i;
     }
-}
-*/
+    utils_distance_liste(solution,dist,&distmin,taille);
+    while(temperature>espsilon)
+    {
+        utils_copy_list(solution,new,taille);
+        utils_shuffle(new,taille,temperature);
+        utils_distance_liste(new,dist,&distance,taille);
+        
+        if(distance<distmin || rand()<exp(-(distance-distmin)/temperature))
+        {
+            distmin=distance;
+            utils_copy_list(new,solution,taille);
+        }
+        temperature=temperature*tauxderefroidissement;
+    }
+    return(distmin);
+}   
 
 /* prendre le meilleur parmi tous les voisins (méthode gloutonne exhaustive)  en partant de tous les sommets du graphe*/
 float glouton_exhaustive(float ** dist, int numVertices)
