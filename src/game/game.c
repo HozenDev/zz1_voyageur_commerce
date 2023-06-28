@@ -1,6 +1,19 @@
 #include "game.h"
 #include "../resolution/resolution.h"
 
+void graph_get_distance_selected(SDL_Point * p, int n)
+{
+    int i;
+    int d_sum = 0;
+
+    for (i = 0; i < n-1; ++i)
+    {
+        d_sum += distance(p[i], p[i+1]);
+    }
+
+    zlog(stdout, INFO, "score: %d", d_sum);
+}
+
 /**
  * @brief Update game graphic
  * 
@@ -166,8 +179,8 @@ int game_loop(void)
         	if (event.key.keysym.sym == SDLK_RETURN)
         	{
                     /* todo: vérifier la solution, l'afficher et rejouer */
+                    graph_get_distance_selected(game->state.selected_nodes, game->state.selected_nodes_i+1);
                     zlog(stdout, INFO, "enter tapped", NULL);
-                    
                 }
         	break;
             case SDL_MOUSEMOTION:
