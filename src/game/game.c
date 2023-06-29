@@ -168,7 +168,7 @@ int game_initialisation(game_t ** game)
 
     /* init de ttf */
     sdl_init_text();
-    (*game)->font = TTF_OpenFont("aventi.ttf", 32);
+    (*game)->font = TTF_OpenFont("../data/aventi.ttf", 32);
     if (!(*game)->font) exit(-1);
     zlog(stdout, INFO, "OK '%s'", "game_loop: Font is initialized.");
 
