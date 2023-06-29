@@ -1,0 +1,241 @@
+#+SETUPFILE: https://hozendev.github.io/hozen-style/hozen_html_style.setup
+
+#+TITLE: ZZ1 SEMAINE 1
+#+AUTHOR: DUREL Enzo
+#+LANGUAGE: fr
+
+* Projet Individuel
+
+** Louis :ignore:
+
+[[]]
+[[]]
+[[]]
+
+** Thibault :ignore:
+
+[[]]
+[[]]
+[[]]
+
+** Enzo :ignore:
+
+[[]]
+[[]]
+[[]]
+
+* Problemes du Voyageur
+
+** Présentation
+
+L'énoncé du problème du voyageur de commerce est le suivant : étant donné n villes et les distances entre toutes les paires de villes, trouver un chemin de longueur totale minimale qui passe exactement une fois par chaque ville et revienne à la ville de départ.
+
+** Floyd Warshall
+
+#+begin_src c
+  /** @brief Algorithme Floyd Warshall
+   *
+   * @param graph, le graphe qui contient les distances initialisées
+   * @param matrixFloyd, matrice des plus petites distances retournées par l'algorithme
+   */
+  void floydWarshall(graph_sdl_t * graph, float *** matrixFloyd)
+  {
+      int numVertices = graph->g->n;
+
+      ,*matrixFloyd = (float **) malloc(numVertices * sizeof(float *));
+
+      for (int i = 0; i < numVertices; i++) {
+          (*matrixFloyd)[i] = (float*)malloc(numVertices * sizeof(float));
+
+          for (int j = 0; j < numVertices; j++) {
+              (*matrixFloyd)[i][j] = graph->dist[i][j];
+          }
+      }
+    
+      for (int k = 0; k < numVertices; k++) {
+          for (int i = 0; i < numVertices; i++) {
+              for (int j = 0; j < numVertices; j++) {
+                  if (   (*matrixFloyd)[i][k] != INFINITY
+                         && (*matrixFloyd)[k][j] != INFINITY
+                         && (*matrixFloyd)[i][k] + (*matrixFloyd)[k][j] < (*matrixFloyd)[i][j]) {
+                      (*matrixFloyd)[i][j] = (*matrixFloyd)[i][k] + (*matrixFloyd)[k][j];
+                  }
+              }
+          }
+      } 
+  }
+#+end_src
+
+** GLOUTON EXHAUSTIVE
+
+#+begin_src C
+  /** @brief Algorithme glouton exhaustive: prendre le meilleur parmi tous les voisins
+   ,*
+   ,* @param dist, matrice des distances
+   ,* @param taille, nombre de noeuds du graphe
+   ,*
+   ,* @return la distance du cycle minimale
+   ,*/
+  float glouton_exhaustive(float ** dist, int n)
+  {
+      float dist_min_global = INFINITY;
+      ...
+
+      for (i = 0; i < n; ++i)
+      {
+          dist = 0;
+          curr = i;
+
+          // Parcourir tous les sommets en partant de i
+          do {
+              visite[curr] = 1;
+              next = -1;
+              dist_min_local = INFINITY;
+
+              // Chercher le sommet voisin non visité avec la distance minimale
+              for (j = 0; j < n; ++j) {
+                  if (j != curr && !visite[j] && dist[curr][j] < dist_min_local) {
+                      dist_min_local = dist[curr][j];
+                      next = j;
+                  }
+              }
+
+              if (next != -1) {
+                  dist += dist_min_local;
+                  curr = next;
+              }
+          } while (next != -1);
+
+          // Vérifier si la distance actuelle est plus petite que la distance minimale trouvée jusqu'à présent
+          if (dist + dist[i][curr] < dist_min_global) {
+              dist_min_global = dist + dist[i][curr];
+          }
+      }
+
+      return dist_min_global;
+  }
+#+end_src
+
+** RECUIT SIMULÉ
+
+#+begin_src c
+  /**
+   ,* @brief méthode de résolution par recuis simulé
+   ,*
+   ,* @param dist, matrice des distances
+   ,* @param taille, nombre de noeuds du graphe
+   ,*
+   ,* @return la distance du cycle minimale
+   ,*/
+  float resolution_recuis_simule(float ** dist, int taille)
+  {
+      ...
+      float temperature = 1000, espsilon = 0.001, tauxderefroidissement = 0.999;
+      ...
+
+      utils_distance_liste(solution, dist, &distmin, taille);
+
+      while (temperature > espsilon)
+      {
+          utils_copy_list(solution,new,taille);
+          utils_shuffle(new,taille,temperature);
+          utils_distance_liste(new,dist,&distance,taille);
+
+          if(distance<distmin || rand()<exp(-(distance-distmin)/temperature))
+          {
+              distmin=distance;
+              utils_copy_list(new,solution,taille);
+          }
+          temperature=temperature*tauxderefroidissement;
+      }
+      return distmin;
+  }
+#+end_src
+
+** COLONIE DE FOURMI
+*** Cacul Probabilité sur les sommets de chaque fourmi
+
+#+begin_src C
+  ...
+  // Calcul des probabilités de transition vers les sommets non visités
+  for (j = 0; j < n; j++) {
+      if (visited[j] == 0) {
+          probabilities[j] = pow(pheromones[curr][j], T_PHEROMONE) * pow(visibility[curr][j], T_DISTANCE);
+          sum += probabilities[j];
+      } else {
+          probabilities[j] = 0.0;
+      }
+  }
+
+  // Sélection du prochain sommet en utilisant les probabilités normalisées
+  random = ((float)rand() / RAND_MAX);
+  cumulativeProbability = 0.0;
+  for (j = 0; j < n; j++) {
+      probabilities[j] /= sum;
+      cumulativeProbability += probabilities[j];
+      if (random <= cumulativeProbability) {
+          next = j;
+          break;
+      }
+  }
+  ...
+#+end_src
+
+*** Mise à jour des distances d'une fourmi
+
+#+begin_src C
+  /**
+   ,* @brief Compute a distance of a tour
+   ,*
+   ,* @param dist, the distances matrix
+   ,* @param fourmi_parcours, a tour of an ant
+   ,* @param n, size of the tour
+   ,*/
+  float resolution_ant_colony_compute_distance(float ** dist, int * fourmi_parcours, int n)
+  {
+      // Calcul de la longueur du tour construit par la fourmi
+      float total_dist = 0.0;
+      int i;
+
+      for (i = 0; i < n - 1; i++)
+          total_dist += dist[fourmi_parcours[i]][fourmi_parcours[i+1]];
+      total_dist += dist[fourmi_parcours[n-1]][fourmi_parcours[0]]; // Retour au sommet de départ
+
+      return total_dist;
+  }
+#+end_src
+
+*** Mise à jour des phéromones des fourmis
+
+#+begin_src C 
+  /**
+   ,* @brief Update pheromones matrix
+   ,*
+   ,* @param pheromones, adress of pheromones to update
+   ,* @param fourmi_parcours, array of all ant tour
+   ,* @param fourmi_distances, array of all ant distance compute with result tour
+   ,* @param n, size of the tour
+   ,*/
+  void resolution_ant_colony_update_pheromones(float *** pheromones, int ** fourmi_parcours, float * fourmi_distances, int n)
+  {
+      ...
+      // Mise à jour des phéromones sur toutes les arêtes
+      for (i = 0; i < n; i++) {
+          for (j = 0; j < n; j++) {
+              if (i != j) {
+                  // Évaporation des phéromones
+                  (*pheromones)[i][j] *= (1.0 - T_EVAP);
+
+                  // Dépôt de phéromones par chaque fourmi
+                  for (ant = 0; ant < NUM_ANTS; ant++) {
+                      curr = fourmi_parcours[ant][i];
+                      next = fourmi_parcours[ant][j];
+                      (*pheromones)[curr][next] += (Q / fourmi_distances[ant]);
+                  }
+              }
+          }
+      }
+  }
+#+end_src
+
+* Chef d'oeuvre

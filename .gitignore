@@ -7,6 +7,10 @@
 # not ignore readme
 !/readme.org
 
+# not ignore readme
+!/rapport.org
+!/rapport.html
+
 # not ignore build
 !/build
 /build/*

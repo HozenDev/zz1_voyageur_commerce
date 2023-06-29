@@ -40,7 +40,7 @@ float resolution_recuis_simule(float ** dist, int taille)
         temperature=temperature*tauxderefroidissement;
     }
     return distmin;
-}   
+}
 
 
 /** @brief Algorithme glouton exhaustive: prendre le meilleur parmi tous les voisins
@@ -50,53 +50,50 @@ float resolution_recuis_simule(float ** dist, int taille)
  *
  * @return la distance du cycle minimale
  */
-float glouton_exhaustive(float ** dist, int numVertices)
+float glouton_exhaustive(float ** dist, int n)
 {
-    float distMinimale = INFINITY;
-    int sommetSuivant, distActuelle, sommetActuel;
-    int *visite;
-    float distMinVoisin;
+    float dist_min_global = INFINITY;
+    int next, dist, curr;
+    int * visite;
+    float dist_min_local;
     int i, j;
+
+    visite = (int*) calloc(n, sizeof(int));
     
-    for (i = 0; i < numVertices; ++i)
+    for (i = 0; i < n; ++i)
     {
-	distActuelle = 0;
-	sommetActuel = i;
-	
-        // Tableau pour marquer les sommets visités
-        visite = (int*)malloc(numVertices * sizeof(int));
-        for (j = 0; j < numVertices; ++j)
-            visite[j] = 0;
+	dist = 0;
+	curr = i;
 
         // Parcourir tous les sommets en partant de i
         do {
-            visite[sommetActuel] = 1;
-            sommetSuivant = -1;
-            distMinVoisin = INFINITY;
+            visite[curr] = 1;
+            next = -1;
+            dist_min_local = INFINITY;
 
             // Chercher le sommet voisin non visité avec la distance minimale
-            for (j = 0; j < numVertices; ++j) {
-                if (j != sommetActuel && !visite[j] && dist[sommetActuel][j] < distMinVoisin) {
-                    distMinVoisin = dist[sommetActuel][j];
-                    sommetSuivant = j;
+            for (j = 0; j < n; ++j) {
+                if (j != curr && !visite[j] && dist[curr][j] < dist_min_local) {
+                    dist_min_local = dist[curr][j];
+                    next = j;
                 }
             }
 
-            if (sommetSuivant != -1) {
-                distActuelle += distMinVoisin;
-                sommetActuel = sommetSuivant;
+            if (next != -1) {
+                dist += dist_min_local;
+                curr = next;
             }
-        } while (sommetSuivant != -1);
+        } while (next != -1);
 
         // Vérifier si la distance actuelle est plus petite que la distance minimale trouvée jusqu'à présent
-        if (distActuelle + dist[i][sommetActuel] < distMinimale) {
-            distMinimale = distActuelle + dist[i][sommetActuel];
+        if (dist + dist[i][curr] < dist_min_global) {
+            dist_min_global = dist + dist[i][curr];
         }
-
-        free(visite);
     }
 
-    return distMinimale;
+    free(visite);
+
+    return dist_min_global;
 }
 
 /** @brief Algorithme Floyd Warshall
