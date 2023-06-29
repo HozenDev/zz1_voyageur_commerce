@@ -34,7 +34,7 @@ void utils_matrix_copy(float ** srxmatrix,float ** destmatrix,int n);
 
 void utils_swap(int *a,int *b);
 
-void utils_shuffle(int* liste,int taille,int temperature);
+void utils_shuffle(int* liste,int taille);
 
 void utils_initlist0(int * liste,int taille);
 
