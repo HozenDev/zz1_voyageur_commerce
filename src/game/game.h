@@ -24,6 +24,10 @@ struct game_state_s {
     graph_sdl_t * gs;
 
     int running;
+
+    SDL_Event event;
+
+    float score;
 };
 
 typedef struct game_state_s game_state_t;  

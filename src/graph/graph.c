@@ -261,35 +261,47 @@ void graph_generate_sdl(graph_sdl_t ** g, int width, int height, float ratio)
 {
     int r, i, j, l = 0;
 
-    int nb_cases = (*g)->g->n * 20;
+    int offset_x = width*ratio;
+    int offset_y = height*ratio;
+    
+    int nb_cases = (*g)->g->n * 11;
     int nb_row = (int) sqrt(nb_cases);
     int nb_col = (int) sqrt(nb_cases);
     
-    SDL_Rect rect = (SDL_Rect) {.x = 0, .y = 0, .w = width/nb_col, .h = height/nb_row};
+    SDL_Rect rect;
     
-    int nb_cases_restantes = nb_cases-4*nb_col+4;
+    int nb_cases_restantes = nb_col*nb_row;
     
     int ** t = (int **) calloc(nb_row, sizeof(int*));
 
-    (void) ratio;
+    int n = (*g)->g->n;
+
+    width = width - 2*offset_x;
+    height = height - 2*offset_y;
+
+    rect = (SDL_Rect) {.x = offset_x, .y = offset_y, .w = width/nb_col, .h = height/nb_row};
     
     for (i = 0; i < nb_row; ++i)
-        t[i] = (int *) calloc(nb_col, sizeof(int));
+        t[i] = (int *) calloc(nb_row, sizeof(int));
 
     zlog(stdout, INFO, "number of points : %d", (*g)->g->n);
     zlog(stdout, INFO, "grid is initialized", NULL);
 
-    i = 1; j = 1;
-    
-    for (l = 0; l < (*g)->g->n; l++)
+    i = 0; j = 0;
+
+    for (l = 0; l < n; l++)
     {
+        zlog(stdout, DEBUG, "nb_cases_vides: %d", nb_cases_restantes);
+        
         r = rand()%nb_cases_restantes;
 
         zlog(stdout, INFO, "random free case generated: %d", r);
 
-        for (i = 1; i < nb_row-2 && r; ++i)
+        i=0; j=0;
+        
+        for (i = 0; r; i=(i+1)%nb_row)
         {
-            for (j = 1; j < nb_col-2 && r; ++j)
+            for (j = 0; j < nb_row-1 && r; j++)
             {
                 if (t[i][j] == 0) r--;
             }
@@ -304,30 +316,33 @@ void graph_generate_sdl(graph_sdl_t ** g, int width, int height, float ratio)
         {
             if (t[i+1][j] == 0)
             {t[i+1][j] = 1; nb_cases_restantes--;}
-            if (t[i+1][j-1] == 0 && j > 1)
+            if (j > 0 && t[i+1][j-1] == 0)
             {t[i+1][j-1] = 1; nb_cases_restantes--;}
-            if (t[i+1][j+1] == 0 && j < nb_row-1)
+            if (j < nb_row-1 && t[i+1][j+1] == 0)
             {t[i+1][j+1] = 1; nb_cases_restantes--;}
         }
-        if (i > 1)
+        if (i > 0)
         {
             if (t[i-1][j] == 0) {t[i-1][j] = 1; nb_cases_restantes--;}
-            if (t[i-1][j-1] == 0 && j > 1)
+            if (j > 0 && t[i-1][j-1] == 0)
             {t[i-1][j-1] = 1; nb_cases_restantes--;}
-            if (t[i-1][j+1] == 0 && j < nb_row-1) {t[i-1][j+1] = 1; nb_cases_restantes--;}
+            if (j < nb_row-1 && t[i-1][j+1] == 0) {t[i-1][j+1] = 1; nb_cases_restantes--;}
         }
-        if (t[i][j-1] == 0 && j > 1) {t[i][j-1] = 1; nb_cases_restantes--;}
-        if (t[i][j+1] == 0 && j < nb_row-1) {t[i][j+1] = 1; nb_cases_restantes--;}
+        if (j > 0 && t[i][j-1] == 0) {t[i][j-1] = 1; nb_cases_restantes--;}
+        if (j < nb_row-1 && t[i][j+1] == 0) {t[i][j+1] = 1; nb_cases_restantes--;}
 
         zlog(stdout, INFO, "neighbors blacklist updated", NULL);
         
-        rect.x = i*rect.w;
-        rect.y = j*rect.h;
+        rect.x = i*rect.w + offset_x;
+        rect.y = j*rect.h + offset_y;
         
         (*g)->p[l] = graph_generate_point(rect);
 
         zlog(stdout, INFO, "new point '%d' created at (%d,%d)", l, (*g)->p[l].x, (*g)->p[l].y);
     }
+
+    for (i = 0; i < nb_row; ++i) free(t[i]);
+    free(t);
 }
 
 /**

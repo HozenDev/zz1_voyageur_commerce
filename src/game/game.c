@@ -86,27 +86,38 @@ void game_state_update(game_state_t * g_state)
       * si noeud = dernier sélectionner -> enleve le point
       * si (pile vide ou noeud voisin) -> ajouter
       */
-    if (graph_check_point_collide(g_state->mx, g_state->my,
-                                  g_state->gs->p, g_state->gs->g->n, &g_state->user_point) == 1)
+    if (g_state->event.button.button == SDL_BUTTON_LEFT) {
+        if (graph_check_point_collide(g_state->mx, g_state->my,
+                                      g_state->gs->p, g_state->gs->g->n, &g_state->user_point) == 1)
+        {
+            if (g_state->selected_nodes_i >= 0
+                && graph_compare_points(g_state->user_point,
+                                        g_state->selected_nodes[g_state->selected_nodes_i]) == 1)
+            {
+                g_state->selected_nodes_i -= 1;
+                zlog(stdout, INFO, "point (%d,%d) dropped", g_state->user_point.x, g_state->user_point.y);
+            }
+            else if ((g_state->selected_nodes_i == -1
+                      || graph_is_neighbor(g_state->gs, g_state->user_point,
+                                           g_state->selected_nodes[g_state->selected_nodes_i])) == 1
+                     && g_state->selected_nodes_i < g_state->number_of_selected_points)
+            {
+                g_state->selected_nodes_i += 1;
+                g_state->selected_nodes[g_state->selected_nodes_i] = g_state->user_point;
+                zlog(stdout, INFO, "point (%d,%d) added", g_state->user_point.x, g_state->user_point.y);
+            }
+        }
+    }
+    else if (g_state->event.button.button == SDL_BUTTON_RIGHT)
     {
-        if (g_state->selected_nodes_i >= 0
-            && graph_compare_points(g_state->user_point,
-                                    g_state->selected_nodes[g_state->selected_nodes_i]) == 1)
+        if (g_state->selected_nodes_i >= 0)
         {
             g_state->selected_nodes_i -= 1;
             zlog(stdout, INFO, "point (%d,%d) dropped", g_state->user_point.x, g_state->user_point.y);
         }
-        else if ((g_state->selected_nodes_i == -1
-                 || graph_is_neighbor(g_state->gs, g_state->user_point,
-                                      g_state->selected_nodes[g_state->selected_nodes_i])) == 1
-                 && g_state->selected_nodes_i < g_state->number_of_selected_points)
-        {
-            g_state->selected_nodes_i += 1;
-            g_state->selected_nodes[g_state->selected_nodes_i] = g_state->user_point;
-            zlog(stdout, INFO, "point (%d,%d) added", g_state->user_point.x, g_state->user_point.y);
-        }
     }
     zlog(stdout, DEBUG, "selected_node_i: %d", g_state->selected_nodes_i);
+    g_state->score = graph_get_distance_selected(g_state->selected_nodes, g_state->selected_nodes_i+1);
 }
 
 /**
@@ -189,10 +200,16 @@ int game_loop()
 {
     game_t * game = NULL;
     
-    SDL_Event event;
+    SDL_Event * event;
 
     float ** min_dist = NULL;
     int * meilleur_parcours = NULL;
+
+    int response = 0;
+    SDL_Point * p_response = NULL;
+    int i;
+
+    char buf[2048];
     
     game_initialisation(&game);
 
@@ -201,6 +218,12 @@ int game_loop()
     zlog(stdout, INFO, "GLOUTON EXHAUSTIVE: %f", glouton_exhaustive(min_dist, game->number_of_points));
     zlog(stdout, INFO, "RECUIS SIMULÉ: %f", resolution_recuis_simule(min_dist, game->number_of_points));
     zlog(stdout, INFO, "COLONIE DE FOURMI: %f", resolution_ant_colony(min_dist, game->number_of_points, &meilleur_parcours));
+
+    p_response = (SDL_Point *) malloc(sizeof(p_response)*(game->number_of_points));
+    for (i = 0; i < game->number_of_points; ++i)
+        p_response[i] = game->state.gs->p[meilleur_parcours[i]];
+    
+    event = &(game->state.event);
     
     /* Boucle de jeu */
     while (game->state.running == 1) {
@@ -211,15 +234,20 @@ int game_loop()
         sdl_print_text(game->window, game->renderer, game->font, "JEU DU VOYAGEUR",
                        (SDL_Point) {.x = -1, .y = 50}, colors_available.BLACK);
 
+        sprintf(buf, "Score: %.2f", game->state.score);
+        
+        sdl_print_text(game->window, game->renderer, game->font, buf,
+                       (SDL_Point) {.x = -1, .y = game->sh-80}, colors_available.BLACK);
+
         graph_print_sdl(game->renderer, game->state.gs);
         
         /* Boucle d'évènements */
-        while (SDL_PollEvent(&event))
+        while (SDL_PollEvent(event))
         {
-            switch(event.type)
+            switch(event->type)
             {
             case SDL_WINDOWEVENT:
-        	switch (event.window.event)
+        	switch (event->window.event)
         	{
         	case SDL_WINDOWEVENT_CLOSE:
         	    zlog(stdout, INFO, "sdl event window close", NULL);
@@ -227,10 +255,9 @@ int game_loop()
         	}
         	break;
             case SDL_KEYDOWN:
-        	if (event.key.keysym.sym == SDLK_RETURN)
-        	{
-                    /* todo: vérifier la solution, l'afficher et rejouer */
-                    graph_get_distance_selected(game->state.selected_nodes, game->state.selected_nodes_i+1);
+                if (event->key.keysym.sym == SDLK_a)
+                {
+                    response = !response;
                 }
         	break;
             case SDL_MOUSEMOTION:
@@ -241,13 +268,19 @@ int game_loop()
                 game_state_update(&game->state);
         	break;
             case SDL_QUIT:
-        	zlog(stdout, INFO, "event.type: SDL_QUIT", NULL);
+        	zlog(stdout, INFO, "event->type: SDL_QUIT", NULL);
         	game->state.running = 0;
                 break;
             }
         }
 
         game_graphic_update(*game);
+
+        if (response)
+        {
+            graph_draw_point(game->renderer, p_response[0], colors_available.YELLOW, POINTS_RADIUS/2);
+            graph_print_line(game->renderer, p_response, game->number_of_points, colors_available.YELLOW);
+        }
 
         SDL_RenderPresent(game->renderer);
         
@@ -256,6 +289,8 @@ int game_loop()
     }
 
     game_free_game(game);
+    free(p_response);
+    free(meilleur_parcours);
     
     return 0;
 }
