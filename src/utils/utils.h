@@ -27,11 +27,24 @@ void free_matrix_float(float ** matrix, unsigned int n);
 int generate_random_number(int min, int max);
 
 int max(int a, int b);
+
 int min(int a, int b);
+
 void utils_matrix_copy(float ** srxmatrix,float ** destmatrix,int n);
+
 void utils_swap(int *a,int *b);
+
 void utils_shuffle(int* liste,int taille);
+
 void utils_initlist0(int * liste,int taille);
+
 void utils_distance_liste(int * indice,float ** distance,float * dist,int taille);
+
 void utils_copy_list(int *listsrc,int* listdst,int taille);
+
+float utils_descente_geometrique(float temperature);
+
+float utils_descente_lineaire(float temperature);
+
+
 #endif

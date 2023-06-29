@@ -174,12 +174,14 @@ void utils_shuffle(int* liste,int taille){
  */
 void utils_distance_liste(int * indice,float ** distance,float * dist,int taille)
 {
-	for(int i=0;i<taille-1;i++)
-	{
-		*dist+=distance[indice[i]][indice[i+1]];
-	}
-	*dist+=distance[indice[taille-1]][indice[0]];
+    *dist = 0;
+    for(int i=0;i<taille-1;i++)
+    {
+	*dist+=distance[indice[i]][indice[i+1]];
+    }
+    *dist+=distance[indice[taille-1]][indice[0]];
 }
+
 /**
  *@brief copy the values of listsrc into listdst both list being the same size taille
  */
@@ -196,4 +198,13 @@ void utils_initlist0(int * list,int taille){
 	for(int i=0;i<taille;i++){
 		list[i]=0;
 	}
+}
+float utils_descente_geometrique(float temperature){
+	float coeff=0.9999;
+	
+	return(coeff*temperature);
+
+}
+float utils_descente_lineaire(float temperature){
+	return(temperature-0.1);
 }

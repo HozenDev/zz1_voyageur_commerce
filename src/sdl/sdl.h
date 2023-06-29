@@ -25,4 +25,6 @@ void sdl_print_text(SDL_Window * window, SDL_Renderer * renderer,
 void sdl_init_text(void);
 void sdl_quit_text(void);
 
+void sdl_set_icon(SDL_Window * window, SDL_Surface ** icon);
+
 #endif
