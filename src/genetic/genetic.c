@@ -272,6 +272,14 @@ float  genetic_solve (float** matrixFloydWarshall, int num_vertices)
         }
     }
     free(population);
+
+    // free les new individu 
+    for (int i = 0; i < POPULATION_SIZE; i++)
+    {
+         genetic_destroy_individu(new_population[i]);
+    }
+    free(new_population);
+
     
     return best_distance;
 }
