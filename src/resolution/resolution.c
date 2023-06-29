@@ -29,7 +29,7 @@ float resolution_recuis_simule(float ** dist, int taille)
     while (temperature > espsilon)
     {
         utils_copy_list(solution,new,taille);
-        utils_shuffle(new,taille,temperature);
+        utils_shuffle(new,taille);
         utils_distance_liste(new,dist,&distance,taille);
         
         if(distance<distmin || rand()<exp(-(distance-distmin)/temperature))
@@ -39,9 +39,11 @@ float resolution_recuis_simule(float ** dist, int taille)
         }
         temperature=temperature*tauxderefroidissement;
     }
-    return distmin;
-}
 
+    free(solution);
+    free(new);
+    return distmin;
+}   
 
 /** @brief Algorithme glouton exhaustive: prendre le meilleur parmi tous les voisins
  *
