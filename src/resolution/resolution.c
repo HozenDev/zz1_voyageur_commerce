@@ -284,7 +284,7 @@ void resolution_ant_colony_update_pheromones(float *** pheromones, int ** fourmi
 }
 
 /**
- * @brief Compute a distance of a tour
+ * @brief Solves the traveller's problem with the ant collony methods
  *
  * @param dist, the distances matrix
  * @param n, size of the tour
