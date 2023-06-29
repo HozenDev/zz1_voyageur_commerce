@@ -174,6 +174,7 @@ void utils_shuffle(int* liste,int taille){
  */
 void utils_distance_liste(int * indice,float ** distance,float * dist,int taille)
 {
+	*dist=0;
 	for(int i=0;i<taille-1;i++)
 	{
 		*dist+=distance[indice[i]][indice[i+1]];

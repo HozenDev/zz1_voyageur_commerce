@@ -14,8 +14,8 @@
 float resolution_recuis_simule(float ** dist, int taille)
 {
     /* paramètres */
-    float distmin;
-    float distance;
+    float distmin=taille*2000;
+    float distance=0;
     float temperature = 1000, espsilon = 0.001, tauxderefroidissement = 0.999;
 
     /* allocation des tableaux de solutions et solutions + 1 */
@@ -32,7 +32,7 @@ float resolution_recuis_simule(float ** dist, int taille)
         utils_shuffle(new,taille);
         utils_distance_liste(new,dist,&distance,taille);
         
-        if(distance<distmin || rand()<exp(-(distance-distmin)/temperature))
+        if(distance<distmin || rand()/RAND_MAX<exp(-(distance-distmin)/temperature))
         {
             distmin=distance;
             utils_copy_list(new,solution,taille);
