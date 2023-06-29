@@ -2,11 +2,15 @@
 #define _game_h_
 
 #include "../graph/graph.h"
-#define USER_POINTS_RADIUS 15
+
+#define USER_POINTS_RADIUS 30
 #define USER_LINE_WIDTH 3
 
 #define N_MIN_GAME 5
 #define N_MAX_GAME 8
+
+#define SCREEN_WIDTH 800
+#define SCREEN_HEIGHT 600
 
 struct game_state_s {
     int mx;
@@ -20,6 +24,10 @@ struct game_state_s {
     graph_sdl_t * gs;
 
     int running;
+
+    SDL_Event event;
+
+    float score;
 };
 
 typedef struct game_state_s game_state_t;  
@@ -27,6 +35,8 @@ typedef struct game_state_s game_state_t;
 struct game_s {
     SDL_Renderer * renderer;
     SDL_Window * window;
+    TTF_Font * font;
+
     int sw;
     int sh;
 

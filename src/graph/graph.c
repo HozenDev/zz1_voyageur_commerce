@@ -1,5 +1,35 @@
 #include "graph.h"
 
+/**
+ * @brief compute and return the distances between a list of points
+ *
+ * @param p, SDL_Point tab
+ * @param n, size of p (elements)
+ *
+ * @return d_sum, total distance
+ */
+float graph_get_distance_selected(SDL_Point * p, int n)
+{
+    int i;
+    float d_sum = 0.0;
+
+    for (i = 0; i < n-1; ++i)
+        d_sum += distance(p[i], p[i+1]);
+
+    zlog(stdout, INFO, "Somme des distances: %g", d_sum);
+    return d_sum;
+}
+
+/**
+ * @brief compute if there is an existing edge between two points
+ *
+ * @param p1 the first point to be compared
+ * @param p2 the second point to be compared
+ * @param p_array the array of consecutive points
+ * @param n the size of the p_array
+ *
+ * @return is_selected, 1 if there is an existing edge between p1 and p2
+ */
 int graph_is_edge_selected(SDL_Point p1, SDL_Point p2, SDL_Point * p_array, int n)
 {
     /* vérifier si l'arete p1-p2 existe dans le tableau de p_array */
@@ -56,9 +86,6 @@ int graph_is_neighbor(graph_sdl_t * gs, SDL_Point p1, SDL_Point p2)
         if (graph_compare_points(p2, gs->p[i]) == 1) i_p2 = i;
     }
 
-    zlog(stdout, DEBUG, "%d %d", i_p1, i_p2);
-    zlog(stdout, DEBUG, "(%d,%d) (%d,%d)", gs->p[i_p1].x, gs->p[i_p1].y, gs->p[i_p2].x, gs->p[i_p2].y);
-    
     return (int) gs->g->matrix[min(i_p1, i_p2)][max(i_p2, i_p1)];
 }
 
@@ -222,8 +249,6 @@ SDL_Point graph_generate_point(SDL_Rect rect)
     return p;
 }
 
-
-
 /**
  * @brief Generate coordinates points for a graph
  *
@@ -234,85 +259,90 @@ SDL_Point graph_generate_point(SDL_Rect rect)
  */
 void graph_generate_sdl(graph_sdl_t ** g, int width, int height, float ratio)
 {
-    int r, i, j, k, l;
+    int r, i, j, l = 0;
 
-    int nb_cases = (*g)->g->n * 9;
-    int nb_row = (int) sqrt(nb_cases) + 1;
-    int nb_col = (int) sqrt(nb_cases) + 1;
+    int offset_x = width*ratio;
+    int offset_y = height*ratio;
     
-    SDL_Rect rect = (SDL_Rect) {.x = 0, .y = 0, .w = width/nb_col, .h = height/nb_row};
+    int nb_cases = (*g)->g->n * 11;
+    int nb_row = (int) sqrt(nb_cases);
+    int nb_col = (int) sqrt(nb_cases);
     
-    int nb_cases_restantes = nb_cases;
+    SDL_Rect rect;
     
-    int ** t = (int **) malloc(sizeof(int*)*nb_row);
+    int nb_cases_restantes = nb_col*nb_row;
+    
+    int ** t = (int **) calloc(nb_row, sizeof(int*));
 
-    (void) ratio;
+    int n = (*g)->g->n;
+
+    width = width - 2*offset_x;
+    height = height - 2*offset_y;
+
+    rect = (SDL_Rect) {.x = offset_x, .y = offset_y, .w = width/nb_col, .h = height/nb_row};
     
     for (i = 0; i < nb_row; ++i)
-    {
-        t[i] = (int *) malloc(sizeof(int)*nb_col);
-    }
+        t[i] = (int *) calloc(nb_row, sizeof(int));
 
-    for (l = 0; l < (*g)->g->n; l++)
+    zlog(stdout, INFO, "number of points : %d", (*g)->g->n);
+    zlog(stdout, INFO, "grid is initialized", NULL);
+
+    i = 0; j = 0;
+
+    for (l = 0; l < n; l++)
     {
-        r = rand()%nb_cases_restantes;
+        zlog(stdout, DEBUG, "nb_cases_vides: %d", nb_cases_restantes);
         
-        k = 0;
-        for (i = 0; i < nb_row-1 && k < r; ++i)
+        r = rand()%nb_cases_restantes;
+
+        zlog(stdout, INFO, "random free case generated: %d", r);
+
+        i=0; j=0;
+        
+        for (i = 0; r; i=(i+1)%nb_row)
         {
-            for (j = 0; j < nb_col-1 && k < r; ++j)
+            for (j = 0; j < nb_row-1 && r; j++)
             {
-                if (t[i][j] != 1) k++;
+                if (t[i][j] == 0) r--;
             }
         }
 
+        zlog(stdout, INFO, "virtuals coordinates found: i:%d, j:%d", i, j);
+        
         t[i][j] = 1;
         nb_cases_restantes--;
-        if (i+1 < nb_row)
-        {
-            t[i+1][j] = 1;
-            nb_cases_restantes--;
-        }
-        if (j+1 < nb_col)
-        {
-            t[i][j+1] = 1;
-            nb_cases_restantes--;
-        }
-        if (i-1 > 0) 
-        {
-            t[i-1][j] = 1;
-            nb_cases_restantes--;
-        }
-        if (j-1 > 0)
-        {
-            t[i][j-1] = 1;
-            nb_cases_restantes--;
-        }
-        if (j-1 > 0 && i-1 > 0)
-        {
-            t[i-1][j-1] = 1;
-            nb_cases_restantes--;
-        }
-        if (j-1 > 0 && i+1 < nb_row)
-        {
-            t[i+1][j-1] = 1;
-            nb_cases_restantes--;
-        }
-        if (j+1 < nb_col && i+1 < nb_row)
-        {
-            t[i+1][j+1] = 1;
-            nb_cases_restantes--;
-        }
-        if (j+1 < nb_col && i-1 > 0)
-        {
-            t[i-1][j+1] = 1;
-            nb_cases_restantes--;
-        }
 
-        rect.x = i*rect.w;
-        rect.y = j*rect.h;
+        if (i < nb_col-1)
+        {
+            if (t[i+1][j] == 0)
+            {t[i+1][j] = 1; nb_cases_restantes--;}
+            if (j > 0 && t[i+1][j-1] == 0)
+            {t[i+1][j-1] = 1; nb_cases_restantes--;}
+            if (j < nb_row-1 && t[i+1][j+1] == 0)
+            {t[i+1][j+1] = 1; nb_cases_restantes--;}
+        }
+        if (i > 0)
+        {
+            if (t[i-1][j] == 0) {t[i-1][j] = 1; nb_cases_restantes--;}
+            if (j > 0 && t[i-1][j-1] == 0)
+            {t[i-1][j-1] = 1; nb_cases_restantes--;}
+            if (j < nb_row-1 && t[i-1][j+1] == 0) {t[i-1][j+1] = 1; nb_cases_restantes--;}
+        }
+        if (j > 0 && t[i][j-1] == 0) {t[i][j-1] = 1; nb_cases_restantes--;}
+        if (j < nb_row-1 && t[i][j+1] == 0) {t[i][j+1] = 1; nb_cases_restantes--;}
+
+        zlog(stdout, INFO, "neighbors blacklist updated", NULL);
+        
+        rect.x = i*rect.w + offset_x;
+        rect.y = j*rect.h + offset_y;
+        
         (*g)->p[l] = graph_generate_point(rect);
+
+        zlog(stdout, INFO, "new point '%d' created at (%d,%d)", l, (*g)->p[l].x, (*g)->p[l].y);
     }
+
+    for (i = 0; i < nb_row; ++i) free(t[i]);
+    free(t);
 }
 
 /**
@@ -424,8 +454,6 @@ graph_t *  graph_initialize_graph(unsigned short n)
     return graph;
 }
 
-
-
 /**
  * \fn void graph_print_file(FILE * flux, graph_t * graph)
  * \brief Permet d'afficher le graphe de manière jolie
@@ -486,8 +514,6 @@ void graph_initialize_dist(graph_sdl_t * graph)
 	}
     }
 }
-
-
 
 /**
  * \fn graph_sdl_t *  graph_initialize_graph_sdl(unsigned short n, int width, int height, int ratio)
@@ -560,12 +586,10 @@ graph_sdl_t *  graph_initialize_graph_sdl(unsigned short n, int width, int heigh
 
     graph->p = p;
     graph_generate_sdl(&graph, width, height, ratio);
-
     graph_initialize_dist(graph);
     
     return graph;
 }
-
 
 /**
  * \fn void graph_free_graph(graph_t * graph)
@@ -586,7 +610,6 @@ void graph_free_graph(graph_t * graph)
     }
 }
 
-
 /**
  * \fn void graph_free_graph(graph_t * graph)
  * \brief Permet de libérer une structure graph_sdl_t
@@ -601,9 +624,8 @@ void graph_free_graph_sdl(graph_sdl_t * graph)
 {
     if (NULL != graph)
     {
+        free_matrix_float(graph->dist, graph->g->n);     // libere tableau des distances
         graph_free_graph(graph->g);                      // libere graphe
-	free_matrix_float(graph->dist, graph->g->n);     // libere tableau des distances
-	
 	free(graph->p);                                  // libere tableau SDL point
 	graph->p = NULL;
     }

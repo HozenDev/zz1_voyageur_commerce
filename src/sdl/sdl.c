@@ -240,11 +240,11 @@ void sdl_scale_rect_image(SDL_Rect * rect, SDL_Texture * img, float window_heigh
  * @param TTF_Font * font, text font to print
  * @param char * text, string to print
  * @param SDL_Point p, position from where the text printed
+ * @param SDL_Color color, color of the text
  */
 void sdl_print_text(SDL_Window * window, SDL_Renderer * renderer,
-                    TTF_Font * font, char * text, SDL_Point p)
+                    TTF_Font * font, char * text, SDL_Point p, SDL_Color color)
 {
-    SDL_Color color;
     int iW, iH;
     int window_width, window_height;
     SDL_Surface * text_surf;     
@@ -259,7 +259,6 @@ void sdl_print_text(SDL_Window * window, SDL_Renderer * renderer,
     }
 
     /* create the render of the text */
-    color = (SDL_Color) {255, 255, 255, 255};  				
     text_surf = TTF_RenderText_Blended(font, text, color);
     text_text = SDL_CreateTextureFromSurface(renderer, text_surf);
 
@@ -281,9 +280,7 @@ void sdl_print_text(SDL_Window * window, SDL_Renderer * renderer,
 
     /* free textures and surface */
     SDL_DestroyTexture(text_text);
-    zlog(stdout, INFO, "Textures libérées", NULL);
     SDL_FreeSurface(text_surf);
-    zlog(stdout, INFO, "Surfaces libérées", NULL);
 }
 
 /**
