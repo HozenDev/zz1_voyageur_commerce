@@ -150,6 +150,9 @@ void utils_matrix_copy(float ** srxmatrix,float ** destmatrix,int n)
         }
     }
 }
+/**
+ *@brief swaps values of the two int pointers
+ */
 void utils_swap(int*a,int*b){
 	int tmp;
 	tmp=*a;
@@ -157,12 +160,18 @@ void utils_swap(int*a,int*b){
 	*b=tmp;
 
 }
-void utils_shuffle(int* liste,int taille,int temperature){
+/**
+ *@brief shuffles the list by swapping random values in the said list  as often as there is of numbers in this list
+ */
+void utils_shuffle(int* liste,int taille){
 	for(int i=0;i<taille;i++){
 		utils_swap(&liste[rand()%taille],&liste[i]);
 	}
 	
 }
+/**
+ *@brief calculate the distance of the cycle within the list of size taille into the pointer dist
+ */
 void utils_distance_liste(int * indice,float ** distance,float * dist,int taille)
 {
 	for(int i=0;i<taille-1;i++)
@@ -171,12 +180,18 @@ void utils_distance_liste(int * indice,float ** distance,float * dist,int taille
 	}
 	*dist+=distance[indice[taille-1]][indice[0]];
 }
+/**
+ *@brief copy the values of listsrc into listdst both list being the same size taille
+ */
 void utils_copy_list(int *listsrc,int* listdst,int taille){
 	for(int i=0;i<taille;i++)
 	{
 		listdst[i]=listsrc[i];
 	}
 }
+/**
+ *@brief initialise the list list of size taille with all values being zeros
+ */
 void utils_initlist0(int * list,int taille){
 	for(int i=0;i<taille;i++){
 		list[i]=0;

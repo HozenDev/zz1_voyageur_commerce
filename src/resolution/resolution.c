@@ -3,14 +3,19 @@
 #include "../utils/utils.h"
 #include "../seed/seed.h"
 
-
+/**
+ *@brief solve the travelers problem with the "recuis simule" methods 
+ *
+ *@param float ** dist,matrix containing the minimal distances of the Floyd Warshall complete graph
+ *@param int taille,size of the matrix
+ */   
 float resolution_recuis_simule(float ** dist,int taille)
 {
     float distmin;
     float distance;
     int *solution=(int*)malloc(sizeof(int)*taille);
     int *new=(int*)malloc(sizeof(int)*taille);
-    float temperature=1000,espsilon=0.001,tauxderefroidissement=0.999;
+    float temperature=1000,espsilon=0.001,tauxderefroidissement=0.999999;
     generate_seed(0);
     for(int i=0;i<taille;i++)
     {
@@ -20,7 +25,7 @@ float resolution_recuis_simule(float ** dist,int taille)
     while(temperature>espsilon)
     {
         utils_copy_list(solution,new,taille);
-        utils_shuffle(new,taille,temperature);
+        utils_shuffle(new,taille);
         utils_distance_liste(new,dist,&distance,taille);
         
         if(distance<distmin || rand()<exp(-(distance-distmin)/temperature))
@@ -30,6 +35,8 @@ float resolution_recuis_simule(float ** dist,int taille)
         }
         temperature=temperature*tauxderefroidissement;
     }
+    free(solution);
+    free(new);
     return(distmin);
 }   
 
