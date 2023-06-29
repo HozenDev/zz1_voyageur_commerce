@@ -32,3 +32,6 @@
 !/data
 /data/*
 !/data/*.ttf
+
+# not ignore data/img
+!/data/*/
