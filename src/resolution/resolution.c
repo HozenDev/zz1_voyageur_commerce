@@ -11,13 +11,13 @@
  *
  * @return la distance du cycle minimale
  */
-float resolution_recuis_simule(float ** dist, int taille)
+float resolution_recuis_simule(float ** dist, int taille,float (*pf)(float))
 {
     /* paramètres */
-    float distmin;
-    float distance;
-    float temperature = 1000, espsilon = 0.001, tauxderefroidissement = 0.999;
-
+    float distmin=taille*2000;
+    float distance=0;
+    float temperature = 1000, espsilon = 0.001;
+   
     /* allocation des tableaux de solutions et solutions + 1 */
     int * solution = (int *) malloc(sizeof(int)*taille);
     int * new = (int *) malloc(sizeof(int)*taille);
@@ -32,12 +32,12 @@ float resolution_recuis_simule(float ** dist, int taille)
         utils_shuffle(new,taille);
         utils_distance_liste(new,dist,&distance,taille);
         
-        if(distance<distmin || rand()<exp(-(distance-distmin)/temperature))
+        if(distance<distmin || rand()/RAND_MAX<exp(-(distance-distmin)/temperature))
         {
             distmin=distance;
             utils_copy_list(new,solution,taille);
         }
-        temperature=temperature*tauxderefroidissement;
+        temperature=pf(temperature);
     }
     free(solution);
     free(new);
@@ -284,7 +284,7 @@ void resolution_ant_colony_update_pheromones(float *** pheromones, int ** fourmi
 }
 
 /**
- * @brief Compute a distance of a tour
+ * @brief Solves the traveller's problem with the ant collony methods
  *
  * @param dist, the distances matrix
  * @param n, size of the tour

@@ -218,15 +218,19 @@ int game_loop()
     int i;
 
     char buf[2048];
-    
+
+    float dist_minimale=0;
     game_initialisation(&game);
+
     
     floydWarshall(game->state.gs, &min_dist);
+    dist_minimale=resolution_ant_colony(min_dist, game->number_of_points, &meilleur_parcours);
 
     zlog(stdout, INFO, "GLOUTON EXHAUSTIVE: %f", glouton_exhaustive(min_dist, game->number_of_points));
-    zlog(stdout, INFO, "RECUIS SIMULÉ: %f", resolution_recuis_simule(min_dist, game->number_of_points));
-    zlog(stdout, INFO, "COLONIE DE FOURMI: %f", resolution_ant_colony(min_dist, game->number_of_points, &meilleur_parcours));
+    zlog(stdout, INFO, "RECUIS SIMULÉ: %f", resolution_recuis_simule(min_dist, game->number_of_points,&utils_descente_geometrique));
+    zlog(stdout, INFO, "COLONIE DE FOURMI: %f",dist_minimale);
     zlog(stdout, INFO, "MUTATION GENETIC : %f", genetic_solve(min_dist, game->number_of_points));
+
 
     p_response = (SDL_Point *) malloc(sizeof(p_response)*(game->number_of_points));
     for (i = 0; i < game->number_of_points; ++i)
@@ -242,8 +246,9 @@ int game_loop()
         
         sdl_print_text(game->window, game->renderer, game->font, "JEU DU VOYAGEUR",
                        (SDL_Point) {.x = -1, .y = 50}, colors_available.BLACK);
-
-        sprintf(buf, "Score: %.2f", game->state.score);
+        
+        sprintf(buf, "Score: %.2f   Min:%.2f", game->state.score,dist_minimale);
+        
         
         sdl_print_text(game->window, game->renderer, game->font, buf,
                        (SDL_Point) {.x = -1, .y = game->sh-80}, colors_available.BLACK);

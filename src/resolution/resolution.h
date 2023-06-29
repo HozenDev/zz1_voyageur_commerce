@@ -23,7 +23,7 @@ float glouton_exhaustive(float ** dist, int numVertices);
 float resolution_ant_colony(float **dist, int n, int ** meilleur_parcours);
 
 /* recuis_simule */
-float resolution_recuis_simule(float ** dist,int taille);
+float resolution_recuis_simule(float ** dist,int taille,float (*pf)(float));
 
 
 #endif
