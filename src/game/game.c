@@ -1,10 +1,10 @@
 #include "game.h"
 #include "../resolution/resolution.h"
 
-void graph_get_distance_selected(SDL_Point * p, int n)
+void graph_get_distance_selected(SDL_Point * p, int n,int * d_sum)
 {
     int i;
-    int d_sum = 0;
+    
 
     for (i = 0; i < n-1; ++i)
     {
