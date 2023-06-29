@@ -1,7 +1,6 @@
 #include "../log/log.h"
 #include "../game/game.h"
 
-
 int main(int argc, char *argv[])
 {
     int save = 1;

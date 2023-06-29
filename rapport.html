@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr">
 <head>
-<!-- 2023-06-29 jeu. 09:53 -->
+<!-- 2023-06-29 jeu. 13:15 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>ZZ1 SEMAINE 1</title>
-<meta name="author" content="DUREL Enzo DUREL Enzo" />
+<meta name="author" content="DUREL Enzo DUREL Enzo VILLEPREUX Thibault LEROY Louis" />
 <meta name="generator" content="Org Mode" />
 <link rel="stylesheet" type="text/css" href="https://hozendev.github.io/hozen-style/reset.css" />
 <link rel="stylesheet" type="text/css" href="https://hozendev.github.io/hozen-style/hozen_style.css" />
@@ -22,54 +22,190 @@
 <h2>Table des matières</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgd34e457">1. Projet Individuel</a></li>
-<li><a href="#org64e22d2">2. Problemes du Voyageur</a>
+<li><a href="#orgf851e04">1. Projet Individuel</a>
 <ul>
-<li><a href="#orgedb8245">2.1. Présentation</a></li>
-<li><a href="#org0f5b5a8">2.2. Floyd Warshall</a></li>
-<li><a href="#org66d9b2d">2.3. GLOUTON EXHAUSTIVE</a></li>
-<li><a href="#orgf25eae6">2.4. RECUIT SIMULÉ</a></li>
-<li><a href="#orgb8e7c04">2.5. COLONIE DE FOURMI</a>
+<li><a href="#org68a6ee7">1.1. Louis</a>
 <ul>
-<li><a href="#org89e143a">2.5.1. Cacul Probabilité sur les sommets de chaque fourmi</a></li>
-<li><a href="#org1d64a77">2.5.2. Mise à jour des distances d'une fourmi</a></li>
-<li><a href="#org3d3bda3">2.5.3. Mise à jour des phéromones des fourmis</a></li>
+<li><a href="#orgd2485c7">1.1.1. Z Fenetre</a></li>
+<li><a href="#org34632df">1.1.2. Carré Fusion</a></li>
+<li><a href="#org6a597f7">1.1.3. Sprite</a></li>
+</ul>
+</li>
+<li><a href="#org4f2ce1b">1.2. Thibault</a>
+<ul>
+<li><a href="#orga9e0e25">1.2.1. Fenetre Piège</a></li>
+<li><a href="#orga52e52a">1.2.2. Rectangle Latéraux Fusion</a></li>
+<li><a href="#org4ba3ee2">1.2.3. Super Mario Frod</a></li>
+</ul>
+</li>
+<li><a href="#org6a3503c">1.3. Enzo</a>
+<ul>
+<li><a href="#org0109e60">1.3.1. Explosion</a></li>
+<li><a href="#org48a96b5">1.3.2. Simulation Vent</a></li>
+<li><a href="#orgfe416f7">1.3.3. Parallax + animation voiture</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org559c68f">3. Chef d'oeuvre</a></li>
+<li><a href="#orgd19d01e">2. Problemes du Voyageur</a>
+<ul>
+<li><a href="#org919c611">2.1. Présentation</a></li>
+<li><a href="#org112b8a0">2.2. Floyd Warshall</a></li>
+<li><a href="#org7ce650c">2.3. GLOUTON EXHAUSTIVE</a></li>
+<li><a href="#org09985ca">2.4. RECUIT SIMULÉ</a></li>
+<li><a href="#orgf4e6f42">2.5. COLONIE DE FOURMI</a>
+<ul>
+<li><a href="#org6cb691f">2.5.1. Cacul Probabilité sur les sommets de chaque fourmi</a></li>
+<li><a href="#orgf275a13">2.5.2. Mise à jour des distances d'une fourmi</a></li>
+<li><a href="#org2025e98">2.5.3. Mise à jour des phéromones des fourmis</a></li>
+</ul>
+</li>
+<li><a href="#org7030b7f">2.6. Structure du code</a>
+<ul>
+<li><a href="#orgc50ece7">2.6.1. Makefile</a></li>
+<li><a href="#orgc8a38c2">2.6.2. build</a></li>
+<li><a href="#org282fe71">2.6.3. src</a></li>
+<li><a href="#orgc936def">2.6.4. data</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgaa55c31">3. Chef d'oeuvre</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgd34e457" class="outline-2">
-<h2 id="orgd34e457"><span class="section-number-2">1.</span> Projet Individuel</h2>
+<div id="outline-container-orgf851e04" class="outline-2">
+<h2 id="orgf851e04"><span class="section-number-2">1.</span> Projet Individuel</h2>
 <div class="outline-text-2" id="text-1">
-<p>
-[[]]
-[[]]
-[[]]
+</div>
+<div id="outline-container-org68a6ee7" class="outline-3">
+<h3 id="org68a6ee7"><span class="section-number-3">1.1.</span> Louis</h3>
+<div class="outline-text-3" id="text-1-1">
+</div>
+<div id="outline-container-orgd2485c7" class="outline-4">
+<h4 id="orgd2485c7"><span class="section-number-4">1.1.1.</span> Z Fenetre</h4>
+<div class="outline-text-4" id="text-1-1-1">
+
+<div id="org61c28c2" class="figure">
+<p><img src="./data/img/Louis_p2.gif" alt="Louis_p2.gif" width="800px" />
 </p>
-<p>
-[[]]
-[[]]
-[[]]
-</p>
-<p>
-[[]]
-[[]]
-[[]]
-</p>
+</div>
 </div>
 </div>
 
-<div id="outline-container-org64e22d2" class="outline-2">
-<h2 id="org64e22d2"><span class="section-number-2">2.</span> Problemes du Voyageur</h2>
+<div id="outline-container-org34632df" class="outline-4">
+<h4 id="org34632df"><span class="section-number-4">1.1.2.</span> Carré Fusion</h4>
+<div class="outline-text-4" id="text-1-1-2">
+
+<div id="org425e90a" class="figure">
+<p><img src="./data/img/Louis_p1.gif" alt="Louis_p1.gif" width="800px" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6a597f7" class="outline-4">
+<h4 id="org6a597f7"><span class="section-number-4">1.1.3.</span> Sprite</h4>
+<div class="outline-text-4" id="text-1-1-3">
+
+<div id="org9ad0ed1" class="figure">
+<p><img src="./data/img/Louis_p3.gif" alt="Louis_p3.gif" width="800px" />
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4f2ce1b" class="outline-3">
+<h3 id="org4f2ce1b"><span class="section-number-3">1.2.</span> Thibault</h3>
+<div class="outline-text-3" id="text-1-2">
+</div>
+<div id="outline-container-orga9e0e25" class="outline-4">
+<h4 id="orga9e0e25"><span class="section-number-4">1.2.1.</span> Fenetre Piège</h4>
+<div class="outline-text-4" id="text-1-2-1">
+
+<div id="org44353ef" class="figure">
+<p><img src="./data/img/Tib_p2.gif" alt="Tib_p2.gif" width="800px" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga52e52a" class="outline-4">
+<h4 id="orga52e52a"><span class="section-number-4">1.2.2.</span> Rectangle Latéraux Fusion</h4>
+<div class="outline-text-4" id="text-1-2-2">
+
+<div id="org9223f79" class="figure">
+<p><img src="./data/img/Tib_p1.gif" alt="Tib_p1.gif" width="800px" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4ba3ee2" class="outline-4">
+<h4 id="org4ba3ee2"><span class="section-number-4">1.2.3.</span> Super Mario Frod</h4>
+<div class="outline-text-4" id="text-1-2-3">
+
+<div id="orgc6082c4" class="figure">
+<p><img src="./data/img/Tib_p31.gif" alt="Tib_p31.gif" width="800px" />
+</p>
+</div>
+
+
+<div id="orgecdc2af" class="figure">
+<p><img src="./data/img/Tib_p32.gif" alt="Tib_p32.gif" width="800px" />
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6a3503c" class="outline-3">
+<h3 id="org6a3503c"><span class="section-number-3">1.3.</span> Enzo</h3>
+<div class="outline-text-3" id="text-1-3">
+</div>
+<div id="outline-container-org0109e60" class="outline-4">
+<h4 id="org0109e60"><span class="section-number-4">1.3.1.</span> Explosion</h4>
+<div class="outline-text-4" id="text-1-3-1">
+
+<div id="orgacfaf54" class="figure">
+<p><img src="./data/img/Enzo_explosion_2.gif" alt="Enzo_explosion_2.gif" width="800px" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org48a96b5" class="outline-4">
+<h4 id="org48a96b5"><span class="section-number-4">1.3.2.</span> Simulation Vent</h4>
+<div class="outline-text-4" id="text-1-3-2">
+
+<div id="orgc3f7191" class="figure">
+<p><img src="./data/img/Enzo_simulation.gif" alt="Enzo_simulation.gif" width="800px" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgfe416f7" class="outline-4">
+<h4 id="orgfe416f7"><span class="section-number-4">1.3.3.</span> Parallax + animation voiture</h4>
+<div class="outline-text-4" id="text-1-3-3">
+
+<div id="org3724272" class="figure">
+<p><img src="./data/img/Enzo_parallax.gif" alt="Enzo_parallax.gif" width="800px" />
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd19d01e" class="outline-2">
+<h2 id="orgd19d01e"><span class="section-number-2">2.</span> Problemes du Voyageur</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-orgedb8245" class="outline-3">
-<h3 id="orgedb8245"><span class="section-number-3">2.1.</span> Présentation</h3>
+<div id="outline-container-org919c611" class="outline-3">
+<h3 id="org919c611"><span class="section-number-3">2.1.</span> Présentation</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 L'énoncé du problème du voyageur de commerce est le suivant : étant donné n villes et les distances entre toutes les paires de villes, trouver un chemin de longueur totale minimale qui passe exactement une fois par chaque ville et revienne à la ville de départ.
@@ -77,250 +213,178 @@ L'énoncé du problème du voyageur de commerce est le suivant : étant donné n
 </div>
 </div>
 
-<div id="outline-container-org0f5b5a8" class="outline-3">
-<h3 id="org0f5b5a8"><span class="section-number-3">2.2.</span> Floyd Warshall</h3>
+<div id="outline-container-org112b8a0" class="outline-3">
+<h3 id="org112b8a0"><span class="section-number-3">2.2.</span> Floyd Warshall</h3>
 <div class="outline-text-3" id="text-2-2">
-<div class="org-src-container">
-<pre class="src src-c"><span style="color: #3d77ff;">/** </span><span style="color: #EECBC9;">@brief</span><span style="color: #3d77ff;"> Algorithme Floyd Warshall</span>
-<span style="color: #3d77ff;"> *</span>
-<span style="color: #3d77ff;"> * </span><span style="color: #EECBC9;">@param</span><span style="color: #3d77ff;"> graph, le graphe qui contient les distances initialis&#233;es</span>
-<span style="color: #3d77ff;"> * </span><span style="color: #EECBC9;">@param</span><span style="color: #3d77ff;"> matrixFloyd, matrice des plus petites distances retourn&#233;es par l'algorithme</span>
-<span style="color: #3d77ff;"> */</span>
-<span style="color: #93EBB9;">void</span> <span style="color: #fa8072;">floydWarshall</span>(<span style="color: #93EBB9;">graph_sdl_t</span> * <span style="color: #E8E3BA;">graph</span>, <span style="color: #93EBB9;">float</span> *** <span style="color: #E8E3BA;">matrixFloyd</span>)
-{
-    <span style="color: #93EBB9;">int</span> <span style="color: #E8E3BA;">numVertices</span> = graph-&gt;g-&gt;n;
+<pre class="example" id="org15a452d">
+Sortie : matrice, des plus courtes distances
+Entrée : graph, graph qui contient les points et distances initialisées
+Var    : matrice, des plus courtes distances
 
-    *matrixFloyd = (<span style="color: #93EBB9;">float</span> **) malloc(numVertices * <span style="color: #7A8799;">sizeof</span>(<span style="color: #93EBB9;">float</span> *));
+Initialisation matrice = +∞
 
-    <span style="color: #7A8799;">for</span> (<span style="color: #93EBB9;">int</span> <span style="color: #E8E3BA;">i</span> = 0; i &lt; numVertices; i++) {
-        (*matrixFloyd)[i] = (<span style="color: #93EBB9;">float</span>*)malloc(numVertices * <span style="color: #7A8799;">sizeof</span>(<span style="color: #93EBB9;">float</span>));
-
-        <span style="color: #7A8799;">for</span> (<span style="color: #93EBB9;">int</span> <span style="color: #E8E3BA;">j</span> = 0; j &lt; numVertices; j++) {
-            (*matrixFloyd)[i][j] = graph-&gt;dist[i][j];
-        }
-    }
-
-    <span style="color: #7A8799;">for</span> (<span style="color: #93EBB9;">int</span> <span style="color: #E8E3BA;">k</span> = 0; k &lt; numVertices; k++) {
-        <span style="color: #7A8799;">for</span> (<span style="color: #93EBB9;">int</span> <span style="color: #E8E3BA;">i</span> = 0; i &lt; numVertices; i++) {
-            <span style="color: #7A8799;">for</span> (<span style="color: #93EBB9;">int</span> <span style="color: #E8E3BA;">j</span> = 0; j &lt; numVertices; j++) {
-                <span style="color: #7A8799;">if</span> (   (*matrixFloyd)[i][k] != INFINITY
-                       &amp;&amp; (*matrixFloyd)[k][j] != INFINITY
-                       &amp;&amp; (*matrixFloyd)[i][k] + (*matrixFloyd)[k][j] &lt; (*matrixFloyd)[i][j]) {
-                    (*matrixFloyd)[i][j] = (*matrixFloyd)[i][k] + (*matrixFloyd)[k][j];
-                }
-            }
-        }
-    } 
-}
+FONCTION floyd_warshall (graph)
+|    allocation de la matrice
+|    initialisation de celle ci avec les distances des arcs existants
+|
+|    POUR k de 0 a la taille de la matrice FAIRE:
+|    |    POUR chaque cellule de la matrice FAIRE:
+|    |    |    SI le chemin passant par k entre les deux coefs de la matrice est plus court que celui stocké ALORS
+|    |    |    |    On met a jour la distance avec celle de ce nouveau chemin
+|    |    |    FSI
+|    |    FAIT
+|    FAIT
+|
+|    retourner matrice
+FIN
 </pre>
 </div>
 </div>
-</div>
 
-<div id="outline-container-org66d9b2d" class="outline-3">
-<h3 id="org66d9b2d"><span class="section-number-3">2.3.</span> GLOUTON EXHAUSTIVE</h3>
+<div id="outline-container-org7ce650c" class="outline-3">
+<h3 id="org7ce650c"><span class="section-number-3">2.3.</span> GLOUTON EXHAUSTIVE</h3>
 <div class="outline-text-3" id="text-2-3">
-<div class="org-src-container">
-<pre class="src src-C"><span style="color: #3d77ff;">/** </span><span style="color: #EECBC9;">@brief</span><span style="color: #3d77ff;"> Algorithme glouton exhaustive: prendre le meilleur parmi tous les voisins</span>
-<span style="color: #3d77ff;"> *</span>
-<span style="color: #3d77ff;"> * </span><span style="color: #EECBC9;">@param</span><span style="color: #3d77ff;"> dist, matrice des distances</span>
-<span style="color: #3d77ff;"> * </span><span style="color: #EECBC9;">@param</span><span style="color: #3d77ff;"> taille, nombre de noeuds du graphe</span>
-<span style="color: #3d77ff;"> *</span>
-<span style="color: #3d77ff;"> * </span><span style="color: #EECBC9;">@return</span><span style="color: #3d77ff;"> la distance du cycle minimale</span>
-<span style="color: #3d77ff;"> */</span>
-<span style="color: #93EBB9;">float</span> <span style="color: #fa8072;">glouton_exhaustive</span>(<span style="color: #93EBB9;">float</span> ** <span style="color: #E8E3BA;">dist</span>, <span style="color: #93EBB9;">int</span> <span style="color: #E8E3BA;">n</span>)
-{
-    <span style="color: #93EBB9;">float</span> <span style="color: #E8E3BA;">dist_min_global</span> = INFINITY;
-    ...
+<p>
+Principe: Prendre le meilleur à chaque itération
+</p>
 
-    <span style="color: #7A8799;">for</span> (i = 0; i &lt; n; ++i)
-    {
-        dist = 0;
-        curr = i;
+<pre class="example" id="orgf398fd0">
+Sortie : distance euclidienne cycle minimum
+Entrée : tableau distance Floyd Warshall, nb_sommet
+Var    : tableau visitée , case = 0 non visité sinon 1
 
-        <span style="color: #9BD3F8;">// </span><span style="color: #9BD3F8;">Parcourir tous les sommets en partant de i</span>
-        <span style="color: #7A8799;">do</span> {
-            visite[curr] = 1;
-            next = -1;
-            dist_min_local = INFINITY;
+Initialisation dist_min_trouve = +∞
 
-            <span style="color: #9BD3F8;">// </span><span style="color: #9BD3F8;">Chercher le sommet voisin non visit&#233; avec la distance minimale</span>
-            <span style="color: #7A8799;">for</span> (j = 0; j &lt; n; ++j) {
-                <span style="color: #7A8799;">if</span> (j != curr &amp;&amp; <span style="color: #EECBC9;">!</span>visite[j] &amp;&amp; dist[curr][j] &lt; dist_min_local) {
-                    dist_min_local = dist[curr][j];
-                    next = j;
-                }
-            }
+glouton_exhaustive :
+           
+     POUR chaque sommet du graphe :
+     |     FAIRE jusqu'à tous les sommets sont visités
+     |     |    aller au prochain sommet le moins loin en le marquant comme visité en s'aidant de la matrice de floyd W,
+     |     |    ne pas oublié de revenir au depart pour le dernier sommet
+     |     |_FIN
+     |     regarder si la distance du cycle est plus petite que dist_min_trouve, si oui la modifier
+     |_FAIT
 
-            <span style="color: #7A8799;">if</span> (next != -1) {
-                dist += dist_min_local;
-                curr = next;
-            }
-        } <span style="color: #7A8799;">while</span> (next != -1);
-
-        <span style="color: #9BD3F8;">// </span><span style="color: #9BD3F8;">V&#233;rifier si la distance actuelle est plus petite que la distance minimale trouv&#233;e jusqu'&#224; pr&#233;sent</span>
-        <span style="color: #7A8799;">if</span> (dist + dist[i][curr] &lt; dist_min_global) {
-            dist_min_global = dist + dist[i][curr];
-        }
-    }
-
-    <span style="color: #7A8799;">return</span> dist_min_global;
-}
+     retourner dist_min_trouve
+     
+FIN ALGO
 </pre>
 </div>
 </div>
-</div>
 
-<div id="outline-container-orgf25eae6" class="outline-3">
-<h3 id="orgf25eae6"><span class="section-number-3">2.4.</span> RECUIT SIMULÉ</h3>
+<div id="outline-container-org09985ca" class="outline-3">
+<h3 id="org09985ca"><span class="section-number-3">2.4.</span> RECUIT SIMULÉ</h3>
 <div class="outline-text-3" id="text-2-4">
-<div class="org-src-container">
-<pre class="src src-c"><span style="color: #3d77ff;">/**</span>
-<span style="color: #3d77ff;"> * </span><span style="color: #EECBC9;">@brief</span><span style="color: #3d77ff;"> m&#233;thode de r&#233;solution par recuis simul&#233;</span>
-<span style="color: #3d77ff;"> *</span>
-<span style="color: #3d77ff;"> * </span><span style="color: #EECBC9;">@param</span><span style="color: #3d77ff;"> dist, matrice des distances</span>
-<span style="color: #3d77ff;"> * </span><span style="color: #EECBC9;">@param</span><span style="color: #3d77ff;"> taille, nombre de noeuds du graphe</span>
-<span style="color: #3d77ff;"> *</span>
-<span style="color: #3d77ff;"> * </span><span style="color: #EECBC9;">@return</span><span style="color: #3d77ff;"> la distance du cycle minimale</span>
-<span style="color: #3d77ff;"> */</span>
-<span style="color: #93EBB9;">float</span> <span style="color: #fa8072;">resolution_recuis_simule</span>(<span style="color: #93EBB9;">float</span> ** <span style="color: #E8E3BA;">dist</span>, <span style="color: #93EBB9;">int</span> <span style="color: #E8E3BA;">taille</span>)
-{
-    ...
-    <span style="color: #93EBB9;">float</span> temperature = 1000, espsilon = 0.001, tauxderefroidissement = 0.999;
-    ...
+<p>
+Principe: Prendre le meilleur avec une probabilité qui diminue au cours du temps
+</p>
 
-    utils_distance_liste(solution, dist, &amp;distmin, taille);
-
-    <span style="color: #7A8799;">while</span> (temperature &gt; espsilon)
-    {
-        utils_copy_list(solution,new,taille);
-        utils_shuffle(new,taille,temperature);
-        utils_distance_liste(new,dist,&amp;distance,taille);
-
-        <span style="color: #7A8799;">if</span>(distance&lt;distmin || rand()&lt;exp(-(distance-distmin)/temperature))
-        {
-            distmin=distance;
-            utils_copy_list(new,solution,taille);
-        }
-        temperature=temperature*tauxderefroidissement;
-    }
-    <span style="color: #7A8799;">return</span> distmin;
-}
+<pre class="example" id="org088234e">
+FONCTION resolution_recuit_simulé(distance,taille)
+|    initialisation des parametre; [temperature,taux...]
+|    initialisation d'une solution; [0,1,2,....]
+|
+|    TANT QUE tempertaure&gt;seuil FAIRE
+|    |    mélange la solution
+|    |    compare cette nouvelle solution
+|    |    SI nouvelle solution est meilleur ou avec une probabilité fonction de la temperature ALORS
+|    |    |   on met a jour la dist et la solution minimales
+|    |    FSI
+|    |    met a jour la temperature
+|    FAIT
+|
+|    libere les tableaux
+|
+|    retourne la distance
+FIN ALGO
 </pre>
 </div>
 </div>
-</div>
 
-<div id="outline-container-orgb8e7c04" class="outline-3">
-<h3 id="orgb8e7c04"><span class="section-number-3">2.5.</span> COLONIE DE FOURMI</h3>
+<div id="outline-container-orgf4e6f42" class="outline-3">
+<h3 id="orgf4e6f42"><span class="section-number-3">2.5.</span> COLONIE DE FOURMI</h3>
 <div class="outline-text-3" id="text-2-5">
 </div>
-<div id="outline-container-org89e143a" class="outline-4">
-<h4 id="org89e143a"><span class="section-number-4">2.5.1.</span> Cacul Probabilité sur les sommets de chaque fourmi</h4>
-<div class="outline-text-4" id="text-2-5-1">
-<div class="org-src-container">
-<pre class="src src-C">...
-<span style="color: #9BD3F8;">// </span><span style="color: #9BD3F8;">Calcul des probabilit&#233;s de transition vers les sommets non visit&#233;s</span>
-<span style="color: #7A8799;">for</span> (j = 0; j &lt; n; j++) {
-    <span style="color: #7A8799;">if</span> (visited[j] == 0) {
-        probabilities[j] = pow(pheromones[curr][j], T_PHEROMONE) * pow(visibility[curr][j], T_DISTANCE);
-        sum += probabilities[j];
-    } <span style="color: #7A8799;">else</span> {
-        probabilities[j] = 0.0;
-    }
-}
+<div id="outline-container-org6cb691f" class="outline-4">
+<h4 id="org6cb691f"><span class="section-number-4">2.5.1.</span> Cacul Probabilité sur les sommets de chaque fourmi</h4>
+</div>
+<div id="outline-container-orgf275a13" class="outline-4">
+<h4 id="orgf275a13"><span class="section-number-4">2.5.2.</span> Mise à jour des distances d'une fourmi</h4>
+</div>
+<div id="outline-container-org2025e98" class="outline-4">
+<h4 id="org2025e98"><span class="section-number-4">2.5.3.</span> Mise à jour des phéromones des fourmis</h4>
+</div>
+</div>
+<div id="outline-container-org7030b7f" class="outline-3">
+<h3 id="org7030b7f"><span class="section-number-3">2.6.</span> Structure du code</h3>
+<div class="outline-text-3" id="text-2-6">
+</div>
+<div id="outline-container-orgc50ece7" class="outline-4">
+<h4 id="orgc50ece7"><span class="section-number-4">2.6.1.</span> Makefile</h4>
+</div>
+<div id="outline-container-orgc8a38c2" class="outline-4">
+<h4 id="orgc8a38c2"><span class="section-number-4">2.6.2.</span> build</h4>
+</div>
+<div id="outline-container-org282fe71" class="outline-4">
+<h4 id="org282fe71"><span class="section-number-4">2.6.3.</span> src</h4>
+<div class="outline-text-4" id="text-2-6-3">
+<p>
+1.1 graph
+</p>
 
-<span style="color: #9BD3F8;">// </span><span style="color: #9BD3F8;">S&#233;lection du prochain sommet en utilisant les probabilit&#233;s normalis&#233;es</span>
-random = ((<span style="color: #93EBB9;">float</span>)<span style="color: #fa8072;">rand</span>() / RAND_MAX);
-cumulativeProbability = 0.0;
-<span style="color: #7A8799;">for</span> (j = 0; j &lt; n; j++) {
-    probabilities[j] /= sum;
-    cumulativeProbability += probabilities[j];
-    <span style="color: #7A8799;">if</span> (random &lt;= cumulativeProbability) {
-        next = j;
-        <span style="color: #7A8799;">break</span>;
-    }
-}
-...
-</pre>
-</div>
-</div>
-</div>
+<p>
+Contient la structure d'un graph.
+</p>
 
-<div id="outline-container-org1d64a77" class="outline-4">
-<h4 id="org1d64a77"><span class="section-number-4">2.5.2.</span> Mise à jour des distances d'une fourmi</h4>
-<div class="outline-text-4" id="text-2-5-2">
-<div class="org-src-container">
-<pre class="src src-C"><span style="color: #3d77ff;">/**</span>
-<span style="color: #3d77ff;"> * </span><span style="color: #EECBC9;">@brief</span><span style="color: #3d77ff;"> Compute a distance of a tour</span>
-<span style="color: #3d77ff;"> *</span>
-<span style="color: #3d77ff;"> * </span><span style="color: #EECBC9;">@param</span><span style="color: #3d77ff;"> dist, the distances matrix</span>
-<span style="color: #3d77ff;"> * </span><span style="color: #EECBC9;">@param</span><span style="color: #3d77ff;"> fourmi_parcours, a tour of an ant</span>
-<span style="color: #3d77ff;"> * </span><span style="color: #EECBC9;">@param</span><span style="color: #3d77ff;"> n, size of the tour</span>
-<span style="color: #3d77ff;"> */</span>
-<span style="color: #93EBB9;">float</span> <span style="color: #fa8072;">resolution_ant_colony_compute_distance</span>(<span style="color: #93EBB9;">float</span> ** <span style="color: #E8E3BA;">dist</span>, <span style="color: #93EBB9;">int</span> * <span style="color: #E8E3BA;">fourmi_parcours</span>, <span style="color: #93EBB9;">int</span> <span style="color: #E8E3BA;">n</span>)
-{
-    <span style="color: #9BD3F8;">// </span><span style="color: #9BD3F8;">Calcul de la longueur du tour construit par la fourmi</span>
-    <span style="color: #93EBB9;">float</span> <span style="color: #E8E3BA;">total_dist</span> = 0.0;
-    <span style="color: #93EBB9;">int</span> <span style="color: #E8E3BA;">i</span>;
+<p>
+Contient la structure de la représentation SDL d'un graph.
+</p>
 
-    <span style="color: #7A8799;">for</span> (i = 0; i &lt; n - 1; i++)
-        total_dist += dist[fourmi_parcours[i]][fourmi_parcours[i+1]];
-    total_dist += dist[fourmi_parcours[n-1]][fourmi_parcours[0]]; <span style="color: #9BD3F8;">// </span><span style="color: #9BD3F8;">Retour au sommet de d&#233;part</span>
+<p>
+Contient toutes les fonctions associées aux graphes.
+</p>
 
-    <span style="color: #7A8799;">return</span> total_dist;
-}
-</pre>
-</div>
-</div>
-</div>
+<p>
+1.2 resolution
+</p>
 
-<div id="outline-container-org3d3bda3" class="outline-4">
-<h4 id="org3d3bda3"><span class="section-number-4">2.5.3.</span> Mise à jour des phéromones des fourmis</h4>
-<div class="outline-text-4" id="text-2-5-3">
-<div class="org-src-container">
-<pre class="src src-C"><span style="color: #3d77ff;">/**</span>
-<span style="color: #3d77ff;"> * </span><span style="color: #EECBC9;">@brief</span><span style="color: #3d77ff;"> Update pheromones matrix</span>
-<span style="color: #3d77ff;"> *</span>
-<span style="color: #3d77ff;"> * </span><span style="color: #EECBC9;">@param</span><span style="color: #3d77ff;"> pheromones, adress of pheromones to update</span>
-<span style="color: #3d77ff;"> * </span><span style="color: #EECBC9;">@param</span><span style="color: #3d77ff;"> fourmi_parcours, array of all ant tour</span>
-<span style="color: #3d77ff;"> * </span><span style="color: #EECBC9;">@param</span><span style="color: #3d77ff;"> fourmi_distances, array of all ant distance compute with result tour</span>
-<span style="color: #3d77ff;"> * </span><span style="color: #EECBC9;">@param</span><span style="color: #3d77ff;"> n, size of the tour</span>
-<span style="color: #3d77ff;"> */</span>
-<span style="color: #93EBB9;">void</span> <span style="color: #fa8072;">resolution_ant_colony_update_pheromones</span>(<span style="color: #93EBB9;">float</span> *** <span style="color: #E8E3BA;">pheromones</span>, <span style="color: #93EBB9;">int</span> ** <span style="color: #E8E3BA;">fourmi_parcours</span>, <span style="color: #93EBB9;">float</span> * <span style="color: #E8E3BA;">fourmi_distances</span>, <span style="color: #93EBB9;">int</span> <span style="color: #E8E3BA;">n</span>)
-{
-    ...
-    <span style="color: #9BD3F8;">// </span><span style="color: #9BD3F8;">Mise &#224; jour des ph&#233;romones sur toutes les ar&#234;tes</span>
-    <span style="color: #7A8799;">for</span> (i = 0; i &lt; n; i++) {
-        <span style="color: #7A8799;">for</span> (j = 0; j &lt; n; j++) {
-            <span style="color: #7A8799;">if</span> (i != j) {
-                <span style="color: #9BD3F8;">// </span><span style="color: #9BD3F8;">&#201;vaporation des ph&#233;romones</span>
-                (*pheromones)[i][j] *= (1.0 - T_EVAP);
+<p>
+Contient les codes des algorithmes de résolution (fourmi, recuit simulé, &#x2026;).
+</p>
 
-                <span style="color: #9BD3F8;">// </span><span style="color: #9BD3F8;">D&#233;p&#244;t de ph&#233;romones par chaque fourmi</span>
-                <span style="color: #7A8799;">for</span> (ant = 0; ant &lt; NUM_ANTS; ant++) {
-                    curr = fourmi_parcours[ant][i];
-                    next = fourmi_parcours[ant][j];
-                    (*pheromones)[curr][next] += (Q / fourmi_distances[ant]);
-                }
-            }
-        }
-    }
-}
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
+<p>
+1.3 game
+</p>
 
-<div id="outline-container-org559c68f" class="outline-2">
-<h2 id="org559c68f"><span class="section-number-2">3.</span> Chef d'oeuvre</h2>
+<p>
+Contient les gestions des différentes états du jeu.
+</p>
+
+<p>
+Structure jeu qui contient tout les attributs d'un jeu.
+</p>
+
+<p>
+Structure état du jeu qui contient les attributs qui définissent l'état dans lequel est le jeu.
+</p>
+
+<p>
+1.4 utils
+</p>
+</div>
+</div>
+<div id="outline-container-orgc936def" class="outline-4">
+<h4 id="orgc936def"><span class="section-number-4">2.6.4.</span> data</h4>
+</div>
+</div>
+</div>
+<div id="outline-container-orgaa55c31" class="outline-2">
+<h2 id="orgaa55c31"><span class="section-number-2">3.</span> Chef d'oeuvre</h2>
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="author">Auteur: DUREL Enzo DUREL Enzo</p>
-<p class="date">Created: 2023-06-29 jeu. 09:53</p>
+<p class="author">Auteur: DUREL Enzo DUREL Enzo VILLEPREUX Thibault LEROY Louis</p>
+<p class="date">Created: 2023-06-29 jeu. 13:15</p>
 <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>

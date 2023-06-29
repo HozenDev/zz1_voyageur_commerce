@@ -1,241 +1,161 @@
 #+SETUPFILE: https://hozendev.github.io/hozen-style/hozen_html_style.setup
 
 #+TITLE: ZZ1 SEMAINE 1
-#+AUTHOR: DUREL Enzo
+#+AUTHOR: DUREL Enzo VILLEPREUX Thibault LEROY Louis
 #+LANGUAGE: fr
 
 * Projet Individuel
+** Louis
+*** Z Fenetre
+#+attr_html: :width 800px
+[[./data/img/Louis_p2.gif]]
 
-** Louis :ignore:
+*** Carré Fusion
+#+attr_html: :width 800px
+[[./data/img/Louis_p1.gif]]
 
-[[]]
-[[]]
-[[]]
+*** Sprite
+#+attr_html: :width 800px
+[[./data/img/Louis_p3.gif]]
 
-** Thibault :ignore:
+** Thibault
+*** Fenetre Piège
+#+attr_html: :width 800px
+[[./data/img/Tib_p2.gif]]
 
-[[]]
-[[]]
-[[]]
+*** Rectangle Latéraux Fusion
+#+attr_html: :width 800px
+[[./data/img/Tib_p1.gif]]
 
-** Enzo :ignore:
+*** Super Mario Frod
 
-[[]]
-[[]]
-[[]]
+#+attr_html: :width 800px
+[[./data/img/Tib_p31.gif]]
+
+#+attr_html: :width 800px
+[[./data/img/Tib_p32.gif]]
+
+** Enzo
+*** Explosion
+#+attr_html: :width 800px
+[[./data/img/Enzo_explosion_2.gif]]
+
+*** Simulation Vent
+#+attr_html: :width 800px
+[[./data/img/Enzo_simulation.gif]]
+
+*** Parallax + animation voiture
+#+attr_html: :width 800px
+[[./data/img/Enzo_parallax.gif]]
 
 * Problemes du Voyageur
-
 ** Présentation
 
 L'énoncé du problème du voyageur de commerce est le suivant : étant donné n villes et les distances entre toutes les paires de villes, trouver un chemin de longueur totale minimale qui passe exactement une fois par chaque ville et revienne à la ville de départ.
 
 ** Floyd Warshall
 
-#+begin_src c
-  /** @brief Algorithme Floyd Warshall
-   *
-   * @param graph, le graphe qui contient les distances initialisées
-   * @param matrixFloyd, matrice des plus petites distances retournées par l'algorithme
-   */
-  void floydWarshall(graph_sdl_t * graph, float *** matrixFloyd)
-  {
-      int numVertices = graph->g->n;
+#+begin_example
+Sortie : matrice, des plus courtes distances
+Entrée : graph, graph qui contient les points et distances initialisées
+Var    : matrice, des plus courtes distances
 
-      ,*matrixFloyd = (float **) malloc(numVertices * sizeof(float *));
+Initialisation matrice = +∞
 
-      for (int i = 0; i < numVertices; i++) {
-          (*matrixFloyd)[i] = (float*)malloc(numVertices * sizeof(float));
-
-          for (int j = 0; j < numVertices; j++) {
-              (*matrixFloyd)[i][j] = graph->dist[i][j];
-          }
-      }
-    
-      for (int k = 0; k < numVertices; k++) {
-          for (int i = 0; i < numVertices; i++) {
-              for (int j = 0; j < numVertices; j++) {
-                  if (   (*matrixFloyd)[i][k] != INFINITY
-                         && (*matrixFloyd)[k][j] != INFINITY
-                         && (*matrixFloyd)[i][k] + (*matrixFloyd)[k][j] < (*matrixFloyd)[i][j]) {
-                      (*matrixFloyd)[i][j] = (*matrixFloyd)[i][k] + (*matrixFloyd)[k][j];
-                  }
-              }
-          }
-      } 
-  }
-#+end_src
+FONCTION floyd_warshall (graph)
+|    allocation de la matrice
+|    initialisation de celle ci avec les distances des arcs existants
+|
+|    POUR k de 0 a la taille de la matrice FAIRE:
+|    |    POUR chaque cellule de la matrice FAIRE:
+|    |    |    SI le chemin passant par k entre les deux coefs de la matrice est plus court que celui stocké ALORS
+|    |    |    |    On met a jour la distance avec celle de ce nouveau chemin
+|    |    |    FSI
+|    |    FAIT
+|    FAIT
+|
+|    retourner matrice
+FIN
+#+end_example
 
 ** GLOUTON EXHAUSTIVE
 
-#+begin_src C
-  /** @brief Algorithme glouton exhaustive: prendre le meilleur parmi tous les voisins
-   ,*
-   ,* @param dist, matrice des distances
-   ,* @param taille, nombre de noeuds du graphe
-   ,*
-   ,* @return la distance du cycle minimale
-   ,*/
-  float glouton_exhaustive(float ** dist, int n)
-  {
-      float dist_min_global = INFINITY;
-      ...
+Principe: Prendre le meilleur à chaque itération
 
-      for (i = 0; i < n; ++i)
-      {
-          dist = 0;
-          curr = i;
+#+begin_example
+Sortie : distance euclidienne cycle minimum
+Entrée : tableau distance Floyd Warshall, nb_sommet
+Var    : tableau visitée , case = 0 non visité sinon 1
 
-          // Parcourir tous les sommets en partant de i
-          do {
-              visite[curr] = 1;
-              next = -1;
-              dist_min_local = INFINITY;
+Initialisation dist_min_trouve = +∞
 
-              // Chercher le sommet voisin non visité avec la distance minimale
-              for (j = 0; j < n; ++j) {
-                  if (j != curr && !visite[j] && dist[curr][j] < dist_min_local) {
-                      dist_min_local = dist[curr][j];
-                      next = j;
-                  }
-              }
-
-              if (next != -1) {
-                  dist += dist_min_local;
-                  curr = next;
-              }
-          } while (next != -1);
-
-          // Vérifier si la distance actuelle est plus petite que la distance minimale trouvée jusqu'à présent
-          if (dist + dist[i][curr] < dist_min_global) {
-              dist_min_global = dist + dist[i][curr];
-          }
-      }
-
-      return dist_min_global;
-  }
-#+end_src
+glouton_exhaustive :
+|           
+|     POUR chaque sommet du graphe :
+|     |     FAIRE jusqu'à tous les sommets sont visités
+|     |     |    aller au prochain sommet le moins loin en le marquant comme visité en s'aidant de la matrice de floyd W,
+|     |     |    ne pas oublié de revenir au depart pour le dernier sommet
+|     |     |_FIN
+|     |     regarder si la distance du cycle est plus petite que dist_min_trouve, si oui la modifier
+|     |_FAIT
+|
+|     retourner dist_min_trouve
+|     
+FIN ALGO
+#+end_example
 
 ** RECUIT SIMULÉ
 
-#+begin_src c
-  /**
-   ,* @brief méthode de résolution par recuis simulé
-   ,*
-   ,* @param dist, matrice des distances
-   ,* @param taille, nombre de noeuds du graphe
-   ,*
-   ,* @return la distance du cycle minimale
-   ,*/
-  float resolution_recuis_simule(float ** dist, int taille)
-  {
-      ...
-      float temperature = 1000, espsilon = 0.001, tauxderefroidissement = 0.999;
-      ...
+Principe: Prendre le meilleur avec une probabilité qui diminue au cours du temps
 
-      utils_distance_liste(solution, dist, &distmin, taille);
-
-      while (temperature > espsilon)
-      {
-          utils_copy_list(solution,new,taille);
-          utils_shuffle(new,taille,temperature);
-          utils_distance_liste(new,dist,&distance,taille);
-
-          if(distance<distmin || rand()<exp(-(distance-distmin)/temperature))
-          {
-              distmin=distance;
-              utils_copy_list(new,solution,taille);
-          }
-          temperature=temperature*tauxderefroidissement;
-      }
-      return distmin;
-  }
-#+end_src
+#+begin_example
+FONCTION resolution_recuit_simulé(distance,taille)
+|    initialisation des parametre; [temperature,taux...]
+|    initialisation d'une solution; [0,1,2,....]
+|
+|    TANT QUE tempertaure>seuil FAIRE
+|    |    mélange la solution
+|    |    compare cette nouvelle solution
+|    |    SI nouvelle solution est meilleur ou avec une probabilité fonction de la temperature ALORS
+|    |    |   on met a jour la dist et la solution minimales
+|    |    FSI
+|    |    met a jour la temperature
+|    FAIT
+|
+|    libere les tableaux
+|
+|    retourne la distance
+FIN ALGO
+#+end_example
 
 ** COLONIE DE FOURMI
 *** Cacul Probabilité sur les sommets de chaque fourmi
-
-#+begin_src C
-  ...
-  // Calcul des probabilités de transition vers les sommets non visités
-  for (j = 0; j < n; j++) {
-      if (visited[j] == 0) {
-          probabilities[j] = pow(pheromones[curr][j], T_PHEROMONE) * pow(visibility[curr][j], T_DISTANCE);
-          sum += probabilities[j];
-      } else {
-          probabilities[j] = 0.0;
-      }
-  }
-
-  // Sélection du prochain sommet en utilisant les probabilités normalisées
-  random = ((float)rand() / RAND_MAX);
-  cumulativeProbability = 0.0;
-  for (j = 0; j < n; j++) {
-      probabilities[j] /= sum;
-      cumulativeProbability += probabilities[j];
-      if (random <= cumulativeProbability) {
-          next = j;
-          break;
-      }
-  }
-  ...
-#+end_src
-
 *** Mise à jour des distances d'une fourmi
-
-#+begin_src C
-  /**
-   ,* @brief Compute a distance of a tour
-   ,*
-   ,* @param dist, the distances matrix
-   ,* @param fourmi_parcours, a tour of an ant
-   ,* @param n, size of the tour
-   ,*/
-  float resolution_ant_colony_compute_distance(float ** dist, int * fourmi_parcours, int n)
-  {
-      // Calcul de la longueur du tour construit par la fourmi
-      float total_dist = 0.0;
-      int i;
-
-      for (i = 0; i < n - 1; i++)
-          total_dist += dist[fourmi_parcours[i]][fourmi_parcours[i+1]];
-      total_dist += dist[fourmi_parcours[n-1]][fourmi_parcours[0]]; // Retour au sommet de départ
-
-      return total_dist;
-  }
-#+end_src
-
 *** Mise à jour des phéromones des fourmis
+** Structure du code
+*** Makefile
+*** build
+*** src
+1.1 graph
 
-#+begin_src C 
-  /**
-   ,* @brief Update pheromones matrix
-   ,*
-   ,* @param pheromones, adress of pheromones to update
-   ,* @param fourmi_parcours, array of all ant tour
-   ,* @param fourmi_distances, array of all ant distance compute with result tour
-   ,* @param n, size of the tour
-   ,*/
-  void resolution_ant_colony_update_pheromones(float *** pheromones, int ** fourmi_parcours, float * fourmi_distances, int n)
-  {
-      ...
-      // Mise à jour des phéromones sur toutes les arêtes
-      for (i = 0; i < n; i++) {
-          for (j = 0; j < n; j++) {
-              if (i != j) {
-                  // Évaporation des phéromones
-                  (*pheromones)[i][j] *= (1.0 - T_EVAP);
+Contient la structure d'un graph.
 
-                  // Dépôt de phéromones par chaque fourmi
-                  for (ant = 0; ant < NUM_ANTS; ant++) {
-                      curr = fourmi_parcours[ant][i];
-                      next = fourmi_parcours[ant][j];
-                      (*pheromones)[curr][next] += (Q / fourmi_distances[ant]);
-                  }
-              }
-          }
-      }
-  }
-#+end_src
+Contient la structure de la représentation SDL d'un graph.
 
+Contient toutes les fonctions associées aux graphes.
+
+1.2 resolution
+
+Contient les codes des algorithmes de résolution (fourmi, recuit simulé, ...).
+
+1.3 game
+
+Contient les gestions des différentes états du jeu.
+
+Structure jeu qui contient tout les attributs d'un jeu.
+
+Structure état du jeu qui contient les attributs qui définissent l'état dans lequel est le jeu.
+
+1.4 utils
+*** data
 * Chef d'oeuvre

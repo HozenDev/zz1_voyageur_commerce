@@ -55,7 +55,7 @@ float resolution_recuis_simule(float ** dist, int taille)
 float glouton_exhaustive(float ** dist, int n)
 {
     float dist_min_global = INFINITY;
-    int next, dist, curr;
+    int next, dist_actuelle, curr;
     int * visite;
     float dist_min_local;
     int i, j;
@@ -64,7 +64,7 @@ float glouton_exhaustive(float ** dist, int n)
     
     for (i = 0; i < n; ++i)
     {
-	dist = 0;
+	dist_actuelle = 0;
 	curr = i;
 
         // Parcourir tous les sommets en partant de i
@@ -82,14 +82,14 @@ float glouton_exhaustive(float ** dist, int n)
             }
 
             if (next != -1) {
-                dist += dist_min_local;
+                dist_actuelle += dist_min_local;
                 curr = next;
             }
         } while (next != -1);
 
         // Vérifier si la distance actuelle est plus petite que la distance minimale trouvée jusqu'à présent
-        if (dist + dist[i][curr] < dist_min_global) {
-            dist_min_global = dist + dist[i][curr];
+        if (dist_actuelle + dist[i][curr] < dist_min_global) {
+            dist_min_global = dist_actuelle + dist[i][curr];
         }
     }
 
