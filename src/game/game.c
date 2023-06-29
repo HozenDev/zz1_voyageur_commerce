@@ -172,7 +172,7 @@ int game_initialisation(game_t ** game)
 
     /* init de ttf */
     sdl_init_text();
-    (*game)->font = TTF_OpenFont("../data/aventi.ttf", 32);
+    (*game)->font = TTF_OpenFont("../data/monof55.ttf", 32);
     if (!(*game)->font) exit(-1);
     zlog(stdout, INFO, "OK '%s'", "game_loop: Font is initialized.");
 
@@ -247,7 +247,7 @@ int game_loop()
         sdl_print_text(game->window, game->renderer, game->font, "JEU DU VOYAGEUR",
                        (SDL_Point) {.x = -1, .y = 50}, colors_available.BLACK);
         
-        sprintf(buf, "Score: %.2f   Min:%.2f", game->state.score,dist_minimale);
+        sprintf(buf, "Score: %d   Min: %d", (int) game->state.score, (int) dist_minimale);
         
         
         sdl_print_text(game->window, game->renderer, game->font, buf,
