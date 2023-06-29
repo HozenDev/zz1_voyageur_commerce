@@ -1,4 +1,5 @@
 #include "genetic.h"
+#include <stdlib.h>
 
 
 /**
@@ -69,7 +70,6 @@ individu_t ** genetic_initialize_population(int nb_vertices, int population_size
 }
 
 
-
 /**
  * @brief Permet de calculer la distance qu'effectu un individu
  *
@@ -78,13 +78,20 @@ individu_t ** genetic_initialize_population(int nb_vertices, int population_size
  *
  * @return la distance du chemin
  */
-float genetic_evaluate_distance(float ** dist, individu_t * individu)
+float genetic_evaluate_distance(float** dist, individu_t* individu)
 {
-    float res = FLT_MAX;
-    
-    utils_distance_liste(individu->path, dist, &res, individu->n);
-    
-    return res;
+    float total_distance = 0.0;
+    int source, destination, last_vertex;
+    for (int i = 0; i < individu->n - 1; i++) {
+        source         = individu->path[i];
+        destination    = individu->path[i + 1];
+        total_distance += dist[source][destination];
+    }
+    // Ajouter la distance du dernier au premier sommet
+    last_vertex = individu->path[individu->n - 1];
+    total_distance += dist[last_vertex][individu->path[0]];
+    individu->distance = total_distance;
+    return total_distance;
 }
 
 
@@ -142,17 +149,39 @@ individu_t * genetic_croisement_generate_child(individu_t * p1, individu_t * p2)
 }
 
 
+/**
+ * @brief Permet de faire des mutation de manière aléatoire sur un individu, le random se base sur la constante MUTATION_RATE
+ *
+ * @param individu_t * individu radioactif
+ *
+ * @return individu_t * : le meilleur individu de la population 
+ */
+void genetic_mutate(individu_t * individu)
+{
+    int i,j, tmp;
+    for (i = 0; i < individu->n; i++)
+    {
+        if ((float) (rand() / RAND_MAX) < MUTATION_RATE)
+	{
+            j = rand() % individu->n;
+            tmp = individu->path[i];
+            individu->path[i] = individu->path[j];
+	    individu->path[j] = tmp;
+        }
+    }
+}
+
 
 /**
  * @brief Permet de trouver le meilleur individu au sein d'une population
  *
-
  * @param individu_t ** population :
  * @param int population_size
  *
  * @return individu_t * : le meilleur individu de la population 
  */
-individu_t * genetic_find_best_individu_in_pop(individu_t ** population, int population_size) {
+individu_t * genetic_find_best_individu_in_pop(individu_t ** population, int population_size)
+{
     individu_t * best_individu = population[0];
     for (int i = 1; i < population_size; i++)
     {
@@ -166,55 +195,84 @@ individu_t * genetic_find_best_individu_in_pop(individu_t ** population, int pop
 
 
 
-/*
-individu_t * solveTSPGenetic(float** matrixFloydWarshall, int num_vertices)
+void genetic_copy_popultaion(individu_t *** population_source, individu_t *** population_dest)
 {
-    individu_t ** population = genetic_initialize_population(num_vertices, POPULATION_SIZE);
-    float bestFitness = FLT_MAX;
+    for (int i=0; i < POPULATION_SIZE ; ++i)
+    {
+	(*population_dest)[i]->n = (*population_source)[i]->n;
+
+	for (int j=0 ; j < (*population_dest)[i]->n; ++j)
+	{
+	    (*population_dest)[i]->path[j] =  (*population_source)[i]->path[j];
+	}
+    }
+}
+
+
+
+float  genetic_solve (float** matrixFloydWarshall, int num_vertices)
+{
+    individu_t ** population     = genetic_initialize_population(num_vertices, POPULATION_SIZE);
+    individu_t ** new_population = genetic_initialize_population(num_vertices, POPULATION_SIZE);
+    float best_distance          = FLT_MAX;
     int iteration = 0;
+    individu_t * best_individu = NULL;
+
+    individu_t *p1, *p2, *child;
     
-    while (iteration < MAX_ITERATIONS) {
-        for (int i = 0; i < POPULATION_SIZE; i++) {
-            float genetic_evaluate_distance(matrixFloydWarshall, population[i], num_vertices);
+    while (iteration < MAX_ITERATIONS) { // MAX_ITERATIONS
+	
+	// calcule distance
+        for (int i = 0; i < POPULATION_SIZE; i++)
+	{
+             genetic_evaluate_distance(matrixFloydWarshall, population[i]);
+        }
+
+	
+	// cherche le meilleur individu 
+	best_individu = genetic_find_best_individu_in_pop(population, POPULATION_SIZE);
+	
+        if (best_individu->distance < best_distance)
+	{
+            best_distance = best_individu->distance;
         }
         
-        individu_t * bestSolution = genetic_find_best_individu_in_pop(population, POPULATION_SIZE);
-        if (bestSolution->distance < bestFitness) {
-            bestFitness = bestSolution->distance;
-        }
-        
-        individu_t** newPopulation = malloc(POPULATION_SIZE * sizeof(individu_t*));
-        newPopulation[0] = bestSolution;  // Elitisme
-        
+        new_population[0] = best_individu;
+	
         // Sélection, croisement et mutation pour générer la nouvelle population
         for (int i = 1; i < POPULATION_SIZE; i++) {
-            Solution* parent1 = population[rand() % POPULATION_SIZE];
-            Solution* parent2 = population[rand() % POPULATION_SIZE];
-            Solution* child = crossover(parent1, parent2, num_vertices);
-            mutate(child, num_vertices);
-            newPopulation[i] = child;
+            p1 = population[rand() % POPULATION_SIZE];
+            p2 = population[rand() % POPULATION_SIZE];
+            child = genetic_croisement_generate_child(p1, p2);
+            genetic_mutate(child);
+            new_population[i] = child;
         }
-        
-        // Remplacer l'ancienne population par la nouvelle
+
+	genetic_copy_popultaion(&new_population, &population);
+
+	// Remplacer l'ancienne population par la nouvelle
         for (int i = 0; i < POPULATION_SIZE; i++) {
-            destroySolution(population[i]);
+            genetic_destroy_individu(new_population[i]);
         }
-        free(population);
-        population = newPopulation;
-        
+        free(new_population);
+	
+	new_population =  genetic_initialize_population(num_vertices, POPULATION_SIZE);
+	
         iteration++;
     }
     
-    Solution* bestSolution = findBestSolution(population, POPULATION_SIZE);
+    genetic_find_best_individu_in_pop(population, POPULATION_SIZE);
     
-    // Libérer la mémoire
-    for (int i = 0; i < POPULATION_SIZE; i++) {
-        if (population[i] != bestSolution) {
-            destroySolution(population[i]);
+    // free les individu de la population sans free le meilleur individu
+    for (int i = 0; i < POPULATION_SIZE; i++)
+    {
+        if (population[i] != best_individu)
+	{
+            genetic_destroy_individu(population[i]);
         }
     }
     free(population);
     
-    return bestSolution;
+    return best_distance;
 }
-*/
+

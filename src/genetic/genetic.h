@@ -50,5 +50,12 @@ individu_t * genetic_croisement_generate_child(individu_t * p1, individu_t * p2)
 
 individu_t * genetic_find_best_individu_in_pop(individu_t ** population, int population_size);
 
+void genetic_mutate(individu_t * individu);
+
+float genetic_solve (float** matrixFloydWarshall, int num_vertices);
+
+float genetic_evaluate_distance(float ** dist, individu_t * individu);
+
+void genetic_copy_popultaion(individu_t *** population_source, individu_t *** population_dest);
 
 #endif

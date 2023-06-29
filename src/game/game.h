@@ -7,7 +7,7 @@
 #define USER_LINE_WIDTH 3
 
 #define N_MIN_GAME 5
-#define N_MAX_GAME 8
+#define N_MAX_GAME 6
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600

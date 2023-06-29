@@ -1,5 +1,6 @@
 #include "game.h"
 #include "../resolution/resolution.h"
+#include "../genetic/genetic.h"
 
 /**
  * @brief Free a game
@@ -225,6 +226,7 @@ int game_loop()
     zlog(stdout, INFO, "GLOUTON EXHAUSTIVE: %f", glouton_exhaustive(min_dist, game->number_of_points));
     zlog(stdout, INFO, "RECUIS SIMULÉ: %f", resolution_recuis_simule(min_dist, game->number_of_points));
     zlog(stdout, INFO, "COLONIE DE FOURMI: %f", resolution_ant_colony(min_dist, game->number_of_points, &meilleur_parcours));
+    zlog(stdout, INFO, "MUTATION GENETIC : %f", genetic_solve(min_dist, game->number_of_points));
 
     p_response = (SDL_Point *) malloc(sizeof(p_response)*(game->number_of_points));
     for (i = 0; i < game->number_of_points; ++i)
