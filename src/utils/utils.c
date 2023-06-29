@@ -199,3 +199,12 @@ void utils_initlist0(int * list,int taille){
 		list[i]=0;
 	}
 }
+float utils_descente_geometrique(float temperature){
+	float coeff=0.9999;
+	
+	return(coeff*temperature);
+
+}
+float utils_descente_lineaire(float temperature){
+	return(temperature-0.1);
+}

@@ -217,13 +217,15 @@ int game_loop()
     int i;
 
     char buf[2048];
-    
+
+   
     game_initialisation(&game);
+
     
     floydWarshall(game->state.gs, &min_dist);
 
     zlog(stdout, INFO, "GLOUTON EXHAUSTIVE: %f", glouton_exhaustive(min_dist, game->number_of_points));
-    zlog(stdout, INFO, "RECUIS SIMULÉ: %f", resolution_recuis_simule(min_dist, game->number_of_points));
+    zlog(stdout, INFO, "RECUIS SIMULÉ: %f", resolution_recuis_simule(min_dist, game->number_of_points,&utils_descente_geometrique));
     zlog(stdout, INFO, "COLONIE DE FOURMI: %f", resolution_ant_colony(min_dist, game->number_of_points, &meilleur_parcours));
 
     p_response = (SDL_Point *) malloc(sizeof(p_response)*(game->number_of_points));

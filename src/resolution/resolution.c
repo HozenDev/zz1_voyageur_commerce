@@ -11,13 +11,13 @@
  *
  * @return la distance du cycle minimale
  */
-float resolution_recuis_simule(float ** dist, int taille)
+float resolution_recuis_simule(float ** dist, int taille,float (*pf)(float))
 {
     /* paramètres */
     float distmin=taille*2000;
     float distance=0;
     float temperature = 1000, espsilon = 0.001, tauxderefroidissement = 0.999;
-
+   
     /* allocation des tableaux de solutions et solutions + 1 */
     int * solution = (int *) malloc(sizeof(int)*taille);
     int * new = (int *) malloc(sizeof(int)*taille);
@@ -37,7 +37,7 @@ float resolution_recuis_simule(float ** dist, int taille)
             distmin=distance;
             utils_copy_list(new,solution,taille);
         }
-        temperature=temperature*tauxderefroidissement;
+        temperature=pf(temperature);
     }
     free(solution);
     free(new);
