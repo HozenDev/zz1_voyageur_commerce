@@ -317,11 +317,17 @@ void sdl_draw_segment(SDL_Renderer * renderer, int x1, int y1, int x2, int y2)
 }
 
 
-// appelle pas ta fonction comme celle de la SDL, tu dois lui donner un nom différent
-void sdl_set_icon(SDL_Window*  window, SDL_Surface ** icones)
+/**
+ * @brief Permet de mettre une icone.
+ *
+ * @param SDL_Window * window,
+ * @param SDL_Surface ** icon
+ */
+void sdl_set_icon(SDL_Window * window, SDL_Surface ** icon)
 {
-    * icones = IMG_Load("data/icones.png");
-  if (!* icones) SDL_Log("Erreur chargement icones sdl_set_icon : %s\n", SDL_GetError());
-  else
-      SDL_SetWindowIcon(window, *icones);
+    (*icon) = IMG_Load("../data/img/icones.png");
+    if (NULL == *icon)
+	SDL_Log("Erreur chargement icones sdl_set_icon : %s\n", SDL_GetError());
+    else
+	SDL_SetWindowIcon(window, *icon);
 }

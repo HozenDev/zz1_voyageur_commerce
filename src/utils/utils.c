@@ -180,6 +180,7 @@ void utils_distance_liste(int * indice,float ** distance,float * dist,int taille
 	}
 	*dist+=distance[indice[taille-1]][indice[0]];
 }
+
 /**
  *@brief copy the values of listsrc into listdst both list being the same size taille
  */

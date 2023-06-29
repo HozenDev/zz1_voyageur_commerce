@@ -25,8 +25,8 @@ struct game_state_s {
 
     int running;
 
-    SDL_Event event;
-
+    SDL_Event event;;
+    
     float score;
 };
 
@@ -36,6 +36,8 @@ struct game_s {
     SDL_Renderer * renderer;
     SDL_Window * window;
     TTF_Font * font;
+    
+    SDL_Surface * icon;
 
     int sw;
     int sh;

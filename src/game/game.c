@@ -34,6 +34,9 @@ void game_free_game(game_t * game)
             game->state.selected_nodes = NULL;
         }
 
+	/*free icon*/
+	SDL_FreeSurface(game->icon);
+	
         /* free sdl graph */
         graph_free_graph_sdl(game->state.gs);
 
@@ -128,7 +131,7 @@ void game_state_update(game_state_t * g_state)
  * @return exit code, 0 success, 1 failure
  */
 int game_initialisation(game_t ** game)
-{
+{   
     (*game) = (game_t *) malloc(sizeof(game_t));
     
     (*game)->sw = SCREEN_WIDTH;
@@ -172,6 +175,10 @@ int game_initialisation(game_t ** game)
     if (!(*game)->font) exit(-1);
     zlog(stdout, INFO, "OK '%s'", "game_loop: Font is initialized.");
 
+
+    /* set icon */
+    sdl_set_icon((*game)->window, &(*game)->icon);
+    
     /* ------ génération objets du jeu --------- */
 
     (*game)->number_of_points = generate_random_number(N_MIN_GAME, N_MAX_GAME);
@@ -201,7 +208,7 @@ int game_loop()
     game_t * game = NULL;
     
     SDL_Event * event;
-
+    
     float ** min_dist = NULL;
     int * meilleur_parcours = NULL;
 
@@ -212,7 +219,7 @@ int game_loop()
     char buf[2048];
     
     game_initialisation(&game);
-
+    
     floydWarshall(game->state.gs, &min_dist);
 
     zlog(stdout, INFO, "GLOUTON EXHAUSTIVE: %f", glouton_exhaustive(min_dist, game->number_of_points));
