@@ -60,12 +60,14 @@ float glouton_exhaustive(float ** dist, int n)
     float dist_min_local;
     int i, j;
 
-    visite = (int*) calloc(n, sizeof(int));
+    visite = (int*) malloc(sizeof(int)*n);
     
     for (i = 0; i < n; ++i)
     {
 	dist_actuelle = 0;
 	curr = i;
+
+        for (j = 0; j < n; ++j) visite[j] = 0;
 
         // Parcourir tous les sommets en partant de i
         do {
