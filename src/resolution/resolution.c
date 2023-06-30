@@ -17,11 +17,15 @@ float resolution_recuis_simule(float ** dist, int taille,float (*pf)(float))
     float distmin=taille*2000;
     float distance=0;
     float temperature = 1000, espsilon = 0.001;
-   
+    int indicerand=0;
+    int indicerand2=0;
+
     /* allocation des tableaux de solutions et solutions + 1 */
     int * solution = (int *) malloc(sizeof(int)*taille);
     int * new = (int *) malloc(sizeof(int)*taille);
+    
 
+    generate_seed(0);
     for(int i=0;i<taille;i++) solution[i]=i; /* initialisation solution */
 
     utils_distance_liste(solution, dist, &distmin, taille);
@@ -29,7 +33,11 @@ float resolution_recuis_simule(float ** dist, int taille,float (*pf)(float))
     while (temperature > espsilon)
     {
         utils_copy_list(solution,new,taille);
-        utils_shuffle(new,taille);
+        indicerand=rand()%taille;
+        do{
+            indicerand2=rand()%taille;
+        }while(indicerand==indicerand2);
+        utils_swap(&new[indicerand],&new[indicerand2]);
         utils_distance_liste(new,dist,&distance,taille);
         
         if(distance<distmin || rand()/RAND_MAX<exp(-(distance-distmin)/temperature))
