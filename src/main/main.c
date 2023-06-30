@@ -5,7 +5,7 @@
 int main(int argc, char *argv[])
 {
     int save = 1;
-    //int simulation = 0;
+    int simulation = 0;
     long int seed;
 
     create_seed(&seed);
@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
         }
         else if (strcmp(argv[2], "--simulation") == 0)
         {
-            //simulation = 1;
+            simulation = 1;
             zlog(stdout, INFO, "Programme lancé en simulation", NULL);
         }
     }

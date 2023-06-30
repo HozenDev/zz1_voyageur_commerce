@@ -4,14 +4,32 @@
 #include "../log/log.h"
 #include "../genetic/genetic.h"
 
-#define N_VERTICES 50
+#define N_VERTICES 30
 
 int all_time;
+
+int parallel_treatment_function((float) (*fres) (float **, int, int **), float ** min_dist, int ** best_tour, char *name)
+{
+    unsigned long millis;
+    clock_t begin;
+    clock_t end;
+    float result;
+
+    begin = clock();
+    result = (*fres)(min_dist, N_VERTICES, &best_tour);
+    end = clock();
+    millis = (end -  begin) * 1000 / CLOCKS_PER_SEC;
+
+    zlog(stdout, INFO, "'%s': %f - Finished in %ld ms ", millis);
+
+    free(best_tour);
+
+    return 0;
+}
 
 int parallel_treatment_not_a_function(void * parameters)
 {
     (void) parameters;
-
     zlog(stdout, ERROR, "Ce n'est pas une fonction valide", NULL);
     return 0;
 }
@@ -19,71 +37,32 @@ int parallel_treatment_not_a_function(void * parameters)
 int parallel_treatment_genetique(void * parameters)
 {
     float ** min_dist = (float **) parameters;
-
-    unsigned long millis;
-    clock_t begin;
-    clock_t end;
     int * best_tour = NULL;
-
-    begin = clock();
-    fprintf(stdout, "GENETIC SOLVE: %f\n", genetic_solve(min_dist, N_VERTICES));
-    end = clock();
-    millis = (end -  begin) * 1000 / CLOCKS_PER_SEC;
-    zlog(stdout, INFO, "GENETIC SOLVE: Finished in %ld ms", millis);
-
-    free(best_tour);
-
+    parallel_treatment_function(genetic_solve, min_dist, N_VERTICES, "GENETIC SOLVE");
     return 0;
 }
 
-int parallel_treatment_ant_colony(void * parameters){
+int parallel_treatment_ant_colony(void * parameters)
+{
     float ** min_dist = (float **) parameters;
-
-    unsigned long millis;
-    clock_t begin;
-    clock_t end;
     int * best_tour = NULL;
-
-    begin = clock();
-    fprintf(stdout, "COLONI DE FOURMI: %f\n", resolution_ant_colony(min_dist, N_VERTICES, &best_tour));
-    end = clock();
-    millis = (end -  begin) * 1000 / CLOCKS_PER_SEC;
-    zlog(stdout, INFO, "COLONI DE FOURMI: Finished in %ld ms", millis);
-
-    free(best_tour);
-
+    parallel_treatment_function(resolution_ant_colony, min_dist, N_VERTICES, "ANT COLONY");
     return 0;
 }
 
-int parallel_treatment_recuit_simule(void * parameters){
+int parallel_treatment_recuit_simule(void * parameters)
+{
     float ** min_dist = (float **) parameters;
-
-    unsigned long millis;
-    clock_t begin;
-    clock_t end;
-
-    begin = clock();
-    fprintf(stdout, "RECUIT SIMULE: %f\n", resolution_recuis_simule(min_dist, N_VERTICES, &utils_descente_geometrique));
-    end = clock();
-    millis = (end -  begin) * 1000 / CLOCKS_PER_SEC;
-    zlog(stdout, INFO, "RECUIT SIMULE: Finished in %ld ms", millis);
-
+    int * best_tour = NULL;
+    parallel_treatment_function(resolution_recuis_simule, min_dist, N_VERTICES, "RECUIS SIMULE");
     return 0;
 }
 
-int parallel_treatment_glouton(void * parameters){
+int parallel_treatment_glouton(void * parameters)
+{
     float ** min_dist = (float **) parameters;
-
-    unsigned long millis;
-    clock_t begin;
-    clock_t end;
-    
-    begin = clock();
-    fprintf(stdout, "GLOUTON EXH: %f\n", glouton_exhaustive(min_dist, N_VERTICES));
-    end = clock();
-    millis = (end -  begin) * 1000 / CLOCKS_PER_SEC;
-    zlog(stdout, INFO, "GLOUTON EXH: Finished in %ld ms", millis);
-
+    int * best_tour = NULL;
+    parallel_treatment_function(glouton_exhaustive, min_dist, N_VERTICES, "GLOUTON EXH");
     return 0;
 }
 
