@@ -4,7 +4,7 @@
 #include "../log/log.h"
 #include "../genetic/genetic.h"
 
-#define N_VERTICES 20
+#define N_VERTICES 100
 
 int all_time;
 
@@ -26,7 +26,7 @@ int parallel_treatment_genetique(void * parameters)
     float result;
 
     begin = clock();
-    result = genetic_solve(min_dist, N_VERTICES);
+    result = genetic_solve(min_dist, N_VERTICES, &best_tour);
     end = clock();
     millis = (end -  begin) * 1000 / CLOCKS_PER_SEC;
     zlog(stdout, INFO, "GENETIC SOLVE: %f - Finished in %ld ms", result, millis);
@@ -100,7 +100,6 @@ int thread_main(int nb_thread)
     int * error_code_of_thread = NULL;
     int (*fres) (void *) = NULL;
 
-    /* int n = generate_random_number(N_MIN, N_MAX); */
     int n = N_VERTICES;
     float ** min_dist;
     graph_sdl_t * gs = graph_initialize_graph_sdl(n, 100, 800, 0.8, 0.5);
@@ -122,7 +121,7 @@ int thread_main(int nb_thread)
         case 0: fres = parallel_treatment_glouton; break;
         case 1: fres = parallel_treatment_recuis_simule; break;
         case 2: fres = parallel_treatment_ant_colony; break;
-        case 3: /* fres = parallel_treatment_genetique; */ break;
+        case 3: fres = parallel_treatment_genetique; break;
         default: fres = parallel_treatment_not_a_function; break;
         }
         

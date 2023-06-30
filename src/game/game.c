@@ -228,7 +228,7 @@ int game_loop()
     zlog(stdout, INFO, "GLOUTON EXHAUSTIVE: %f", glouton_exhaustive(min_dist, game->number_of_points));
     zlog(stdout, INFO, "RECUIS SIMULÉ: %f", resolution_recuis_simule(min_dist, game->number_of_points,&utils_descente_geometrique));
     zlog(stdout, INFO, "COLONIE DE FOURMI: %f",dist_minimale);
-    /* zlog(stdout, INFO, "MUTATION GENETIC : %f", genetic_solve(min_dist, game->number_of_points)); */
+    zlog(stdout, INFO, "MUTATION GENETIC : %f", genetic_solve(min_dist, game->number_of_points, NULL));
 
     p_response = (SDL_Point *) malloc(sizeof(p_response)*(game->number_of_points));
     for (i = 0; i < game->number_of_points; ++i)
