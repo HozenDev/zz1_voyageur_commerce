@@ -3,6 +3,7 @@
 
 #include <threads.h>
 #include <stdio.h>
+#include <time.h>
 
 int thread_main(void);
 

@@ -17,7 +17,7 @@
  * \brief nombre de sommets minimum
  *
  */
-#define N_MIN 5
+#define N_MIN 500
 
 /**
  * \def N_MIN
@@ -25,7 +25,7 @@
  * \brief nombre de sommets maximum
  *
  */
-#define N_MAX 20
+#define N_MAX 2000
 
 #define POINTS_RADIUS 20
 

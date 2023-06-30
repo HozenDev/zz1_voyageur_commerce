@@ -222,15 +222,13 @@ int game_loop()
     float dist_minimale=0;
     game_initialisation(&game);
 
-    
     floydWarshall(game->state.gs, &min_dist);
     dist_minimale=resolution_ant_colony(min_dist, game->number_of_points, &meilleur_parcours);
 
     zlog(stdout, INFO, "GLOUTON EXHAUSTIVE: %f", glouton_exhaustive(min_dist, game->number_of_points));
     zlog(stdout, INFO, "RECUIS SIMULÉ: %f", resolution_recuis_simule(min_dist, game->number_of_points,&utils_descente_geometrique));
     zlog(stdout, INFO, "COLONIE DE FOURMI: %f",dist_minimale);
-    zlog(stdout, INFO, "MUTATION GENETIC : %f", genetic_solve(min_dist, game->number_of_points));
-
+    /* zlog(stdout, INFO, "MUTATION GENETIC : %f", genetic_solve(min_dist, game->number_of_points)); */
 
     p_response = (SDL_Point *) malloc(sizeof(p_response)*(game->number_of_points));
     for (i = 0; i < game->number_of_points; ++i)
@@ -302,6 +300,7 @@ int game_loop()
         SDL_Delay(30);
     }
 
+    free_matrix_float(min_dist, game->number_of_points);
     game_free_game(game);
     free(p_response);
     free(meilleur_parcours);

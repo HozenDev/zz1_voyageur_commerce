@@ -628,5 +628,7 @@ void graph_free_graph_sdl(graph_sdl_t * graph)
         graph_free_graph(graph->g);                      // libere graphe
 	free(graph->p);                                  // libere tableau SDL point
 	graph->p = NULL;
+        free(graph);
+        graph = NULL;
     }
 }

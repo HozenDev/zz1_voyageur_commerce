@@ -10,7 +10,7 @@ TARGET = app
 VERBOSE = FALSE
 
 # Create the list of directories
-DIRS = log seed color main graph sdl game utils resolution genetic
+DIRS = log seed color main graph sdl game utils resolution genetic parallel
 SOURCEDIRS = $(foreach dir, $(DIRS), $(addprefix $(SOURCEDIR)/, $(dir)))
 TARGETDIRS = $(foreach dir, $(DIRS), $(addprefix $(BUILDDIR)/, $(dir)))
 

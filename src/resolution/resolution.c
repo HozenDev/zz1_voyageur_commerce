@@ -178,14 +178,13 @@ void resolution_ant_colony_compute_next_tour(int ** fourmi_parcours, int n,
     int * visited;
 
     float sum = 0.0;
-    float * probabilities = NULL;
+    float * probabilities = (float *) malloc(sizeof(float)*n);
     float random;
     float cumulativeProbability;
 
     int i, j;
     
     /* initialisation du parcours de la fourmi */
-    (*fourmi_parcours) = (int *) malloc(n * sizeof(int));
     visited = (int *) calloc(n, sizeof(int));
 
     start = rand() % n; /* choix aléatoire du sommet de départ */
@@ -197,7 +196,6 @@ void resolution_ant_colony_compute_next_tour(int ** fourmi_parcours, int n,
     {
         curr = (*fourmi_parcours)[i - 1];
         next = -1;
-        probabilities = (float *) malloc(sizeof(float)*n);
         sum = 0.0;
 
         // Calcul des probabilités de transition vers les sommets non visités
@@ -226,6 +224,7 @@ void resolution_ant_colony_compute_next_tour(int ** fourmi_parcours, int n,
         visited[next] = 1;
     }
 
+    free(probabilities);
     free(visited);
 }
 
@@ -312,6 +311,11 @@ float resolution_ant_colony(float **dist, int n, int ** meilleur_parcours)
     fourmi_parcours = (int **) malloc(NUM_ANTS * sizeof(int *)); /* parcours construits par chaque fourmi */
     fourmi_distances = (float *) malloc(NUM_ANTS * sizeof(float)); /* distance parcours pour chaque fourmi */
 
+    for (i = 0; i < NUM_ANTS; ++i)
+    {
+        fourmi_parcours[i] = (int *) malloc(sizeof(int)*n);
+    }
+
     /* Nombre de jour à faire travailler la colonie */
     while (jour < MAX_ANT_DAYS) {
 
@@ -341,6 +345,8 @@ float resolution_ant_colony(float **dist, int n, int ** meilleur_parcours)
     for (i = 0; i < n; i++) {
         free(pheromones[i]);
         free(visibility[i]);
+    }
+    for (i = 0; i < NUM_ANTS; ++i) {
         free(fourmi_parcours[i]);
     }
     free(pheromones);
