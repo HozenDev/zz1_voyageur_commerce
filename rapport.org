@@ -183,7 +183,7 @@ FIN ALGO
 *** Calcul des probabilités de transition entre sommets
 
 #+begin_example
-Constante : T_PHERO 5, T_DIST 1
+Constantes : T_PHERO 5, T_DIST 1
 
 calcul probabilité de transition d'un sommet connu à un sommet j
 |
