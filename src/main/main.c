@@ -1,11 +1,11 @@
 #include "../log/log.h"
 #include "../game/game.h"
-#include "../parallel/parallel.h"
+//#include "../parallel/parallel.h"
 
 int main(int argc, char *argv[])
 {
     int save = 1;
-    int simulation = 0;
+    //int simulation = 0;
     long int seed;
 
     create_seed(&seed);
@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
         }
         else if (strcmp(argv[2], "--simulation") == 0)
         {
-            simulation = 1;
+            //simulation = 1;
             zlog(stdout, INFO, "Programme lancé en simulation", NULL);
         }
     }
@@ -30,8 +30,8 @@ int main(int argc, char *argv[])
     if (save) save_seed(seed);
     srand(seed);
 
-    if (simulation) thread_main();
-    else game_loop();
+    //if (simulation) thread_main();
+    game_loop();
     
     return 0;
 }
