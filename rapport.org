@@ -109,7 +109,7 @@ FIN ALGO
 
 ** RECUIT SIMULÉ
 
-Principe: Prendre le meilleur avec une probabilité qui diminue au cours du temps
+Principe: Prendre le meilleur voisin ou si il est moins bon le garder avec une probabilité qui diminue au cours du temps
 
 #+begin_example
 FONCTION resolution_recuit_simulé(distance,taille)
