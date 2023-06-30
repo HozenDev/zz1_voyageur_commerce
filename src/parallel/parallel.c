@@ -4,28 +4,9 @@
 #include "../log/log.h"
 #include "../genetic/genetic.h"
 
-#define N_VERTICES 30
+#define N_VERTICES 20
 
 int all_time;
-
-int parallel_treatment_function((float) (*fres) (float **, int, int **), float ** min_dist, int ** best_tour, char *name)
-{
-    unsigned long millis;
-    clock_t begin;
-    clock_t end;
-    float result;
-
-    begin = clock();
-    result = (*fres)(min_dist, N_VERTICES, &best_tour);
-    end = clock();
-    millis = (end -  begin) * 1000 / CLOCKS_PER_SEC;
-
-    zlog(stdout, INFO, "'%s': %f - Finished in %ld ms ", millis);
-
-    free(best_tour);
-
-    return 0;
-}
 
 int parallel_treatment_not_a_function(void * parameters)
 {
@@ -37,38 +18,83 @@ int parallel_treatment_not_a_function(void * parameters)
 int parallel_treatment_genetique(void * parameters)
 {
     float ** min_dist = (float **) parameters;
+
+    unsigned long millis;
+    clock_t begin;
+    clock_t end;
     int * best_tour = NULL;
-    parallel_treatment_function(genetic_solve, min_dist, N_VERTICES, "GENETIC SOLVE");
+    float result;
+
+    begin = clock();
+    result = genetic_solve(min_dist, N_VERTICES);
+    end = clock();
+    millis = (end -  begin) * 1000 / CLOCKS_PER_SEC;
+    zlog(stdout, INFO, "GENETIC SOLVE: %f - Finished in %ld ms", result, millis);
+
+    free(best_tour);
+
     return 0;
 }
 
 int parallel_treatment_ant_colony(void * parameters)
 {
     float ** min_dist = (float **) parameters;
+
+    unsigned long millis;
+    clock_t begin;
+    clock_t end;
     int * best_tour = NULL;
-    parallel_treatment_function(resolution_ant_colony, min_dist, N_VERTICES, "ANT COLONY");
+    float result;
+
+    begin = clock();
+    result = resolution_ant_colony(min_dist, N_VERTICES, &best_tour);
+    end = clock();
+    millis = (end -  begin) * 1000 / CLOCKS_PER_SEC;
+    zlog(stdout, INFO, "COLONI DE FOURMI: %f - Finished in %ld ms", result, millis);
+
+    free(best_tour);
+
     return 0;
 }
 
-int parallel_treatment_recuit_simule(void * parameters)
+int parallel_treatment_recuis_simule(void * parameters)
 {
     float ** min_dist = (float **) parameters;
-    int * best_tour = NULL;
-    parallel_treatment_function(resolution_recuis_simule, min_dist, N_VERTICES, "RECUIS SIMULE");
+
+    unsigned long millis;
+    clock_t begin;
+    clock_t end;
+    float result;
+
+    begin = clock();
+    result = resolution_recuis_simule(min_dist, N_VERTICES, &utils_descente_geometrique);
+    end = clock();
+    millis = (end -  begin) * 1000 / CLOCKS_PER_SEC;
+    zlog(stdout, INFO, "RECUIS SIMULE : %f - Finished in %ld ms", result, millis);
+
     return 0;
 }
 
-int parallel_treatment_glouton(void * parameters)
-{
+int parallel_treatment_glouton(void * parameters){
     float ** min_dist = (float **) parameters;
-    int * best_tour = NULL;
-    parallel_treatment_function(glouton_exhaustive, min_dist, N_VERTICES, "GLOUTON EXH");
+
+    unsigned long millis;
+    clock_t begin;
+    clock_t end;
+    float result;
+    
+    begin = clock();
+    result = glouton_exhaustive(min_dist, N_VERTICES);
+    end = clock();
+    millis = (end -  begin) * 1000 / CLOCKS_PER_SEC;
+    zlog(stdout, INFO, "GLOUTON EXH : %f - Finished in %ld ms", result, millis);
+
     return 0;
 }
 
-int thread_main(int i_function, int nb_thread)
+int thread_main(int nb_thread)
 {
-    int i, running;
+    int i, running, i_function;
     
     thrd_t * thread_handle = NULL;
     int * error_code_of_thread = NULL;
@@ -77,7 +103,7 @@ int thread_main(int i_function, int nb_thread)
     /* int n = generate_random_number(N_MIN, N_MAX); */
     int n = N_VERTICES;
     float ** min_dist;
-    graph_sdl_t * gs = graph_initialize_graph_sdl(n, 800, 800, 0.8, 0.5);
+    graph_sdl_t * gs = graph_initialize_graph_sdl(n, 100, 800, 0.8, 0.5);
     floydWarshall(gs, &min_dist);
 
     thread_handle = (thrd_t *) malloc(sizeof(thrd_t)*nb_thread);
@@ -89,13 +115,14 @@ int thread_main(int i_function, int nb_thread)
     {
         fprintf(stdout, "\nQuelle fonction ? [0: GE, 1: RS, 2: CDF, 3: G] ");
         fscanf(stdin, "%d", &i_function);
+        fprintf(stdout, "\n");
         
         switch (i_function)
         {
         case 0: fres = parallel_treatment_glouton; break;
-        case 1: fres = parallel_treatment_recuit_simule; break;
+        case 1: fres = parallel_treatment_recuis_simule; break;
         case 2: fres = parallel_treatment_ant_colony; break;
-        case 3: fres = parallel_treatment_genetique; break;
+        case 3: /* fres = parallel_treatment_genetique; */ break;
         default: fres = parallel_treatment_not_a_function; break;
         }
         
@@ -109,6 +136,7 @@ int thread_main(int i_function, int nb_thread)
         fprintf(stdout, "\nContinuer ? [0: non, 1: oui] ");
         if (fscanf(stdin, "%d", &running) < 1)
             running = 0;
+        fprintf(stdout, "\n");
     }
 
     graph_free_graph_sdl(gs);

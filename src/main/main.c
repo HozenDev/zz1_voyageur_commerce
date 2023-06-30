@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
     if (save) save_seed(seed);
     srand(seed);
 
-    if (simulation) thread_main(1, 9);
+    if (simulation) thread_main(5);
     else game_loop();
     
     return 0;

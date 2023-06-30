@@ -60,10 +60,8 @@ float resolution_recuis_simule(float ** dist, int taille,float (*pf)(float))
  *
  * @return la distance du cycle minimale
  */
-float glouton_exhaustive(float ** dist, int n, int ** best_tour)
+float glouton_exhaustive(float ** dist, int n)
 {
-    (void) best_tour
-    
     float dist_min_global = INFINITY;
     int next, dist_actuelle, curr;
     int * visite;
