@@ -4,9 +4,20 @@
 #include "../log/log.h"
 #include "../genetic/genetic.h"
 
-#define N 50
+#define N_VERTICES 50
 
-int parallel_treatment_genetique(void * parameters){
+int all_time;
+
+int parallel_treatment_not_a_function(void * parameters)
+{
+    (void) parameters;
+
+    zlog(stdout, ERROR, "Ce n'est pas une fonction valide", NULL);
+    return 0;
+}
+
+int parallel_treatment_genetique(void * parameters)
+{
     float ** min_dist = (float **) parameters;
 
     unsigned long millis;
@@ -15,7 +26,7 @@ int parallel_treatment_genetique(void * parameters){
     int * best_tour = NULL;
 
     begin = clock();
-    fprintf(stdout, "GENETIC SOLVE: %f\n", genetic_solve(min_dist, N));
+    fprintf(stdout, "GENETIC SOLVE: %f\n", genetic_solve(min_dist, N_VERTICES));
     end = clock();
     millis = (end -  begin) * 1000 / CLOCKS_PER_SEC;
     zlog(stdout, INFO, "GENETIC SOLVE: Finished in %ld ms", millis);
@@ -34,7 +45,7 @@ int parallel_treatment_ant_colony(void * parameters){
     int * best_tour = NULL;
 
     begin = clock();
-    fprintf(stdout, "COLONI DE FOURMI: %f\n", resolution_ant_colony(min_dist, N, &best_tour));
+    fprintf(stdout, "COLONI DE FOURMI: %f\n", resolution_ant_colony(min_dist, N_VERTICES, &best_tour));
     end = clock();
     millis = (end -  begin) * 1000 / CLOCKS_PER_SEC;
     zlog(stdout, INFO, "COLONI DE FOURMI: Finished in %ld ms", millis);
@@ -52,7 +63,7 @@ int parallel_treatment_recuit_simule(void * parameters){
     clock_t end;
 
     begin = clock();
-    fprintf(stdout, "RECUIT SIMULE: %f\n", resolution_recuis_simule(min_dist, N, &utils_descente_geometrique));
+    fprintf(stdout, "RECUIT SIMULE: %f\n", resolution_recuis_simule(min_dist, N_VERTICES, &utils_descente_geometrique));
     end = clock();
     millis = (end -  begin) * 1000 / CLOCKS_PER_SEC;
     zlog(stdout, INFO, "RECUIT SIMULE: Finished in %ld ms", millis);
@@ -68,7 +79,7 @@ int parallel_treatment_glouton(void * parameters){
     clock_t end;
     
     begin = clock();
-    fprintf(stdout, "GLOUTON EXH: %f\n", glouton_exhaustive(min_dist, N));
+    fprintf(stdout, "GLOUTON EXH: %f\n", glouton_exhaustive(min_dist, N_VERTICES));
     end = clock();
     millis = (end -  begin) * 1000 / CLOCKS_PER_SEC;
     zlog(stdout, INFO, "GLOUTON EXH: Finished in %ld ms", millis);
@@ -76,42 +87,55 @@ int parallel_treatment_glouton(void * parameters){
     return 0;
 }
 
-int thread_main()
+int thread_main(int i_function, int nb_thread)
 {
-    thrd_t thread_handle_a;
-    thrd_t thread_handle_b;
-    thrd_t thread_handle_c;
-    thrd_t thread_handle_d;
-
-    int error_code_of_thread_a = 0;
-    int error_code_of_thread_b = 0;
-    int error_code_of_thread_c = 0;
-    int error_code_of_thread_d = 0;
+    int i, running;
+    
+    thrd_t * thread_handle = NULL;
+    int * error_code_of_thread = NULL;
+    int (*fres) (void *) = NULL;
 
     /* int n = generate_random_number(N_MIN, N_MAX); */
-    int n = N;
-
+    int n = N_VERTICES;
     float ** min_dist;
-    
     graph_sdl_t * gs = graph_initialize_graph_sdl(n, 800, 800, 0.8, 0.5);
-
-    (void) thread_handle_d;
-    (void) error_code_of_thread_d;
-
     floydWarshall(gs, &min_dist);
-    
-    thrd_create(&thread_handle_a, parallel_treatment_glouton, min_dist);
-    thrd_create(&thread_handle_b, parallel_treatment_recuit_simule, min_dist);
-    thrd_create(&thread_handle_c, parallel_treatment_ant_colony, min_dist);
-    /* thrd_create(&thread_handle_d, parallel_treatment_genetique, min_dist); */
 
-    thrd_join(thread_handle_a, &error_code_of_thread_a);
-    thrd_join(thread_handle_b, &error_code_of_thread_b);
-    thrd_join(thread_handle_c, &error_code_of_thread_c);
-    /* thrd_join(thread_handle_d, &error_code_of_thread_d); */
+    thread_handle = (thrd_t *) malloc(sizeof(thrd_t)*nb_thread);
+    error_code_of_thread = (int *) malloc(sizeof(int)*nb_thread);
+
+    running = 1;
+    
+    while (running)
+    {
+        fprintf(stdout, "\nQuelle fonction ? [0: GE, 1: RS, 2: CDF, 3: G] ");
+        fscanf(stdin, "%d", &i_function);
+        
+        switch (i_function)
+        {
+        case 0: fres = parallel_treatment_glouton; break;
+        case 1: fres = parallel_treatment_recuit_simule; break;
+        case 2: fres = parallel_treatment_ant_colony; break;
+        case 3: fres = parallel_treatment_genetique; break;
+        default: fres = parallel_treatment_not_a_function; break;
+        }
+        
+        for (i = 0; i < nb_thread; ++i)
+        {
+            error_code_of_thread[i] = 0;
+            thrd_create(&thread_handle[i], *fres, min_dist);
+        }
+        for (i = 0; i < nb_thread; ++i) thrd_join(thread_handle[i], &error_code_of_thread[i]);
+
+        fprintf(stdout, "\nContinuer ? [0: non, 1: oui] ");
+        if (fscanf(stdin, "%d", &running) < 1)
+            running = 0;
+    }
 
     graph_free_graph_sdl(gs);
     free_matrix_float(min_dist, n);
+    free(thread_handle);
+    free(error_code_of_thread);
     
     return 0;
 }

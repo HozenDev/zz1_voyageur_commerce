@@ -1,6 +1,6 @@
 #+SETUPFILE: https://hozendev.github.io/hozen-style/hozen_html_style.setup
 
-#+TITLE: ZZ1 SEMAINE 1
+#+TITLE: ZZ1 PROJET SEMAINE 1
 #+AUTHOR: DUREL Enzo VILLEPREUX Thibault LEROY Louis
 #+LANGUAGE: fr
 

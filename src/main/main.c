@@ -1,6 +1,6 @@
 #include "../log/log.h"
 #include "../game/game.h"
-//#include "../parallel/parallel.h"
+#include "../parallel/parallel.h"
 
 int main(int argc, char *argv[])
 {
@@ -30,8 +30,8 @@ int main(int argc, char *argv[])
     if (save) save_seed(seed);
     srand(seed);
 
-    //if (simulation) thread_main();
-    game_loop();
+    if (simulation) thread_main(1, 9);
+    else game_loop();
     
     return 0;
 }
