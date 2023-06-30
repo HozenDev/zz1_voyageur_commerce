@@ -4,7 +4,7 @@
 #include "../log/log.h"
 #include "../genetic/genetic.h"
 
-#define N 50
+#define N 1000
 
 int parallel_treatment_genetique(void * parameters){
     float ** min_dist = (float **) parameters;
@@ -100,15 +100,15 @@ int thread_main()
 
     floydWarshall(gs, &min_dist);
     
-    thrd_create(&thread_handle_a, parallel_treatment_glouton, min_dist);
+    /* thrd_create(&thread_handle_a, parallel_treatment_glouton, min_dist);
     thrd_create(&thread_handle_b, parallel_treatment_recuit_simule, min_dist);
-    thrd_create(&thread_handle_c, parallel_treatment_ant_colony, min_dist);
-    /* thrd_create(&thread_handle_d, parallel_treatment_genetique, min_dist); */
+    thrd_create(&thread_handle_c, parallel_treatment_ant_colony, min_dist);*/
+    thrd_create(&thread_handle_d, parallel_treatment_genetique, min_dist);
 
-    thrd_join(thread_handle_a, &error_code_of_thread_a);
+/*    thrd_join(thread_handle_a, &error_code_of_thread_a);
     thrd_join(thread_handle_b, &error_code_of_thread_b);
-    thrd_join(thread_handle_c, &error_code_of_thread_c);
-    /* thrd_join(thread_handle_d, &error_code_of_thread_d); */
+    thrd_join(thread_handle_c, &error_code_of_thread_c);*/
+    thrd_join(thread_handle_d, &error_code_of_thread_d);
 
     graph_free_graph_sdl(gs);
     free_matrix_float(min_dist, n);

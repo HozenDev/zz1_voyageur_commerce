@@ -159,16 +159,14 @@ individu_t * genetic_croisement_generate_child(individu_t * p1, individu_t * p2)
 void genetic_mutate(individu_t * individu)
 {
     int i,j, tmp;
-    for (i = 0; i < individu->n; i++)
-    {
-        if ((float) (rand() / RAND_MAX) < MUTATION_RATE)
-	{
-            j = rand() % individu->n;
-            tmp = individu->path[i];
-            individu->path[i] = individu->path[j];
-	    individu->path[j] = tmp;
-        }
-    }
+    j = rand() % individu->n;
+    i = rand() % individu->n;
+    
+    tmp = individu->path[i];
+    individu->path[i] = individu->path[j];
+    individu->path[j] = tmp;
+        
+    
 }
 
 
