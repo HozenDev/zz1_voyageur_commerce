@@ -11,10 +11,6 @@ void game_free_game(game_t * game)
 {
     if (game)
     {
-        /* free window and game renderer */
-        if (game->window) {SDL_DestroyWindow(game->window); game->window = NULL;}
-        if (game->renderer) {SDL_DestroyRenderer(game->renderer); game->renderer = NULL;}
-
         /* clear game attributs */
         game->sw = 0;
         game->sh = 0;
@@ -35,11 +31,18 @@ void game_free_game(game_t * game)
             game->state.selected_nodes = NULL;
         }
 
+        /* free font */
+        if (game->font) TTF_CloseFont(game->font);
+
 	/*free icon*/
-	SDL_FreeSurface(game->icon);
+	if (game->icon) SDL_FreeSurface(game->icon);
 	
         /* free sdl graph */
         graph_free_graph_sdl(game->state.gs);
+
+        /* free window and game renderer */
+        if (game->renderer) {SDL_DestroyRenderer(game->renderer); game->renderer = NULL;}
+        if (game->window) {SDL_DestroyWindow(game->window); game->window = NULL;}
 
         free(game);
     }
@@ -140,13 +143,18 @@ int game_initialisation(game_t ** game)
 
     (*game)->related_prob = 0.4;
     (*game)->ratio = 0.8;
- 
+
+    (*game)->window = NULL;
+    (*game)->renderer = NULL;
+    (*game)->icon = NULL;
+    
     /* initialize (*game) state */
     (*game)->state.mx = 0;
     (*game)->state.my = 0;
     (*game)->state.selected_nodes = NULL;
     (*game)->state.selected_nodes_i = -1;
     (*game)->state.running = 1;
+    (*game)->state.score = 0;
 
     (*game)->state.user_point = (SDL_Point) {.x = 0, .y = 0};
 
@@ -176,9 +184,8 @@ int game_initialisation(game_t ** game)
     if (!(*game)->font) exit(-1);
     zlog(stdout, INFO, "OK '%s'", "game_loop: Font is initialized.");
 
-
     /* set icon */
-    sdl_set_icon((*game)->window, &(*game)->icon);
+    /* sdl_set_icon((*game)->window, &(*game)->icon); */
     
     /* ------ génération objets du jeu --------- */
 
@@ -211,7 +218,8 @@ int game_loop()
     SDL_Event * event;
     
     float ** min_dist = NULL;
-    int * meilleur_parcours = NULL;
+    int * meilleur_parcours_ant = NULL;
+    int * meilleur_parcours_genetic = NULL;
 
     int response = 0;
     SDL_Point * p_response = NULL;
@@ -223,16 +231,16 @@ int game_loop()
     game_initialisation(&game);
 
     floydWarshall(game->state.gs, &min_dist);
-    dist_minimale=resolution_ant_colony(min_dist, game->number_of_points, &meilleur_parcours);
+    dist_minimale = resolution_ant_colony(min_dist, game->number_of_points, &meilleur_parcours_ant);
 
     zlog(stdout, INFO, "GLOUTON EXHAUSTIVE: %f", glouton_exhaustive(min_dist, game->number_of_points));
-    zlog(stdout, INFO, "RECUIS SIMULÉ: %f", resolution_recuis_simule(min_dist, game->number_of_points,&utils_descente_geometrique));
-    zlog(stdout, INFO, "COLONIE DE FOURMI: %f",dist_minimale);
-    zlog(stdout, INFO, "MUTATION GENETIC : %f", genetic_solve(min_dist, game->number_of_points, NULL));
+    zlog(stdout, INFO, "RECUIS SIMULÉ: %f", resolution_recuis_simule(min_dist, game->number_of_points, &utils_descente_geometrique));
+    zlog(stdout, INFO, "COLONIE DE FOURMI: %f", dist_minimale);
+    zlog(stdout, INFO, "MUTATION GENETIC : %f", genetic_solve(min_dist, game->number_of_points, &meilleur_parcours_genetic));
 
     p_response = (SDL_Point *) malloc(sizeof(p_response)*(game->number_of_points));
     for (i = 0; i < game->number_of_points; ++i)
-        p_response[i] = game->state.gs->p[meilleur_parcours[i]];
+        p_response[i] = game->state.gs->p[meilleur_parcours_ant[i]];
     
     event = &(game->state.event);
     
@@ -246,7 +254,6 @@ int game_loop()
                        (SDL_Point) {.x = -1, .y = 50}, colors_available.BLACK);
         
         sprintf(buf, "Score: %d   Min: %d", (int) game->state.score, (int) dist_minimale);
-        
         
         sdl_print_text(game->window, game->renderer, game->font, buf,
                        (SDL_Point) {.x = -1, .y = game->sh-80}, colors_available.BLACK);
@@ -301,9 +308,15 @@ int game_loop()
     }
 
     free_matrix_float(min_dist, game->number_of_points);
+
     game_free_game(game);
-    free(p_response);
-    free(meilleur_parcours);
+
+    if (p_response) free(p_response);
+    if (meilleur_parcours_ant) free(meilleur_parcours_ant);
+    if (meilleur_parcours_genetic) free(meilleur_parcours_genetic);
+
+    sdl_quit_text();
+    sdl_quit();
     
     return 0;
 }

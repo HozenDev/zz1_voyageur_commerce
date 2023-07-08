@@ -157,7 +157,7 @@ int graph_check_point_collide(int x, int y, SDL_Point * p, int n, SDL_Point * pt
 void graph_draw_point(SDL_Renderer * renderer, SDL_Point p, SDL_Color c, float radius)
 {
     sdl_set_renderer_color(renderer, c);
-    sdl_draw_circle(renderer, p.x, p.y, radius);
+    sdl_draw_circle_filled(renderer, p.x, p.y, radius);
 }
 
 /** @brief Draw many points
